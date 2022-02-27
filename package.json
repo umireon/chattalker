@@ -18,5 +18,8 @@
   "homepage": "https://github.com/umireon/chattalker#readme",
   "devDependencies": {
     "parcel": "^2.3.2"
+  },
+  "dependencies": {
+    "firebaseui": "^6.0.1"
   }
 }
