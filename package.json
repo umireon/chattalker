@@ -4,7 +4,7 @@
   "description": "Chat message talker on Twitch for OBS and so on",
   "main": "index.js",
   "scripts": {
-    "start": "parcel src/index.html",
+    "start": "parcel src/*.html",
     "lint": "eslint --ext .ts src",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
