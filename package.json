@@ -1,0 +1,19 @@
+{
+  "name": "chattalker",
+  "version": "0.1.0",
+  "description": "Chat message talker on Twitch for OBS and so on",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/umireon/chattalker.git"
+  },
+  "author": "Kaito Udagawa",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/umireon/chattalker/issues"
+  },
+  "homepage": "https://github.com/umireon/chattalker#readme"
+}
