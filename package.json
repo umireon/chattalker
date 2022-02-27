@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/umireon/chattalker/issues"
   },
-  "homepage": "https://github.com/umireon/chattalker#readme"
+  "homepage": "https://github.com/umireon/chattalker#readme",
+  "devDependencies": {
+    "parcel": "^2.3.2"
+  }
 }
