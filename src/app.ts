@@ -18,16 +18,25 @@ firebase.initializeApp(firebaseConfig)
 const auth = firebase.auth()
 const db = firebase.firestore()
 
-const ircHandler = (token: string) => {
+const ircHandler = async (token: string) => {
+  const userResponse = await fetch('https://api.twitch.tv/helix/users', {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Client-Id': '386m0kveloa87fbla7yivaw38unkft'
+    }
+  })
+  const userData = await userResponse.json()
+  const { data: [{ login }] } = userData
+
   const socket = new WebSocket('wss://irc-ws.chat.twitch.tv')
   socket.addEventListener('open', (event) => {
     socket.send(`PASS oauth:${token}`)
-    socket.send('NICK umireon')
-    socket.send('JOIN #umireon')
+    socket.send(`NICK ${login}`)
+    socket.send(`JOIN #${login}`)
   })
   socket.addEventListener('message', async (event) => {
     console.log(event.data)
-    const m = event.data.match(/PRIVMSG #umireon :(.*)/)
+    const m = event.data.match(new RegExp(`PRIVMSG #${login} :(.*)`))
     if (m) {
       const query = new URLSearchParams({ text: m[1] })
       const response = await fetch(`https://text-to-speech-hypfl7atta-uc.a.run.app?${query}`)
