@@ -13,4 +13,4 @@ steps:
       - --trigger-http
       - --allow-unauthenticated
       - --security-level=secure-always
-      - --entry-point helloHttp
+      - --entry-point=helloHttp
