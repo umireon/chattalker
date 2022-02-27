@@ -12,5 +12,4 @@ steps:
       - --runtime=nodejs16
       - --trigger-http
       - --allow-unauthenticated
-      - --security-level=secure-always
       - --entry-point=helloHttp
