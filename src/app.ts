@@ -22,7 +22,8 @@ auth.onAuthStateChanged((user) => {
   if (user) {
     const params = new URLSearchParams(location.hash.replace(/^#/, ''))
     const token = params.get('access_token')
-    db.collection('users').doc(user.uid).set({ twitch_access_token: token })
-    console.log(token)
+    if (token) {
+      db.collection('users').doc(user.uid).set({ twitch_access_token: token })
+    }
   }
 })
