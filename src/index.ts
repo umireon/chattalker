@@ -1,5 +1,5 @@
 import firebase from 'firebase/compat/app'
-import firebaseui from 'firebaseui'
+import * as firebaseui from 'firebaseui'
 
 import 'firebase/compat/auth'
 
