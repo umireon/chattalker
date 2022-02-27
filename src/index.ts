@@ -2,6 +2,7 @@ import firebase from 'firebase/compat/app'
 import * as firebaseui from 'firebaseui'
 
 import 'firebase/compat/auth'
+import 'firebaseui/dist/firebaseui.css'
 
 const firebaseConfig = {
   apiKey: 'AIzaSyAUej-VTeNFs6slwLE3M0J0NBz0BNdFODA',
@@ -21,15 +22,18 @@ const uiConfig = {
   callbacks: {
     signInSuccessWithAuthResult: function (authResult, redirectUrl) {
       return true
-    },
-    uiShown: function () {
-      document.getElementById('loader').style.display = 'none'
     }
   },
-  signInSuccessUrl: '/app.html',
+  signInSuccessUrl: '/twitch.html',
   signInOptions: [
     firebase.auth.GoogleAuthProvider.PROVIDER_ID
   ]
 }
 
-ui.start('#firebaseui-auth-container', uiConfig)
+firebase.auth().onAuthStateChanged((user) => {
+  if (user) {
+    location.href = '/twitch.html'
+  } else {
+    ui.start('#firebaseui-auth-container', uiConfig)
+  }
+})
