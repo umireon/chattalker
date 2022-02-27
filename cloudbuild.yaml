@@ -1,0 +1,16 @@
+steps:
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:slim'
+    args:
+      - gcloud
+      - beta
+      - functions
+      - deploy
+      - text-to-speech
+      - --gen2
+      - --region=us-central1
+      - --source=.
+      - --runtime=nodejs16
+      - --trigger-http
+      - --allow-unauthenticated
+      - --security-level=secure-always
+      - --entry-point helloHttp
