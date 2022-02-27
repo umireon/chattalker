@@ -19,7 +19,6 @@ const auth = firebase.auth()
 const db = firebase.firestore()
 
 auth.onAuthStateChanged(async (user) => {
-  console.log(user)
   if (user) {
     const docRef = await db.collection('users').doc(user.uid).get()
     const token = docRef.data().twitch_access_token
