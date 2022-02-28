@@ -63,8 +63,8 @@ const connect = async (user: firebase.User, twitchToken: string) => {
       connect(user, twitchToken)
     }, 1000)
   })
-  socket.addEventListener('error', (event, err) => {
-    console.error('Socket encountered error: ', err.message, 'Closing socket')
+  socket.addEventListener('error', (event) => {
+    console.error('Socket encountered error: ', event, 'Closing socket')
     socket.close()
   })
 }
