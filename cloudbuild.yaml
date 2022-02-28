@@ -2,6 +2,12 @@ steps:
   - name: 'node:16-bullseye-slim'
     args:
       - npm
+      - ci
+      - --production
+    id: 'backend npm ci'
+  - name: 'node:16-bullseye-slim'
+    args:
+      - npm
       - exec
       - --package=typescript
       - --
