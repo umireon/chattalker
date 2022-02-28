@@ -13,7 +13,7 @@ functions.http('helloHttp', async (req, res) => {
   res.set('Access-Control-Allow-Origin', 'https://umireon-twitch-speech-test1.web.app')
   res.set('Access-Control-Allow-Headers', 'Authorization')
 
-  const idToken = req.headers['authorization'].split(' ')[1]
+  const idToken = req.headers.authorization.split(' ')[1]
   auth.verifyIdToken(idToken)
 
   const text = req.query.text
