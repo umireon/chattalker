@@ -30,7 +30,7 @@ functions.http('helloHttp', async (req, res) => {
   const languageCode = language === 'und' ? 'en-US' : language
 
   const request = {
-    input: { text: text },
+    input: { text },
     voice: { languageCode, ssmlGender: 'NEUTRAL' },
     audioConfig: { audioEncoding: 'MP3' }
   }
