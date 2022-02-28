@@ -55,7 +55,7 @@ const extractVoiceTable = (param: string | ParsedQs | string[] | ParsedQs[] | un
 
 const getVoice = (voiceTable: Record<string, string>, languageCode: string) => {
   if (languageCode in voiceTable) {
-    return { name: voiceTable[languageCode] }
+    return { languageCode, name: voiceTable[languageCode] }
   } else {
     return { languageCode }
   }
