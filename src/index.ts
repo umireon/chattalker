@@ -20,9 +20,7 @@ const ui = new firebaseui.auth.AuthUI(firebase.auth())
 
 const uiConfig = {
   callbacks: {
-    signInSuccessWithAuthResult: function (authResult, redirectUrl) {
-      return true
-    }
+    signInSuccessWithAuthResult: () => true
   },
   signInSuccessUrl: '/twitch.html',
   signInOptions: [
