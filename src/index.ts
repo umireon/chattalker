@@ -1,8 +1,12 @@
-import firebase from './initializeApp'
+import firebase from 'firebase/compat/app'
+
+import { firebaseConfig } from './firebaseConfig'
 import * as firebaseui from 'firebaseui'
 
 import 'firebase/compat/auth'
 import 'firebaseui/dist/firebaseui.css'
+
+firebase.initializeApp(firebaseConfig)
 
 const ui = new firebaseui.auth.AuthUI(firebase.auth())
 
