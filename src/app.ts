@@ -39,10 +39,22 @@ const connect = async (user: User, twitchToken: string) => {
         })
         const arrayBuffer = await response.arrayBuffer()
         const { text, audioContent, language } = decode(arrayBuffer) as { text: string, audioContent: Uint8Array, language: string}
-        const audioElement = document.querySelector('audio')!
-        audioElement.src = URL.createObjectURL(new Blob([audioContent]))
-        audioElement.play()
-        console.log(language, text)
+
+        const audioElement = document.querySelector('audio')
+        if (audioElement !== null) {
+          audioElement.src = URL.createObjectURL(new Blob([audioContent]))
+          audioElement.play()
+        }
+
+        const languageElement = document.querySelector('#language')
+        if (languageElement !== null) {
+          languageElement.textContent = language
+        }
+
+        const textElement = document.querySelector('#text')
+        if (textElement !== null) {
+          textElement.textContent = text
+        }
       }
     })
     ws.addEventListener('message', async event => {
