@@ -26,7 +26,7 @@ const getTwitchLogin = async (token: string) => {
 }
 
 const connect = async (user: User, twitchToken: string) => {
-  const login = getTwitchLogin(twitchToken)
+  const login = await getTwitchLogin(twitchToken)
   const listen = () => {
     const ws = new WebSocket('wss://irc-ws.chat.twitch.tv')
     ws.addEventListener('open', () => {
