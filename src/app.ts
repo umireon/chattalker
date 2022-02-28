@@ -72,3 +72,7 @@ auth.onAuthStateChanged(async (user) => {
     }
   }
 })
+
+document.querySelector('button')?.addEventListener('click', e => {
+  auth.signOut()
+})
