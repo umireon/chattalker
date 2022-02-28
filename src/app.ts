@@ -18,10 +18,10 @@ firebase.initializeApp(firebaseConfig)
 const auth = firebase.auth()
 const db = firebase.firestore()
 
-const ircHandler = async (token: string) => {
+const ircHandler = async (user: firebase.User, twitchToken: string) => {
   const userResponse = await fetch('https://api.twitch.tv/helix/users', {
     headers: {
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${twitchToken}`,
       'Client-Id': '386m0kveloa87fbla7yivaw38unkft'
     }
   })
@@ -30,7 +30,7 @@ const ircHandler = async (token: string) => {
 
   const socket = new WebSocket('wss://irc-ws.chat.twitch.tv')
   socket.addEventListener('open', (event) => {
-    socket.send(`PASS oauth:${token}`)
+    socket.send(`PASS oauth:${twitchToken}`)
     socket.send(`NICK ${login}`)
     socket.send(`JOIN #${login}`)
   })
@@ -38,8 +38,13 @@ const ircHandler = async (token: string) => {
     console.log(event.data)
     const m = event.data.match(new RegExp(`PRIVMSG #${login} :(.*)`))
     if (m) {
+      const idToken = await user.getIdToken()
       const query = new URLSearchParams({ text: m[1] })
-      const response = await fetch(`https://text-to-speech-hypfl7atta-uc.a.run.app?${query}`)
+      const response = await fetch(`https://text-to-speech-hypfl7atta-uc.a.run.app?${query}`, {
+        headers: {
+          Authorization: `Bearer ${idToken}`
+        }
+      })
       const data = await response.blob()
       const audioElement = document.querySelector('audio')
       audioElement.src = URL.createObjectURL(data)
@@ -57,13 +62,13 @@ const ircHandler = async (token: string) => {
 auth.onAuthStateChanged(async (user) => {
   if (user) {
     const params = new URLSearchParams(location.hash.replace(/^#/, ''))
-    const token = params.get('access_token')
-    if (token) {
+    const twitchToken = params.get('access_token')
+    if (twitchToken) {
       db.collection('users').doc(user.uid).set({ twitch_access_token: token })
-      ircHandler(token)
+      ircHandler(user, twitchToken)
     } else {
       const docRef = await db.collection('users').doc(user.uid).get()
-      ircHandler(docRef.data().twitch_access_token)
+      ircHandler(user, docRef.data().twitch_access_token)
     }
   }
 })
