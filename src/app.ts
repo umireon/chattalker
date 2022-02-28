@@ -125,3 +125,13 @@ auth.onAuthStateChanged(async (user) => {
     }
   }
 })
+
+for (const element of document.querySelectorAll('select')) {
+  element.addEventListener('change', event => {
+    localStorage.setItem(element.id, element.value)
+  })
+  const value = localStorage.getItem(element.id)
+  if (value) {
+    element.value = value
+  }
+}
