@@ -23,7 +23,7 @@ steps:
       - npm
       - run
       - build
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:slim'
+  - name: 'gcr.io/$PROJECT_ID/firebase'
     args:
       - firebase
       - deploy
