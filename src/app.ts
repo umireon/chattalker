@@ -12,16 +12,21 @@ const app = initializeApp(firebaseConfig)
 const auth = getAuth(app)
 const db = getFirestore(app)
 
-const connect = async (user: User, twitchToken: string) => {
-  const userResponse = await fetch('https://api.twitch.tv/helix/users', {
+const getTwitchLogin = async (token: string) => {
+  const response = await fetch('https://api.twitch.tv/helix/users', {
     headers: {
-      Authorization: `Bearer ${twitchToken}`,
+      Authorization: `Bearer ${token}`,
       'Client-Id': '386m0kveloa87fbla7yivaw38unkft'
     }
   })
-  const userData = await userResponse.json()
-  const { data: [{ login }] } = userData
+  if (!response.ok) throw new Error('Twitch login couldnot be retrieved!')
+  const json = await response.json()
+  const { data: [{ login }] } = json
+  return login
+}
 
+const connect = async (user: User, twitchToken: string) => {
+  const login = getTwitchLogin(twitchToken)
   const listen = () => {
     const ws = new WebSocket('wss://irc-ws.chat.twitch.tv')
     ws.addEventListener('open', () => {
