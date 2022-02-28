@@ -1,4 +1,11 @@
 steps:
+  - name: 'node:16-bullseye-slim'
+    args:
+      - npm
+      - exec
+      - tsc
+      - index.ts
+    id: 'backend npm exec tsc'
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:slim'
     args:
       - gcloud
@@ -13,21 +20,23 @@ steps:
       - --trigger-http
       - --allow-unauthenticated
       - --entry-point=helloHttp
+    waitFor: ['backend npm exec tsc']
+
   - name: 'node:16-bullseye-slim'
     args:
       - npm
       - ci
     waitFor: ['-']
-    id: 'npm ci'
+    id: 'frontend npm ci'
   - name: 'node:16-bullseye-slim'
     args:
       - npm
       - run
       - build
-    waitFor: ['npm ci']
-    id: 'npm run build'
+    waitFor: ['frontend npm ci']
+    id: 'frontend npm run build'
   - name: 'gcr.io/$PROJECT_ID/firebase'
     args:
       - deploy
       - --only=hosting
-    waitFor: ['npm run build']
+    waitFor: ['frontend npm run build']
