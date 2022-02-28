@@ -27,4 +27,5 @@ steps:
     args:
       - firebase
       - deploy
-      - --only=hosting
+      - --only
+      - hosting
