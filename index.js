@@ -24,13 +24,14 @@ functions.http('helloHttp', async (req, res) => {
   auth.verifyIdToken(idToken)
 
   const text = req.query.text
-  let [detections] = await translate.detect(text)
-  detections = Array.isArray(detections) ? detections : [detections]
-  console.log(detections)
+  const [detections] = await translate.detect(text)
+  const [{ language }] = Array.isArray(detections) ? detections : [detections]
+  console.log(language)
+  const languageCode = language === 'und' ? 'en-US' : language
 
   const request = {
     input: { text: text },
-    voice: { languageCode: detections[0].language, ssmlGender: 'NEUTRAL' },
+    voice: { languageCode, ssmlGender: 'NEUTRAL' },
     audioConfig: { audioEncoding: 'MP3' }
   }
   const [response] = await client.synthesizeSpeech(request)
