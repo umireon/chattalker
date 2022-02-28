@@ -26,6 +26,7 @@ functions.http('helloHttp', async (req, res) => {
   const text = req.query.text
   let [detections] = await translate.detect(text)
   detections = Array.isArray(detections) ? detections : [detections]
+  console.log(detections)
 
   const request = {
     input: { text: text },
