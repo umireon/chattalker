@@ -30,7 +30,7 @@ const getTwitchLogin = async (token: string) => {
 const generateVoiceTable = () => {
   const entries = []
   for (const element of document.querySelectorAll('select')) {
-    entries.push([element.id, element.value])
+    entries.push([element.id.replace(/^voice-/, ''), element.value])
   }
   return Object.fromEntries(entries)
 }
