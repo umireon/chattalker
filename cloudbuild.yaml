@@ -25,7 +25,6 @@ steps:
       - build
   - name: 'gcr.io/$PROJECT_ID/firebase'
     args:
-      - firebase
       - deploy
       - --only
       - hosting
