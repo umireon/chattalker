@@ -1,5 +1,6 @@
 import { User, getAuth } from 'firebase/auth'
 import { collection, doc, getDoc, getFirestore, setDoc, updateDoc } from 'firebase/firestore'
+import { getAnalytics, logEvent } from 'firebase/analytics'
 
 import { Message } from '../types'
 import { decode } from '@msgpack/msgpack'
@@ -11,6 +12,7 @@ const ENDPOINT = 'https://text-to-speech-hypfl7atta-uc.a.run.app/'
 const app = initializeApp(firebaseConfig)
 const auth = getAuth(app)
 const db = getFirestore(app)
+const analytics = getAnalytics(app)
 
 const getTwitchLogin = async (token: string) => {
   const response = await fetch('https://api.twitch.tv/helix/users', {
@@ -62,6 +64,7 @@ const connect = async (user: User, twitchToken: string) => {
         if (audioElement !== null) {
           audioElement.src = URL.createObjectURL(new Blob([audioContent]))
           audioElement.play()
+          logEvent(analytics, 'chat_played')
         }
 
         const languageElement = document.querySelector('#language')
