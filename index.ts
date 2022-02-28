@@ -26,14 +26,6 @@ const detectLanguage = async (content: string) => {
   return languageCode || 'und'
 }
 
-const getVoice = (languageCode: string) => {
-  if (languageCode === 'und') {
-    return { languageCode: 'en' }
-  } else {
-    return { languageCode }
-  }
-}
-
 const coarseUint8Array = (data: Uint8Array | string): Uint8Array => {
   if (typeof data === 'string') {
     const encoder = new TextEncoder()
@@ -43,11 +35,29 @@ const coarseUint8Array = (data: Uint8Array | string): Uint8Array => {
   }
 }
 
-const extractFirstQuery = (query: string | ParsedQs | string[] | ParsedQs[]) => {
-  if (Array.isArray(query)) {
-    return query[0].toString()
+const extractFirstQuery = (param: string | ParsedQs | string[] | ParsedQs[]) => {
+  if (Array.isArray(param)) {
+    return param[0].toString()
   } else {
-    return query.toString()
+    return param.toString()
+  }
+}
+
+const extractVoiceTable = (param: string | ParsedQs | string[] | ParsedQs[] | undefined) => {
+  if (typeof param === 'undefined') {
+    return {}
+  } else if (Array.isArray(param)) {
+    return JSON.parse(param[0].toString())
+  } else {
+    return JSON.parse(param.toString())
+  }
+}
+
+const getVoice = (voiceTable: Record<string, string>, languageCode: string) => {
+  if (languageCode in voiceTable) {
+    return { languageCode, name: voiceTable[languageCode] }
+  } else {
+    return { languageCode }
   }
 }
 
@@ -84,12 +94,13 @@ http('text-to-speech', async (req, res) => {
     return
   }
   const text = extractFirstQuery(req.query.text)
+  const voiceTable = extractVoiceTable(req.query.voiceTable)
   const language = await detectLanguage(text)
 
   const [response] = await client.synthesizeSpeech({
     audioConfig: { audioEncoding: 'MP3' },
     input: { text },
-    voice: getVoice(language)
+    voice: getVoice(voiceTable, language)
   })
 
   const { audioContent } = response

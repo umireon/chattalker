@@ -39,7 +39,12 @@ const connect = async (user: User, twitchToken: string) => {
       const m = event.data.match(new RegExp(`PRIVMSG #${login} :(.*)`))
       if (m) {
         const idToken = await user.getIdToken(true)
-        const query = new URLSearchParams({ text: m[1] })
+        const voiceTable = JSON.stringify({
+          en: 'en-US-Wavenet-A',
+          ja: 'ja-JP-Wavenet-C',
+          und: 'en-US-Wavenet-A'
+        })
+        const query = new URLSearchParams({ text: m[1], voiceTable })
         const response = await fetch(`${ENDPOINT}?${query}`, {
           headers: {
             Authorization: `Bearer ${idToken}`
