@@ -1,5 +1,5 @@
 import { User, getAuth } from 'firebase/auth'
-import { collection, deleteDoc, doc, getDoc, getFirestore, setDoc } from 'firebase/firestore'
+import { collection, doc, getDoc, getFirestore, setDoc } from 'firebase/firestore'
 
 import { decode } from '@msgpack/msgpack'
 import { firebaseConfig } from './firebaseConfig'
@@ -115,4 +115,3 @@ auth.onAuthStateChanged(async (user) => {
     }
   }
 })
-
