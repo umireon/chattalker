@@ -64,11 +64,11 @@ auth.onAuthStateChanged(async (user) => {
     const params = new URLSearchParams(location.hash.replace(/^#/, ''))
     const twitchToken = params.get('access_token')
     if (twitchToken) {
-      db.collection('users').doc(user.uid).set({ twitch_access_token: token })
+      db.collection('users').doc(user.uid).set({ twitch_access_token: twitchToken })
       ircHandler(user, twitchToken)
     } else {
       const docRef = await db.collection('users').doc(user.uid).get()
-      ircHandler(user, docRef.data().twitch_access_token)
+      ircHandler(user, docRef.data()!.twitch_access_token)
     }
   }
 })
