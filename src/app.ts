@@ -1,10 +1,10 @@
 import { User, getAuth } from 'firebase/auth'
 import { collection, doc, getDoc, getFirestore, setDoc } from 'firebase/firestore'
 
+import { Message } from '../types'
 import { decode } from '@msgpack/msgpack'
 import { firebaseConfig } from './firebaseConfig'
 import { initializeApp } from 'firebase/app'
-import { Message } from '../types'
 
 const ENDPOINT = 'https://text-to-speech-hypfl7atta-uc.a.run.app/'
 

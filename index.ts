@@ -1,14 +1,14 @@
-import { http } from '@google-cloud/functions-framework'
-import { TextToSpeechClient } from '@google-cloud/text-to-speech'
-import { TranslationServiceClient } from '@google-cloud/translate'
-import { initializeApp } from 'firebase-admin/app'
-import { getAuth } from 'firebase-admin/auth'
-import { encode } from '@msgpack/msgpack'
 import type { Message } from './types'
 import type { ParsedQs } from 'qs'
+import { TextToSpeechClient } from '@google-cloud/text-to-speech'
+import { TranslationServiceClient } from '@google-cloud/translate'
+import { encode } from '@msgpack/msgpack'
+import { getAuth } from 'firebase-admin/auth'
+import { http } from '@google-cloud/functions-framework'
+import { initializeApp } from 'firebase-admin/app'
 
 const client = new TextToSpeechClient()
-const translationClient = new TranslationServiceClient();
+const translationClient = new TranslationServiceClient()
 const app = initializeApp()
 const auth = getAuth(app)
 
@@ -16,7 +16,7 @@ const detectLanguage = async (content: string) => {
   const [response] = await translationClient.detectLanguage({ content })
   const { languages } = response
   if (!languages) return 'und'
-  const [ { languageCode } ] = languages
+  const [{ languageCode }] = languages
   return languageCode || 'und'
 }
 
@@ -78,7 +78,6 @@ http('helloHttp', async (req, res) => {
     return
   }
   const text = extractFirstQuery(req.query.text)
-  if (typeof text !== 'string') throw new Error('Error')
   const language = await detectLanguage(text)
 
   const [response] = await client.synthesizeSpeech({
