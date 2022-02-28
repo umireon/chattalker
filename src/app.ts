@@ -4,14 +4,9 @@ import { collection, doc, getDoc, getFirestore, setDoc } from 'firebase/firestor
 import { decode } from '@msgpack/msgpack'
 import { firebaseConfig } from './firebaseConfig'
 import { initializeApp } from 'firebase/app'
+import { Message } from '../types'
 
 const ENDPOINT = 'https://text-to-speech-hypfl7atta-uc.a.run.app/'
-
-interface Message {
-  audioContent: Uint8Array
-  language: string
-  text: string
-}
 
 const app = initializeApp(firebaseConfig)
 const auth = getAuth(app)
