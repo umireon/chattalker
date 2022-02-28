@@ -2,16 +2,10 @@ steps:
   - name: 'node:16-bullseye-slim'
     args:
       - npm
-      - ci
-      - --production
-    id: 'backend npm ci'
-  - name: 'node:16-bullseye-slim'
-    args:
-      - npm
       - exec
-      - --package=typescript
       - --
-      - tsc
+      - esbuild
+      - --outfile=index.js
       - index.ts
     id: 'backend npm exec tsc'
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:slim'
