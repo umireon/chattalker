@@ -5,6 +5,7 @@ import { initializeApp } from 'firebase-admin/app'
 import { getAuth } from 'firebase-admin/auth'
 import { encode } from '@msgpack/msgpack'
 import type { Message } from './types'
+import type { ParsedQs } from 'qs'
 
 const client = new TextToSpeechClient()
 const translationClient = new TranslationServiceClient();
@@ -36,6 +37,14 @@ const coarseUint8Array = (data: Uint8Array | string): Uint8Array => {
   }
 }
 
+const extractFirstQuery = (query: string | ParsedQs | string[] | ParsedQs[]) => {
+  if (Array.isArray(query)) {
+    return query[0].toString()
+  } else {
+    return query.toString()
+  }
+}
+
 http('helloHttp', async (req, res) => {
   res.set('Access-Control-Allow-Origin', 'https://umireon-twitch-speech-test1.web.app')
 
@@ -48,11 +57,27 @@ http('helloHttp', async (req, res) => {
   }
 
   const { authorization } = req.headers
-  if (typeof authorization === 'undefined') throw new Error('error')
+  if (typeof authorization === 'undefined') {
+    res.status(403).send('Forbidden')
+    return
+  }
   const idToken = authorization.split(' ')[1]
-  auth.verifyIdToken(idToken)
+  if (typeof idToken === 'undefined') {
+    res.status(403).send('Forbidden')
+    return
+  }
+  try {
+    await auth.verifyIdToken(idToken)
+  } catch (error) {
+    res.status(403).send('Forbidden')
+    return
+  }
 
-  const text = req.query.text
+  if (typeof req.query.text === 'undefined') {
+    res.status(400).send('Bad Request')
+    return
+  }
+  const text = extractFirstQuery(req.query.text)
   if (typeof text !== 'string') throw new Error('Error')
   const language = await detectLanguage(text)
 
@@ -63,7 +88,10 @@ http('helloHttp', async (req, res) => {
   })
 
   const { audioContent } = response
-  if (!audioContent) throw new Error('error')
+  if (!audioContent) {
+    res.status(500).send('Internal Server Error')
+    return
+  }
   const message: Message = {
     audioContent: coarseUint8Array(audioContent),
     language,
