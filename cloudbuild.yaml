@@ -18,12 +18,16 @@ steps:
       - npm
       - ci
     waitFor: ['-']
+    id: 'npm-ci'
   - name: 'node:16-bullseye-slim'
     args:
       - npm
       - run
       - build
+    waitFor: ['npm-ci']
+    id: 'npm-run-build'
   - name: 'gcr.io/$PROJECT_ID/firebase'
     args:
       - deploy
       - --only=hosting
+    waitFor: ['npm-run-build']
