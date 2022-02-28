@@ -1,9 +1,9 @@
-import { firebaseConfig } from './firebaseConfig'
-import { initializeApp } from 'firebase/app'
-import { getAuth, User } from 'firebase/auth'
-import { getFirestore, collection, doc, getDoc, setDoc } from 'firebase/firestore'
+import { User, getAuth } from 'firebase/auth'
+import { collection, doc, getDoc, getFirestore, setDoc } from 'firebase/firestore'
 
 import { decode } from '@msgpack/msgpack'
+import { firebaseConfig } from './firebaseConfig'
+import { initializeApp } from 'firebase/app'
 
 const app = initializeApp(firebaseConfig)
 const auth = getAuth(app)

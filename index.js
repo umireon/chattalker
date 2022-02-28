@@ -31,14 +31,14 @@ functions.http('helloHttp', async (req, res) => {
   const languageCode = language === 'und' ? 'en-US' : language
 
   const request = {
+    audioConfig: { audioEncoding: 'MP3' },
     input: { text },
-    voice: { languageCode, ssmlGender: 'NEUTRAL' },
-    audioConfig: { audioEncoding: 'MP3' }
+    voice: { languageCode, ssmlGender: 'NEUTRAL' }
   }
   const [response] = await client.synthesizeSpeech(request)
   res.send(Buffer.from(encode({
+    audioContent: response.audioContent,
     language,
-    text,
-    audioContent: response.audioContent
+    text
   })))
 })
