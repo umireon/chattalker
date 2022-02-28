@@ -1,0 +1,12 @@
+.devcontainer
+src/
+.editorconfig
+.eslintrc.json
+.firebaserc
+.gcloudignore
+.gitignore
+cloudbuild.yaml
+firebase.json
+LICENSE
+README.md
+tsconfig.json
