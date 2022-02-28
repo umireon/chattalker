@@ -27,11 +27,8 @@ const getTwitchLogin = async (token: string) => {
 
 const generateVoiceTable = () => {
   const entries = []
-  for (const language of ['en', 'ja', 'und']) {
-    const element = document.querySelector<HTMLSelectElement>(`voice-${language}`)
-    if (element !== null) {
-      entries.push([language, element.value])
-    }
+  for (const element of document.querySelectorAll('select')) {
+    entries.push([element.id, element.value])
   }
   return Object.fromEntries(entries)
 }
