@@ -4,6 +4,7 @@ import { TranslationServiceClient } from '@google-cloud/translate'
 import { initializeApp } from 'firebase-admin/app'
 import { getAuth } from 'firebase-admin/auth'
 import { encode } from '@msgpack/msgpack'
+import type { Message } from './types'
 
 const client = new TextToSpeechClient()
 const translationClient = new TranslationServiceClient();
@@ -23,6 +24,15 @@ const getVoice = (languageCode: string) => {
     return { languageCode: 'en' }
   } else {
     return { languageCode }
+  }
+}
+
+const coarseUint8Array = (data: Uint8Array | string): Uint8Array => {
+  if (typeof data === 'string') {
+    const encoder = new TextEncoder()
+    return encoder.encode(data)
+  } else {
+    return data
   }
 }
 
@@ -51,9 +61,13 @@ http('helloHttp', async (req, res) => {
     input: { text },
     voice: getVoice(language)
   })
-  res.send(Buffer.from(encode({
-    audioContent: response.audioContent,
+
+  const { audioContent } = response
+  if (!audioContent) throw new Error('error')
+  const message: Message = {
+    audioContent: coarseUint8Array(audioContent),
     language,
     text
-  })))
+  }
+  res.send(Buffer.from(encode(message)))
 })
