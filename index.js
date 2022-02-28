@@ -14,9 +14,7 @@ functions.http('helloHttp', async (req, res) => {
   res.set('Access-Control-Allow-Headers', 'Authorization')
 
   const { authorization } = req.headers
-  if (!authorization) {
-    return
-  }
+  if (!authorization) return
   const idToken = authorization.split(' ')[1]
   auth.verifyIdToken(idToken)
 
