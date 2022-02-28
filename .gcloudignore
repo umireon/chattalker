@@ -10,3 +10,4 @@ firebase.json
 LICENSE
 README.md
 tsconfig.json
+*.ts
