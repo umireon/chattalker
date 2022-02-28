@@ -5,6 +5,14 @@ import { decode } from '@msgpack/msgpack'
 import { firebaseConfig } from './firebaseConfig'
 import { initializeApp } from 'firebase/app'
 
+const ENDPOINT = 'https://text-to-speech-hypfl7atta-uc.a.run.app/'
+
+interface Message {
+  audioContent: Uint8Array
+  language: string
+  text: string
+}
+
 const app = initializeApp(firebaseConfig)
 const auth = getAuth(app)
 const db = getFirestore(app)
@@ -32,13 +40,13 @@ const connect = async (user: User, twitchToken: string) => {
       if (m) {
         const idToken = await user.getIdToken(true)
         const query = new URLSearchParams({ text: m[1] })
-        const response = await fetch(`https://text-to-speech-hypfl7atta-uc.a.run.app?${query}`, {
+        const response = await fetch(`${ENDPOINT}?${query}`, {
           headers: {
             Authorization: `Bearer ${idToken}`
           }
         })
         const arrayBuffer = await response.arrayBuffer()
-        const { text, audioContent, language } = decode(arrayBuffer) as { text: string, audioContent: Uint8Array, language: string}
+        const { text, audioContent, language } = decode(arrayBuffer) as Message
 
         const audioElement = document.querySelector('audio')
         if (audioElement !== null) {
