@@ -1,14 +1,15 @@
-import firebase from './initializeApp'
+import { User, getAuth } from 'firebase/auth'
+import { collection, doc, getDoc, getFirestore, setDoc } from 'firebase/firestore'
 
 import { decode } from '@msgpack/msgpack'
+import { firebaseConfig } from './firebaseConfig'
+import { initializeApp } from 'firebase/app'
 
-import 'firebase/compat/auth'
-import 'firebase/compat/firestore'
+const app = initializeApp(firebaseConfig)
+const auth = getAuth(app)
+const db = getFirestore(app)
 
-const auth = firebase.auth()
-const db = firebase.firestore()
-
-const connect = async (user: firebase.User, twitchToken: string) => {
+const connect = async (user: User, twitchToken: string) => {
   const userResponse = await fetch('https://api.twitch.tv/helix/users', {
     headers: {
       Authorization: `Bearer ${twitchToken}`,
@@ -70,10 +71,10 @@ auth.onAuthStateChanged(async (user) => {
     const params = new URLSearchParams(location.hash.replace(/^#/, ''))
     const twitchToken = params.get('access_token')
     if (twitchToken) {
-      db.collection('users').doc(user.uid).set({ twitch_access_token: twitchToken })
+      await setDoc(doc(collection(db, 'users'), user.uid), { twitch_access_token: twitchToken })
       connect(user, twitchToken)
     } else {
-      const docRef = await db.collection('users').doc(user.uid).get()
+      const docRef = await getDoc(doc(collection(db, 'users'), user.uid))
       connect(user, docRef.data()!.twitch_access_token)
     }
   }
