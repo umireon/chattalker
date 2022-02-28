@@ -127,12 +127,11 @@ auth.onAuthStateChanged(async (user) => {
       connect(user, docRef.data()!.twitch_access_token)
     }
 
-    const voiceSelects = document.querySelectorAll('select')
-    for (const element of voiceSelects) {
+    const docRef = await getDoc(doc(collection(db, 'users'), user.uid))
+    for (const element of document.querySelectorAll('select')) {
       element.addEventListener('change', event =>
         updateDoc(doc(collection(db, 'users'), user.uid), { [element.id]: element.value })
       )
-      const docRef = await getDoc(doc(collection(db, 'users'), user.uid))
       const data = docRef.data()
       if (typeof data !== 'undefined') {
         const value = data[element.id]
