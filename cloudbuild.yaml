@@ -7,7 +7,7 @@ steps:
       - esbuild
       - --outfile=index.js
       - index.ts
-    id: 'backend npm exec tsc'
+    id: 'backend npm exec esbuild'
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:slim'
     args:
       - gcloud
@@ -21,8 +21,7 @@ steps:
       - --runtime=nodejs16
       - --trigger-http
       - --allow-unauthenticated
-      - --entry-point=helloHttp
-    waitFor: ['backend npm exec tsc']
+    waitFor: ['backend npm exec esbuild']
 
   - name: 'node:16-bullseye-slim'
     args:

@@ -45,7 +45,7 @@ const extractFirstQuery = (query: string | ParsedQs | string[] | ParsedQs[]) => 
   }
 }
 
-http('helloHttp', async (req, res) => {
+http('text-to-speech', async (req, res) => {
   res.set('Access-Control-Allow-Origin', 'https://umireon-twitch-speech-test1.web.app')
 
   if (req.method === 'OPTIONS') {
