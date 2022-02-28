@@ -40,6 +40,7 @@ const connect = async (user: User, twitchToken: string) => {
             Authorization: `Bearer ${idToken}`
           }
         })
+        if (!response.ok) throw new Error('Invalid message')
         const arrayBuffer = await response.arrayBuffer()
         const { text, audioContent, language } = decode(arrayBuffer) as Message
 

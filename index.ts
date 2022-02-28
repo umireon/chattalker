@@ -12,8 +12,14 @@ const translationClient = new TranslationServiceClient()
 const app = initializeApp()
 const auth = getAuth(app)
 
+const PROJECT_ID = process.env.PROJECT_ID
+if (typeof PROJECT_ID === 'undefined') throw new Error('PROJECT_ID not defined')
+
 const detectLanguage = async (content: string) => {
-  const [response] = await translationClient.detectLanguage({ content })
+  const [response] = await translationClient.detectLanguage({
+    content,
+    parent: `projects/${projectId}/locations/global`
+  })
   const { languages } = response
   if (!languages) return 'und'
   const [{ languageCode }] = languages
