@@ -1,16 +1,16 @@
-const functions = require('@google-cloud/functions-framework')
-const textToSpeech = require('@google-cloud/text-to-speech')
-const { Translate } = require('@google-cloud/translate').v2
-const { initializeApp } = require('firebase-admin/app')
-const { getAuth } = require('firebase-admin/auth')
-const { encode } = require('@msgpack/msgpack')
+import { http } from '@google-cloud/functions-framework'
+import { TextToSpeechClient } from '@google-cloud/text-to-speech'
+import { v2 } from '@google-cloud/translate'
+import { initializeApp } from 'firebase-admin/app'
+import { getAuth } from 'firebase-admin/auth'
+import { encode } from '@msgpack/msgpack'
 
-const client = new textToSpeech.TextToSpeechClient()
-const translate = new Translate()
+const client = new TextToSpeechClient()
+const translate = new v2.Translate()
 const app = initializeApp()
 const auth = getAuth(app)
 
-functions.http('helloHttp', async (req, res) => {
+http('helloHttp', async (req, res) => {
   res.set('Access-Control-Allow-Origin', 'https://umireon-twitch-speech-test1.web.app')
 
   if (req.method === 'OPTIONS') {
@@ -21,21 +21,22 @@ functions.http('helloHttp', async (req, res) => {
     return
   }
 
-  const idToken = req.headers.authorization.split(' ')[1]
+  const { authorization } = req.headers
+  if (typeof authorization === 'undefined') throw new Error('error')
+  const idToken = authorization.split(' ')[1]
   auth.verifyIdToken(idToken)
 
   const text = req.query.text
+  if (typeof text !== 'string') throw new Error('Error')
   const [detections] = await translate.detect(text)
   const [{ language }] = Array.isArray(detections) ? detections : [detections]
-  console.log(language)
-  const languageCode = language === 'und' ? 'en-US' : language
+  const languageCode = language === 'und' ? 'en-US' : language as string
 
-  const request = {
+  const [response] = await client.synthesizeSpeech({
     audioConfig: { audioEncoding: 'MP3' },
     input: { text },
-    voice: { languageCode, ssmlGender: 'NEUTRAL' }
-  }
-  const [response] = await client.synthesizeSpeech(request)
+    voice: { languageCode }
+  })
   res.send(Buffer.from(encode({
     audioContent: response.audioContent,
     language,
