@@ -3,6 +3,8 @@ steps:
     args:
       - npm
       - exec
+      - --package=typescript
+      - --
       - tsc
       - index.ts
     id: 'backend npm exec tsc'
