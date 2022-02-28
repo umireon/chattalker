@@ -28,45 +28,49 @@ const connect = async (user: firebase.User, twitchToken: string) => {
   const userData = await userResponse.json()
   const { data: [{ login }] } = userData
 
-  const socket = new WebSocket('wss://irc-ws.chat.twitch.tv')
-  socket.addEventListener('open', (event) => {
-    socket.send(`PASS oauth:${twitchToken}`)
-    socket.send(`NICK ${login}`)
-    socket.send(`JOIN #${login}`)
-  })
-  socket.addEventListener('message', async (event) => {
-    console.log(event.data)
-    const m = event.data.match(new RegExp(`PRIVMSG #${login} :(.*)`))
-    if (m) {
-      const idToken = await user.getIdToken(true)
-      const query = new URLSearchParams({ text: m[1] })
-      const response = await fetch(`https://text-to-speech-hypfl7atta-uc.a.run.app?${query}`, {
-        headers: {
-          Authorization: `Bearer ${idToken}`
-        }
-      })
-      const data = await response.blob()
-      const audioElement = document.querySelector('audio')
-      audioElement.src = URL.createObjectURL(data)
-      audioElement.play()
-    }
-  })
-  socket.addEventListener('message', async (event) => {
-    const m = event.data.match(/PING :tmi.twitch.tv/)
-    if (m) {
-      socket.send('PONG :tmi.twitch.tv')
-    }
-  })
-  socket.addEventListener('close', (event) => {
-    console.log('Socket is closed. Reconnect will be attempted in 1 second.', event.reason)
-    setTimeout(() => {
-      connect(user, twitchToken)
-    }, 1000)
-  })
-  socket.addEventListener('error', (event) => {
-    console.error('Socket encountered error: ', event, 'Closing socket')
-    socket.close()
-  })
+  const listen = () => {
+    const ws = new WebSocket('wss://irc-ws.chat.twitch.tv')
+    ws.addEventListener('open', () => {
+      ws.send(`PASS oauth:${twitchToken}`)
+      ws.send(`NICK ${login}`)
+      ws.send(`JOIN #${login}`)
+    })
+    ws.addEventListener('message', async event => {
+      console.log(event.data)
+      const m = event.data.match(new RegExp(`PRIVMSG #${login} :(.*)`))
+      if (m) {
+        const idToken = await user.getIdToken(true)
+        const query = new URLSearchParams({ text: m[1] })
+        const response = await fetch(`https://text-to-speech-hypfl7atta-uc.a.run.app?${query}`, {
+          headers: {
+            Authorization: `Bearer ${idToken}`
+          }
+        })
+        const data = await response.blob()
+        const audioElement = document.querySelector('audio')!
+        audioElement.src = URL.createObjectURL(data)
+        audioElement.play()
+      }
+    })
+    ws.addEventListener('message', async event => {
+      const m = event.data.match(/PING :tmi.twitch.tv/)
+      if (m) {
+        ws.send('PONG :tmi.twitch.tv')
+      }
+    })
+    ws.addEventListener('close', event => {
+      console.log('Socket is closed. Reconnect will be attempted in 1 second.', event)
+      setTimeout(() => {
+        listen()
+      }, 1000)
+    })
+    ws.addEventListener('error', event => {
+      console.error('Socket encountered error: ', event, 'Closing socket')
+      ws.close()
+    })
+  }
+
+  listen()
 }
 
 auth.onAuthStateChanged(async (user) => {
