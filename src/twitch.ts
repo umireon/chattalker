@@ -10,8 +10,8 @@ const db = getFirestore(app)
 auth.onAuthStateChanged(async (user) => {
   if (user) {
     const docRef = await getDoc(doc(collection(db, 'users'), user.uid))
-    const token = docRef.data()!.twitch_access_token
-    if (token) {
+    const data = docRef.data()
+    if (typeof data !== 'undefined' && data.twitch_access_token) {
       location.href = '/app.html'
     }
   }
