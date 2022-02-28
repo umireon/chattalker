@@ -1,7 +1,8 @@
+import * as firebaseui from 'firebaseui'
+
 import firebase from 'firebase/compat/app'
 
 import { firebaseConfig } from './firebaseConfig'
-import * as firebaseui from 'firebaseui'
 
 import 'firebase/compat/auth'
 import 'firebaseui/dist/firebaseui.css'
@@ -14,10 +15,10 @@ const uiConfig = {
   callbacks: {
     signInSuccessWithAuthResult: () => true
   },
-  signInSuccessUrl: '/twitch.html',
   signInOptions: [
     firebase.auth.EmailAuthProvider.PROVIDER_ID
-  ]
+  ],
+  signInSuccessUrl: '/twitch.html'
 }
 
 firebase.auth().onAuthStateChanged((user) => {
