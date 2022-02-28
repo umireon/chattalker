@@ -1,5 +1,5 @@
 import { User, getAuth } from 'firebase/auth'
-import { collection, doc, getDoc, getFirestore, setDoc } from 'firebase/firestore'
+import { collection, doc, getDoc, getFirestore, setDoc, updateDoc } from 'firebase/firestore'
 
 import { Message } from '../types'
 import { decode } from '@msgpack/msgpack'
@@ -117,21 +117,26 @@ auth.onAuthStateChanged(async (user) => {
     const params = new URLSearchParams(location.hash.replace(/^#/, ''))
     const twitchToken = params.get('access_token')
     if (twitchToken) {
-      await setDoc(doc(collection(db, 'users'), user.uid), { twitch_access_token: twitchToken })
+      await updateDoc(doc(collection(db, 'users'), user.uid), { twitch_access_token: twitchToken })
       connect(user, twitchToken)
     } else {
       const docRef = await getDoc(doc(collection(db, 'users'), user.uid))
       connect(user, docRef.data()!.twitch_access_token)
     }
+
+    const voiceSelects = document.querySelectorAll('select')
+    for (const element of voiceSelects) {
+      element.addEventListener('change', event =>
+        updateDoc(doc(collection(db, 'users'), user.uid), { [element.id]: element.value })
+      )
+      const docRef = await getDoc(doc(collection(db, 'users'), user.uid))
+      const data = docRef.data()
+      if (typeof data !== 'undefined') {
+        const value = data[element.id]
+        if (typeof value === 'string') {
+          element.value = value
+        }
+      }
+    }
   }
 })
-
-for (const element of document.querySelectorAll('select')) {
-  element.addEventListener('change', event => {
-    localStorage.setItem(element.id, element.value)
-  })
-  const value = localStorage.getItem(element.id)
-  if (value) {
-    element.value = value
-  }
-}
