@@ -18,13 +18,13 @@ steps:
       - npm
       - ci
     waitFor: ['-']
-  # - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:slim'
-  #   args:
-  #     - npm
-  #     - run
-  #     - build
-  # - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:slim'
-  #   args:
-  #     - firebase
-  #     - deploy
-  #     - --only=hosting
+  - name: 'node:16-bullseye-slim'
+    args:
+      - npm
+      - run
+      - build
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:slim'
+    args:
+      - firebase
+      - deploy
+      - --only=hosting
