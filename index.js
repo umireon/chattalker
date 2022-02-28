@@ -36,5 +36,5 @@ functions.http('helloHttp', async (req, res) => {
     audioConfig: { audioEncoding: 'MP3' }
   }
   const [response] = await client.synthesizeSpeech(request)
-  res.send(encode([language, response.audioContent]))
+  res.send(Buffer.from(encode([language, response.audioContent])))
 })
