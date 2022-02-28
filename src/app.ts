@@ -73,6 +73,7 @@ auth.onAuthStateChanged(async (user) => {
   }
 })
 
-document.querySelector('button')?.addEventListener('click', e => {
-  auth.signOut()
+document.querySelector('button')?.addEventListener('click', async (e) => {
+  await auth.signOut()
+  location.href = '/'
 })
