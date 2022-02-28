@@ -11,6 +11,7 @@ const auth = getAuth(app)
 
 functions.http('helloHttp', async (req, res) => {
   res.set('Access-Control-Allow-Origin', 'https://umireon-twitch-speech-test1.web.app')
+  res.set('Access-Control-Allow-Headers', 'Authorization')
 
   console.log(req.headers)
   // auth.verifyIdToken()
