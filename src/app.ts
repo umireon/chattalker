@@ -37,12 +37,11 @@ const connect = async (user: firebase.User, twitchToken: string) => {
           }
         })
         const arrayBuffer = await response.arrayBuffer()
-        const [language, audioContent] = decode(arrayBuffer) as [string, Blob]
-        console.log(audioContent)
+        const { text, audioContent, language } = decode(arrayBuffer) as { text: string, audioContent: Uint8Array, language: string}
         const audioElement = document.querySelector('audio')!
-        audioElement.src = URL.createObjectURL(audioContent)
+        audioElement.src = URL.createObjectURL(new Blob([audioContent]))
         audioElement.play()
-        console.log(language)
+        console.log(language, text)
       }
     })
     ws.addEventListener('message', async event => {
