@@ -1,5 +1,7 @@
 import firebase from './initializeApp'
 
+import { decode } from '@msgpack/msgpack'
+
 import 'firebase/compat/auth'
 import 'firebase/compat/firestore'
 
@@ -34,10 +36,13 @@ const connect = async (user: firebase.User, twitchToken: string) => {
             Authorization: `Bearer ${idToken}`
           }
         })
-        const data = await response.blob()
+        const arrayBuffer = await response.arrayBuffer()
+        const [language, audioContent] = decode(arrayBuffer) as [string, Blob]
+        console.log(audioContent)
         const audioElement = document.querySelector('audio')!
-        audioElement.src = URL.createObjectURL(data)
+        audioElement.src = URL.createObjectURL(audioContent)
         audioElement.play()
+        console.log(language)
       }
     })
     ws.addEventListener('message', async event => {

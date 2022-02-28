@@ -3,6 +3,7 @@ const textToSpeech = require('@google-cloud/text-to-speech')
 const { Translate } = require('@google-cloud/translate').v2
 const { initializeApp } = require('firebase-admin/app')
 const { getAuth } = require('firebase-admin/auth')
+const { encode } = require('@msgpack/msgpack')
 
 const client = new textToSpeech.TextToSpeechClient()
 const translate = new Translate()
@@ -35,5 +36,5 @@ functions.http('helloHttp', async (req, res) => {
     audioConfig: { audioEncoding: 'MP3' }
   }
   const [response] = await client.synthesizeSpeech(request)
-  res.send(response.audioContent)
+  res.send(encode([language, response.audioContent]))
 })
