@@ -38,7 +38,7 @@ const ircHandler = async (user: firebase.User, twitchToken: string) => {
     console.log(event.data)
     const m = event.data.match(new RegExp(`PRIVMSG #${login} :(.*)`))
     if (m) {
-      const idToken = await user.getIdToken()
+      const idToken = await user.getIdToken(true)
       const query = new URLSearchParams({ text: m[1] })
       const response = await fetch(`https://text-to-speech-hypfl7atta-uc.a.run.app?${query}`, {
         headers: {
