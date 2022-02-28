@@ -1,5 +1,5 @@
 import { User, getAuth } from 'firebase/auth'
-import { collection, doc, getDoc, getFirestore, setDoc } from 'firebase/firestore'
+import { collection, deleteDoc, doc, getDoc, getFirestore, setDoc } from 'firebase/firestore'
 
 import { decode } from '@msgpack/msgpack'
 import { firebaseConfig } from './firebaseConfig'
@@ -88,6 +88,22 @@ const connect = async (user: User, twitchToken: string) => {
 
 auth.onAuthStateChanged(async (user) => {
   if (user) {
+    const logoutElement = document.querySelector('#logout')
+    if (logoutElement !== null) {
+      logoutElement.addEventListener('click', async (e) => {
+        await auth.signOut()
+        location.href = '/'
+      })
+    }
+
+    const disconnectElement = document.querySelector('#disconnect')
+    if (disconnectElement !== null) {
+      disconnectElement.addEventListener('click', async (e) => {
+        await setDoc(doc(collection(db, 'users'), user.uid), {})
+        location.href = '/twitch.html'
+      })
+    }
+
     const params = new URLSearchParams(location.hash.replace(/^#/, ''))
     const twitchToken = params.get('access_token')
     if (twitchToken) {
@@ -100,7 +116,3 @@ auth.onAuthStateChanged(async (user) => {
   }
 })
 
-document.querySelector('button')?.addEventListener('click', async (e) => {
-  await auth.signOut()
-  location.href = '/'
-})
