@@ -25,6 +25,17 @@ const getTwitchLogin = async (token: string) => {
   return login
 }
 
+const generateVoiceTable = () => {
+  const entries = []
+  for (const language of ['en', 'ja', 'und']) {
+    const element = document.querySelector<HTMLSelectElement>(`voice-${language}`)
+    if (element !== null) {
+      entries.push([language, element.value])
+    }
+  }
+  return Object.fromEntries(entries)
+}
+
 const connect = async (user: User, twitchToken: string) => {
   const login = await getTwitchLogin(twitchToken)
   const listen = () => {
@@ -39,11 +50,7 @@ const connect = async (user: User, twitchToken: string) => {
       const m = event.data.match(new RegExp(`PRIVMSG #${login} :(.*)`))
       if (m) {
         const idToken = await user.getIdToken(true)
-        const voiceTable = JSON.stringify({
-          en: 'en-US-Wavenet-A',
-          ja: 'ja-JP-Wavenet-C',
-          und: 'en-US-Wavenet-A'
-        })
+        const voiceTable = JSON.stringify(generateVoiceTable())
         const query = new URLSearchParams({ text: m[1], voiceTable })
         const response = await fetch(`${ENDPOINT}?${query}`, {
           headers: {
