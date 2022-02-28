@@ -18,7 +18,7 @@ firebase.initializeApp(firebaseConfig)
 const auth = firebase.auth()
 const db = firebase.firestore()
 
-const ircHandler = async (user: firebase.User, twitchToken: string) => {
+const connect = async (user: firebase.User, twitchToken: string) => {
   const userResponse = await fetch('https://api.twitch.tv/helix/users', {
     headers: {
       Authorization: `Bearer ${twitchToken}`,
@@ -57,6 +57,12 @@ const ircHandler = async (user: firebase.User, twitchToken: string) => {
       socket.send('PONG :tmi.twitch.tv')
     }
   })
+  socket.addEventListener('close', (event) => {
+    console.log('Socket is closed. Reconnect will be attempted in 1 second.', e.reason);
+    setTimeout(function() {
+      connect(user, twitchToken)
+    }, 1000)
+  }
 }
 
 auth.onAuthStateChanged(async (user) => {
@@ -65,10 +71,10 @@ auth.onAuthStateChanged(async (user) => {
     const twitchToken = params.get('access_token')
     if (twitchToken) {
       db.collection('users').doc(user.uid).set({ twitch_access_token: twitchToken })
-      ircHandler(user, twitchToken)
+      connect(user, twitchToken)
     } else {
       const docRef = await db.collection('users').doc(user.uid).get()
-      ircHandler(user, docRef.data()!.twitch_access_token)
+      connect(user, docRef.data()!.twitch_access_token)
     }
   }
 })
