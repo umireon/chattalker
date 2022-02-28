@@ -13,7 +13,9 @@ functions.http('helloHttp', async (req, res) => {
   res.set('Access-Control-Allow-Origin', 'https://umireon-twitch-speech-test1.web.app')
 
   if (req.method === 'OPTIONS') {
+    res.set('Access-Control-Allow-Methods', 'GET')
     res.set('Access-Control-Allow-Headers', 'Authorization')
+    res.set('Access-Control-Max-Age', '3600')
     res.status(204).send('')
     return
   }
