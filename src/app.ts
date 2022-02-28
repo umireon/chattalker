@@ -58,7 +58,7 @@ const connect = async (user: firebase.User, twitchToken: string) => {
     }
   })
   socket.addEventListener('close', (event) => {
-    console.log('Socket is closed. Reconnect will be attempted in 1 second.', e.reason);
+    console.log('Socket is closed. Reconnect will be attempted in 1 second.', event.reason);
     setTimeout(function() {
       connect(user, twitchToken)
     }, 1000)
