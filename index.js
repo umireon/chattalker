@@ -11,14 +11,14 @@ const auth = getAuth(app)
 
 functions.http('helloHttp', async (req, res) => {
   res.set('Access-Control-Allow-Origin', 'https://umireon-twitch-speech-test1.web.app')
-  res.set('Access-Control-Allow-Headers', 'Authorization')
 
-  const { authorization } = req.headers
-  if (!authorization) {
-    res.send('end')
+  if (req.method === 'OPTIONS') {
+    res.set('Access-Control-Allow-Headers', 'Authorization')
+    res.status(204).send('')
     return
   }
-  const idToken = authorization.split(' ')[1]
+
+  const idToken = req.headers.authorization.split(' ')[1]
   auth.verifyIdToken(idToken)
 
   const text = req.query.text
