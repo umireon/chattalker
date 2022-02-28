@@ -1,12 +1,19 @@
 const functions = require('@google-cloud/functions-framework')
 const textToSpeech = require('@google-cloud/text-to-speech')
 const { Translate } = require('@google-cloud/translate').v2
+const { initializeApp } = require('firebase-admin/app')
+const { getAuth } = require('firebase-admin/auth')
 
 const client = new textToSpeech.TextToSpeechClient()
 const translate = new Translate()
+const app = initializeApp()
+const auth = getAuth(app)
 
 functions.http('helloHttp', async (req, res) => {
   res.set('Access-Control-Allow-Origin', '*')
+
+  console.log(req.headers)
+  // auth.verifyIdToken()
 
   const text = req.query.text
   let [detections] = await translate.detect(text)
