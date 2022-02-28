@@ -117,6 +117,20 @@ auth.onAuthStateChanged(async (user) => {
       })
     }
 
+    const docRef = await getDoc(doc(collection(db, 'users'), user.uid))
+    const data = docRef.data()
+    for (const element of document.querySelectorAll('select')) {
+      element.addEventListener('change', event =>
+        updateDoc(doc(collection(db, 'users'), user.uid), { [element.id]: element.value })
+      )
+      if (typeof data !== 'undefined') {
+        const value = data[element.id]
+        if (typeof value === 'string') {
+          element.value = value
+        }
+      }
+    }
+
     const params = new URLSearchParams(location.hash.replace(/^#/, ''))
     const twitchToken = params.get('access_token')
     if (twitchToken) {
@@ -125,20 +139,6 @@ auth.onAuthStateChanged(async (user) => {
     } else {
       const docRef = await getDoc(doc(collection(db, 'users'), user.uid))
       connect(user, docRef.data()!.twitch_access_token)
-    }
-
-    const docRef = await getDoc(doc(collection(db, 'users'), user.uid))
-    for (const element of document.querySelectorAll('select')) {
-      element.addEventListener('change', event =>
-        updateDoc(doc(collection(db, 'users'), user.uid), { [element.id]: element.value })
-      )
-      const data = docRef.data()
-      if (typeof data !== 'undefined') {
-        const value = data[element.id]
-        if (typeof value === 'string') {
-          element.value = value
-        }
-      }
     }
   }
 })
