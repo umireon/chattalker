@@ -1,5 +1,4 @@
 import type { Message } from './types'
-import type { ParsedQs } from 'qs'
 import { TextToSpeechClient } from '@google-cloud/text-to-speech'
 import { TranslationServiceClient } from '@google-cloud/translate'
 import { encode } from '@msgpack/msgpack'
