@@ -27,14 +27,6 @@ const getTwitchLogin = async (token: string) => {
   return login
 }
 
-const generateVoiceTable = () => {
-  const entries = []
-  for (const element of document.querySelectorAll('select')) {
-    entries.push([element.name, element.value])
-  }
-  return Object.fromEntries(entries)
-}
-
 const fetchAudio = async (user: User, text: string) => {
   const idToken = await user.getIdToken(true)
   const query = new URLSearchParams({ text })
@@ -64,6 +56,20 @@ const playAudio = (blob: Blob) => {
   }
 }
 
+const showLanguage = (language: string) => {
+  const element = document.querySelector('#language')
+  if (element !== null) {
+    element.textContent = language
+  }
+}
+
+const showText = (text: string) => {
+  const element = document.querySelector('#text')
+  if (element !== null) {
+    element.textContent = text
+  }
+}
+
 const connect = async (user: User, twitchToken: string) => {
   const login = await getTwitchLogin(twitchToken)
   const listen = () => {
@@ -77,34 +83,11 @@ const connect = async (user: User, twitchToken: string) => {
       console.log(event.data)
       const m = event.data.match(new RegExp(`PRIVMSG #${login} :(.*)`))
       if (m) {
-        const idToken = await user.getIdToken(true)
-        const voiceTable = JSON.stringify(generateVoiceTable())
-        const query = new URLSearchParams({ text: m[1], voiceTable })
-        const response = await fetch(`${ENDPOINT}?${query}`, {
-          headers: {
-            Authorization: `Bearer ${idToken}`
-          }
-        })
-        if (!response.ok) throw new Error('Invalid message')
-        const arrayBuffer = await response.arrayBuffer()
-        const { text, audioContent, language } = decode(arrayBuffer) as Message
-
-        const audioElement = document.querySelector('audio')
-        if (audioElement !== null) {
-          audioElement.src = URL.createObjectURL(new Blob([audioContent]))
-          audioElement.play()
-          logEvent(analytics, 'chat_played')
-        }
-
-        const languageElement = document.querySelector('#language')
-        if (languageElement !== null) {
-          languageElement.textContent = language
-        }
-
-        const textElement = document.querySelector('#text')
-        if (textElement !== null) {
-          textElement.textContent = text
-        }
+        const { audioContent, language } = await fetchAudio(user, m[1])
+        playAudio(new Blob([audioContent]))
+        showLanguage(language)
+        showText(m[1])
+        logEvent(analytics, 'chat_played')
       }
     })
     ws.addEventListener('message', async event => {
