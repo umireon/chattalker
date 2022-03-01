@@ -62,7 +62,11 @@ const getVoice = (voiceTable: Record<string, string>, languageCode: string) => {
 }
 
 http('text-to-speech', async (req, res) => {
-  res.set('Access-Control-Allow-Origin', 'https://umireon-twitch-speech-test1.web.app')
+  if (req.hostname === 'localhost') {
+    res.set('Access-Control-Allow-Origin', '*')
+  } else {
+    res.set('Access-Control-Allow-Origin', 'https://umireon-twitch-speech-test1.web.app')
+  }
 
   if (req.method === 'OPTIONS') {
     res.set('Access-Control-Allow-Methods', 'GET')
