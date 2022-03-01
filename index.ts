@@ -82,6 +82,7 @@ http('text-to-speech', async (req, res) => {
   }
   // End of handling CORS
 
+  // Begin of authorization
   const { authorization } = req.headers
   if (typeof authorization === 'undefined') {
     res.status(403).send('Forbidden')
@@ -98,6 +99,7 @@ http('text-to-speech', async (req, res) => {
     res.status(403).send('Forbidden')
     return
   }
+  // End of authorization
 
   if (typeof req.query.text === 'undefined') {
     res.status(400).send('Bad Request')
