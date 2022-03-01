@@ -62,6 +62,7 @@ const getVoice = (voiceTable: Record<string, string>, languageCode: string) => {
 }
 
 http('text-to-speech', async (req, res) => {
+  // Begin of handling CORS
   const { origin } = req.headers
   if (typeof origin !== 'undefined') {
     const { hostname } = new URL(origin)
@@ -79,6 +80,7 @@ http('text-to-speech', async (req, res) => {
     res.status(204).send('')
     return
   }
+  // End of handling CORS
 
   const { authorization } = req.headers
   if (typeof authorization === 'undefined') {
