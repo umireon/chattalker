@@ -1,4 +1,4 @@
-import { User, getAuth } from 'firebase/auth'
+import { Auth, User, getAuth } from 'firebase/auth'
 import { collection, doc, getDoc, getFirestore, setDoc, updateDoc } from 'firebase/firestore'
 import { getAnalytics, logEvent } from 'firebase/analytics'
 
@@ -111,53 +111,74 @@ const connect = async (user: User, twitchToken: string) => {
   listen()
 }
 
-auth.onAuthStateChanged(async (user) => {
-  if (user) {
-    const logoutElement = document.querySelector('#logout')
-    if (logoutElement !== null) {
-      logoutElement.addEventListener('click', async (e) => {
-        await auth.signOut()
-        location.href = '/'
-      })
-    }
+const listenLogout = (auth: Auth, element: HTMLElement) => {
+  element.addEventListener('click', async () => {
+    await auth.signOut()
+    location.href = '/'
+  })
+}
 
-    const disconnectElement = document.querySelector('#disconnect')
-    if (disconnectElement !== null) {
-      disconnectElement.addEventListener('click', async (e) => {
-        await setDoc(doc(collection(db, 'users'), user.uid), {})
-        location.href = '/twitch.html'
-      })
-    }
+const listenDisconnect = (user: User, element: HTMLElement) => {
+  element.addEventListener('click', async () => {
+    await setDoc(doc(collection(db, 'users'), user.uid), {})
+    location.href = '/twitch.html'
+  })
+}
 
+const listenPlay = (user: User, element: HTMLButtonElement) => {
+  element.addEventListener('click', async () => {
+    const { audioContent } = await fetchAudio(user, element.value)
+    playAudio(new Blob([audioContent]))
+  })
+}
+
+const getUserData = async (user: User) => {
+  const docRef = await getDoc(doc(collection(db, 'users'), user.uid))
+  return docRef.data()
+}
+
+const listenVoiceChange = (user: User, element: HTMLSelectElement) => {
+  element.addEventListener('change', () =>
+    updateDoc(doc(collection(db, 'users'), user.uid), { [element.id]: element.value })
+  )
+}
+
+const getTwitchToken = async (user: User): Promise<string | undefined> => {
+  const params = new URLSearchParams(location.hash.slice(1))
+  const twitchToken = params.get('access_token')
+  if (twitchToken) {
+    await updateDoc(doc(collection(db, 'users'), user.uid), { twitch_access_token: twitchToken })
+    return twitchToken
+  } else {
     const docRef = await getDoc(doc(collection(db, 'users'), user.uid))
     const data = docRef.data()
+    return data?.twitch_access_token
+  }
+}
+
+listenLogout(auth, document.querySelector('#logout'))
+
+auth.onAuthStateChanged(async (user) => {
+  if (user) {
+    listenDisconnect(user, document.querySelector('#disconnect'))
+
+    for (const element of document.querySelectorAll<HTMLButtonElement>('button.play')) {
+      listenPlay(user, element)
+    }
+
+    const data = await getUserData(user)
     for (const element of document.querySelectorAll('select')) {
-      element.addEventListener('change', event =>
-        updateDoc(doc(collection(db, 'users'), user.uid), { [element.id]: element.value })
-      )
-      if (typeof data !== 'undefined') {
-        const value = data[element.id]
-        if (typeof value === 'string') {
-          element.value = value
-        }
+      listenVoiceChange(user, element)
+      if (typeof data !== 'undefined' && typeof data[element.id] === 'string') {
+        element.value = data[element.id]
       }
     }
 
-    const params = new URLSearchParams(location.hash.replace(/^#/, ''))
-    const twitchToken = params.get('access_token')
-    if (twitchToken) {
-      await updateDoc(doc(collection(db, 'users'), user.uid), { twitch_access_token: twitchToken })
-      connect(user, twitchToken)
+    const twitchToken = await getTwitchToken(user)
+    if (typeof twitchToken === 'undefined') {
+      location.href = '/twitch.html'
     } else {
-      const docRef = await getDoc(doc(collection(db, 'users'), user.uid))
-      connect(user, docRef.data()!.twitch_access_token)
-    }
-
-    for (const element of document.querySelectorAll<HTMLButtonElement>('button.play')) {
-      element.addEventListener('click', async () => {
-        const { audioContent } = await fetchAudio(user, element.value)
-        playAudio(new Blob([audioContent]))
-      })
+      connect(user, twitchToken)
     }
   }
 })
