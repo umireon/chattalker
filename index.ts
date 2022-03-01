@@ -103,8 +103,7 @@ http('text-to-speech', async (req, res) => {
   }
   const message: Message = {
     audioContent: coarseUint8Array(audioContent),
-    language,
-    text
+    language
   }
   res.send(Buffer.from(encode(message)))
 })
