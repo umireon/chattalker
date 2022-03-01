@@ -35,6 +35,35 @@ const generateVoiceTable = () => {
   return Object.fromEntries(entries)
 }
 
+const fetchAudio = async (user: User, text: string) => {
+  const idToken = await user.getIdToken(true)
+  const query = new URLSearchParams({ text })
+  const form = document.querySelector('form')
+  if (form !== null) {
+    for (const [key, value] of new FormData(form)) {
+      if (typeof value === 'string') {
+        query.append(key, value)
+      }
+    }
+  }
+  const response = await fetch(`${ENDPOINT}?${query}`, {
+    headers: {
+      Authorization: `Bearer ${idToken}`
+    }
+  })
+  if (!response.ok) throw new Error('Invalid message')
+  const arrayBuffer = await response.arrayBuffer()
+  return decode(arrayBuffer) as Message
+}
+
+const playAudio = (blob: Blob) => {
+  const element = document.querySelector('audio')
+  if (element !== null) {
+    element.src = URL.createObjectURL(blob)
+    element.play()
+  }
+}
+
 const connect = async (user: User, twitchToken: string) => {
   const login = await getTwitchLogin(twitchToken)
   const listen = () => {
@@ -139,6 +168,13 @@ auth.onAuthStateChanged(async (user) => {
     } else {
       const docRef = await getDoc(doc(collection(db, 'users'), user.uid))
       connect(user, docRef.data()!.twitch_access_token)
+    }
+
+    for (const element of document.querySelectorAll<HTMLButtonElement>('button.play')) {
+      element.addEventListener('click', async () => {
+        const { audioContent } = await fetchAudio(user, element.value)
+        playAudio(new Blob([audioContent]))
+      })
     }
   }
 })

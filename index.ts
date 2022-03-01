@@ -35,24 +35,6 @@ const coarseUint8Array = (data: Uint8Array | string): Uint8Array => {
   }
 }
 
-const extractFirstQuery = (param: string | ParsedQs | string[] | ParsedQs[]) => {
-  if (Array.isArray(param)) {
-    return param[0].toString()
-  } else {
-    return param.toString()
-  }
-}
-
-const extractVoiceTable = (param: string | ParsedQs | string[] | ParsedQs[] | undefined) => {
-  if (typeof param === 'undefined') {
-    return {}
-  } else if (Array.isArray(param)) {
-    return JSON.parse(param[0].toString())
-  } else {
-    return JSON.parse(param.toString())
-  }
-}
-
 const getVoice = (voiceTable: Record<string, string>, languageCode: string) => {
   if (languageCode in voiceTable) {
     return { languageCode, name: voiceTable[languageCode] }
@@ -105,8 +87,8 @@ http('text-to-speech', async (req, res) => {
     res.status(400).send('Bad Request')
     return
   }
-  const text = extractFirstQuery(req.query.text)
-  const voiceTable = extractVoiceTable(req.query.voiceTable)
+  const text = req.query.text as string
+  const voiceTable = (req.query.voice || {}) as Record<string, string>
   const language = await detectLanguage(text)
 
   const [response] = await client.synthesizeSpeech({
