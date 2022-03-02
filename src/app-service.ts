@@ -64,16 +64,17 @@ export const showText = (text: string) => {
 }
 
 export const connect = async (analytics: Analytics, user: User, twitchToken: string, twitchLogin: string) => {
-  const ws = new WebSocket('wss://irc-ws.chat.twitch.tv')
-  ws.addEventListener('open', () => {
-    ws.send(`PASS oauth:${twitchToken}`)
-    ws.send(`NICK ${twitchLogin}`)
-    ws.send(`JOIN #${twitchLogin}`)
+  const socket = new WebSocket('wss://irc-ws.chat.twitch.tv')
+  socket.addEventListener('open', () => {
+    socket.send(`PASS oauth:${twitchToken}`)
+    socket.send(`NICK ${twitchLogin}`)
+    socket.send(`JOIN #${twitchLogin}`)
+    socket.send('VERSION')
   })
-  ws.addEventListener('message', async event => {
+  socket.addEventListener('message', async event => {
     console.log(event.data)
   })
-  ws.addEventListener('message', async event => {
+  socket.addEventListener('message', async event => {
     const m = event.data.match(new RegExp(`PRIVMSG #${twitchLogin} :(.*)`))
     if (m) {
       const { audioContent, language } = await fetchAudio(user, m[1])
@@ -83,21 +84,21 @@ export const connect = async (analytics: Analytics, user: User, twitchToken: str
       logEvent(analytics, 'chat_played')
     }
   })
-  ws.addEventListener('message', async event => {
+  socket.addEventListener('message', async event => {
     const m = event.data.match(/PING :tmi.twitch.tv/)
     if (m) {
-      ws.send('PONG :tmi.twitch.tv')
+      socket.send('PONG :tmi.twitch.tv')
     }
   })
-  ws.addEventListener('close', event => {
+  socket.addEventListener('close', event => {
     console.log(event)
     setTimeout(() => {
       connect(analytics, user, twitchToken, twitchLogin)
     }, 1000)
   })
-  ws.addEventListener('error', event => {
+  socket.addEventListener('error', event => {
     console.error(event)
-    ws.close()
+    socket.close()
   })
 }
 
