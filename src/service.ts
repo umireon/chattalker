@@ -144,3 +144,6 @@ export const getTwitchToken = async (db: Firestore, user: User): Promise<string 
     return data?.twitch_access_token
   }
 }
+
+export const ENDPOINT = 'https://text-to-speech-bf7bhumxka-uc.a.run.app/'
+export const CLIENT_ID = '386m0kveloa87fbla7yivaw38unkft'

@@ -1,8 +1,8 @@
+import { CLIENT_ID, listenLogout } from './service'
 import { collection, doc, getDoc, getFirestore } from 'firebase/firestore'
 import { firebaseConfig } from './firebaseConfig'
 import { getAuth } from 'firebase/auth'
 import { initializeApp } from 'firebase/app'
-import { listenLogout } from './service'
 
 const app = initializeApp(firebaseConfig)
 const auth = getAuth(app)
@@ -22,7 +22,7 @@ listenLogout(auth, document.querySelector('#logout'))
 
 const loginElement = document.querySelector('a')
 const twitchOauthQuery = new URLSearchParams({
-  client_id: '386m0kveloa87fbla7yivaw38unkft',
+  client_id: CLIENT_ID,
   redirect_uri: `${location.href.replace(/twitch.html$/, 'app.html')}`,
   response_type: 'token',
   scope: 'chat:read chat:edit'
