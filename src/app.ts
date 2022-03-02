@@ -20,7 +20,7 @@ const auth = getAuth(app)
 const db = getFirestore(app)
 const analytics = getAnalytics(app)
 
-const ENDPOINT = 'https://text-to-speech-hypfl7atta-uc.a.run.app/'
+const ENDPOINT = 'https://text-to-speech-bf7bhumxka-uc.a.run.app/'
 const CLIENT_ID = '386m0kveloa87fbla7yivaw38unkft'
 
 listenLogout(auth, document.querySelector('#logout'))
