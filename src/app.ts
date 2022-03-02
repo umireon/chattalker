@@ -1,5 +1,6 @@
 import {
   connect,
+  getTwitchLogin,
   getTwitchToken,
   getUserData,
   listenDisconnect,
@@ -41,7 +42,8 @@ auth.onAuthStateChanged(async (user) => {
     if (typeof twitchToken === 'undefined') {
       location.href = '/twitch.html'
     } else {
-      connect(analytics, user, twitchToken)
+      const twitchLogin = await getTwitchLogin(twitchToken)
+      connect(analytics, user, twitchToken, twitchLogin)
     }
   }
 })

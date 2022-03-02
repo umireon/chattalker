@@ -63,45 +63,42 @@ export const showText = (text: string) => {
   }
 }
 
-export const connect = async (analytics: Analytics, user: User, twitchToken: string) => {
-  const login = await getTwitchLogin(twitchToken)
-  const listen = () => {
-    const ws = new WebSocket('wss://irc-ws.chat.twitch.tv')
-    ws.addEventListener('open', () => {
-      ws.send(`PASS oauth:${twitchToken}`)
-      ws.send(`NICK ${login}`)
-      ws.send(`JOIN #${login}`)
-    })
-    ws.addEventListener('message', async event => {
-      console.log(event.data)
-      const m = event.data.match(new RegExp(`PRIVMSG #${login} :(.*)`))
-      if (m) {
-        const { audioContent, language } = await fetchAudio(user, m[1])
-        playAudio(new Blob([audioContent]))
-        showLanguage(language)
-        showText(m[1])
-        logEvent(analytics, 'chat_played')
-      }
-    })
-    ws.addEventListener('message', async event => {
-      const m = event.data.match(/PING :tmi.twitch.tv/)
-      if (m) {
-        ws.send('PONG :tmi.twitch.tv')
-      }
-    })
-    ws.addEventListener('close', event => {
-      console.log('Socket is closed. Reconnect will be attempted in 1 second.', event)
-      setTimeout(() => {
-        listen()
-      }, 1000)
-    })
-    ws.addEventListener('error', event => {
-      console.error('Socket encountered error: ', event, 'Closing socket')
-      ws.close()
-    })
-  }
-
-  listen()
+export const connect = async (analytics: Analytics, user: User, twitchToken: string, twitchLogin: string) => {
+  const ws = new WebSocket('wss://irc-ws.chat.twitch.tv')
+  ws.addEventListener('open', () => {
+    ws.send(`PASS oauth:${twitchToken}`)
+    ws.send(`NICK ${twitchLogin}`)
+    ws.send(`JOIN #${twitchLogin}`)
+  })
+  ws.addEventListener('message', async event => {
+    console.log(event.data)
+  })
+  ws.addEventListener('message', async event => {
+    const m = event.data.match(new RegExp(`PRIVMSG #${twitchLogin} :(.*)`))
+    if (m) {
+      const { audioContent, language } = await fetchAudio(user, m[1])
+      playAudio(new Blob([audioContent]))
+      showLanguage(language)
+      showText(m[1])
+      logEvent(analytics, 'chat_played')
+    }
+  })
+  ws.addEventListener('message', async event => {
+    const m = event.data.match(/PING :tmi.twitch.tv/)
+    if (m) {
+      ws.send('PONG :tmi.twitch.tv')
+    }
+  })
+  ws.addEventListener('close', event => {
+    console.log(event)
+    setTimeout(() => {
+      connect(analytics, user, twitchToken, twitchLogin)
+    }, 1000)
+  })
+  ws.addEventListener('error', event => {
+    console.error(event)
+    ws.close()
+  })
 }
 
 export const listenLogout = (auth: Auth, element: HTMLElement) => {
