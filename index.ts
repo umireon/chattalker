@@ -50,7 +50,7 @@ http('text-to-speech', async (req, res) => {
     if (hostname === 'localhost') {
       res.set('Access-Control-Allow-Origin', '*')
     } else {
-      res.set('Access-Control-Allow-Origin', 'https://umireon-twitch-speech-test1.web.app')
+      res.set('Access-Control-Allow-Origin', 'https://chattalker.web.app')
     }
   }
 
