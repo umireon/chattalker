@@ -23,7 +23,7 @@ listenLogout(auth, document.querySelector('#logout'))
 const loginElement = document.querySelector('a')
 const twitchOauthQuery = new URLSearchParams({
   client_id: '386m0kveloa87fbla7yivaw38unkft',
-  redirect_uri: `${location.href.replace(/twitch.html^/, 'app.html')}`,
+  redirect_uri: `${location.href.replace(/twitch.html$/, 'app.html')}`,
   response_type: 'token',
   scope: 'chat:read chat:edit'
 })
