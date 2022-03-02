@@ -66,7 +66,6 @@ export const connect = async (analytics: Analytics, endpoint: string, user: User
     socket.send(`PASS oauth:${twitchToken}`)
     socket.send(`NICK ${twitchLogin}`)
     socket.send(`JOIN #${twitchLogin}`)
-    socket.send('VERSION')
   })
   socket.addEventListener('message', async event => {
     console.log(event.data)
@@ -90,7 +89,7 @@ export const connect = async (analytics: Analytics, endpoint: string, user: User
   socket.addEventListener('close', event => {
     console.log(event)
     setTimeout(() => {
-      connect(analytics, user, twitchToken, twitchLogin)
+      connect(analytics, endpoint, user, twitchToken, twitchLogin)
     }, 1000)
   })
   socket.addEventListener('error', event => {
