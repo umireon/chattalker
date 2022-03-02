@@ -114,8 +114,10 @@ export const listenDisconnect = (db: Firestore, user: User, element: HTMLElement
 
 export const listenPlay = (endpoing: string, user: User, element: HTMLButtonElement) => {
   element.addEventListener('click', async () => {
-    const { audioContent } = await fetchAudio(endpoing, user, element.value)
+    const { audioContent, language } = await fetchAudio(endpoing, user, element.value)
     playAudio(new Blob([audioContent]))
+    showLanguage(language)
+    showText(element.value)
   })
 }
 
