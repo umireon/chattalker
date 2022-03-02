@@ -11,20 +11,18 @@ firebase.initializeApp(firebaseConfig)
 
 const ui = new firebaseui.auth.AuthUI(firebase.auth())
 
-const uiConfig = {
-  callbacks: {
-    signInSuccessWithAuthResult: () => true
-  },
-  signInOptions: [
-    firebase.auth.EmailAuthProvider.PROVIDER_ID
-  ],
-  signInSuccessUrl: '/twitch.html'
-}
-
 firebase.auth().onAuthStateChanged((user) => {
   if (user) {
     location.href = '/twitch.html'
   } else {
-    ui.start('#firebaseui-auth-container', uiConfig)
+    ui.start('#firebaseui-auth-container', {
+      callbacks: {
+        signInSuccessWithAuthResult: () => true
+      },
+      signInOptions: [
+        firebase.auth.EmailAuthProvider.PROVIDER_ID
+      ],
+      signInSuccessUrl: '/twitch.html'
+    })
   }
 })
