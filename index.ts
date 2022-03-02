@@ -91,7 +91,7 @@ http('text-to-speech', async (req, res) => {
   const language = await detectLanguage(text)
 
   const [response] = await client.synthesizeSpeech({
-    audioConfig: { audioEncoding: 'MP3' },
+    audioConfig: { audioEncoding: 'OGG_OPUS' },
     input: { text },
     voice: getVoice(voiceTable, language)
   })
