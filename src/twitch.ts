@@ -2,6 +2,7 @@ import { collection, doc, getDoc, getFirestore } from 'firebase/firestore'
 import { firebaseConfig } from './firebaseConfig'
 import { getAuth } from 'firebase/auth'
 import { initializeApp } from 'firebase/app'
+import { listenLogout } from './app-service'
 
 const app = initializeApp(firebaseConfig)
 const auth = getAuth(app)
@@ -16,3 +17,5 @@ auth.onAuthStateChanged(async (user) => {
     }
   }
 })
+
+listenLogout(auth, document.querySelector('#logout'))
