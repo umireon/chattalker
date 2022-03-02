@@ -136,7 +136,7 @@ export const getTwitchToken = async (db: Firestore, user: User): Promise<string 
   const params = new URLSearchParams(location.hash.slice(1))
   const twitchToken = params.get('access_token')
   if (twitchToken) {
-    await updateDoc(doc(collection(db, 'users'), user.uid), { twitch_access_token: twitchToken })
+    await setDoc(doc(collection(db, 'users'), user.uid), { twitch_access_token: twitchToken })
     return twitchToken
   } else {
     const docRef = await getDoc(doc(collection(db, 'users'), user.uid))
