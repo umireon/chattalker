@@ -20,6 +20,9 @@ const auth = getAuth(app)
 const db = getFirestore(app)
 const analytics = getAnalytics(app)
 
+const ENDPOINT = 'https://text-to-speech-hypfl7atta-uc.a.run.app/'
+const CLIENT_ID = '386m0kveloa87fbla7yivaw38unkft'
+
 listenLogout(auth, document.querySelector('#logout'))
 
 auth.onAuthStateChanged(async (user) => {
@@ -27,7 +30,7 @@ auth.onAuthStateChanged(async (user) => {
     listenDisconnect(db, user, document.querySelector('#disconnect'))
 
     for (const element of document.querySelectorAll<HTMLButtonElement>('button.play')) {
-      listenPlay(user, element)
+      listenPlay(ENDPOINT, user, element)
     }
 
     const data = await getUserData(db, user)
@@ -42,8 +45,8 @@ auth.onAuthStateChanged(async (user) => {
     if (typeof twitchToken === 'undefined') {
       location.href = '/twitch.html'
     } else {
-      const twitchLogin = await getTwitchLogin(twitchToken)
-      connect(analytics, user, twitchToken, twitchLogin)
+      const twitchLogin = await getTwitchLogin(CLIENT_ID, twitchToken)
+      connect(analytics, ENDPOINT, user, twitchToken, twitchLogin)
     }
   }
 })

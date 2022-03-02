@@ -5,22 +5,19 @@ import { Firestore, collection, doc, getDoc, setDoc, updateDoc } from 'firebase/
 import { Message } from '../types'
 import { decode } from '@msgpack/msgpack'
 
-const ENDPOINT = 'https://text-to-speech-hypfl7atta-uc.a.run.app/'
-
-export const getTwitchLogin = async (token: string) => {
+export const getTwitchLogin = async (clientId: string, token: string) => {
   const response = await fetch('https://api.twitch.tv/helix/users', {
     headers: {
       Authorization: `Bearer ${token}`,
-      'Client-Id': '386m0kveloa87fbla7yivaw38unkft'
+      'Client-Id': clientId
     }
   })
   if (!response.ok) throw new Error('Twitch login couldnot be retrieved!')
-  const json = await response.json()
-  const { data: [{ login }] } = json
+  const { data: [{ login }] } = await response.json()
   return login
 }
 
-export const fetchAudio = async (user: User, text: string) => {
+export const fetchAudio = async (endpoing: string, user: User, text: string) => {
   const idToken = await user.getIdToken(true)
   const query = new URLSearchParams({ text })
   const form = document.querySelector('form')
@@ -31,7 +28,7 @@ export const fetchAudio = async (user: User, text: string) => {
       }
     }
   }
-  const response = await fetch(`${ENDPOINT}?${query}`, {
+  const response = await fetch(`${endpoing}?${query}`, {
     headers: {
       Authorization: `Bearer ${idToken}`
     }
@@ -63,7 +60,7 @@ export const showText = (text: string) => {
   }
 }
 
-export const connect = async (analytics: Analytics, user: User, twitchToken: string, twitchLogin: string) => {
+export const connect = async (analytics: Analytics, endpoint: string, user: User, twitchToken: string, twitchLogin: string) => {
   const socket = new WebSocket('wss://irc-ws.chat.twitch.tv')
   socket.addEventListener('open', () => {
     socket.send(`PASS oauth:${twitchToken}`)
@@ -77,7 +74,7 @@ export const connect = async (analytics: Analytics, user: User, twitchToken: str
   socket.addEventListener('message', async event => {
     const m = event.data.match(new RegExp(`PRIVMSG #${twitchLogin} :(.*)`))
     if (m) {
-      const { audioContent, language } = await fetchAudio(user, m[1])
+      const { audioContent, language } = await fetchAudio(endpoint, user, m[1])
       playAudio(new Blob([audioContent]))
       showLanguage(language)
       showText(m[1])
@@ -116,9 +113,9 @@ export const listenDisconnect = (db: Firestore, user: User, element: HTMLElement
   })
 }
 
-export const listenPlay = (user: User, element: HTMLButtonElement) => {
+export const listenPlay = (endpoing: string, user: User, element: HTMLButtonElement) => {
   element.addEventListener('click', async () => {
-    const { audioContent } = await fetchAudio(user, element.value)
+    const { audioContent } = await fetchAudio(endpoing, user, element.value)
     playAudio(new Blob([audioContent]))
   })
 }
