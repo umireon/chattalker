@@ -7,7 +7,7 @@ import {
   listenLogout,
   listenPlay,
   listenVoiceChange
-} from './app-service'
+} from './service'
 
 import { firebaseConfig } from './firebaseConfig'
 import { getAnalytics } from 'firebase/analytics'
