@@ -25,6 +25,6 @@ const twitchOauthQuery = new URLSearchParams({
   client_id: CLIENT_ID,
   redirect_uri: `${location.href.replace(/twitch.html$/, 'app.html')}`,
   response_type: 'token',
-  scope: 'chat:read chat:edit'
+  scope: 'chat:read'
 })
 loginElement.href = `https://id.twitch.tv/oauth2/authorize?${twitchOauthQuery}`
