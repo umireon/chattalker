@@ -4,7 +4,7 @@ import { firebaseConfig } from './firebaseConfig'
 import { getAuth } from 'firebase/auth'
 import { getFirestore } from 'firebase/firestore'
 import { initializeApp } from 'firebase/app'
-import { setOauthToken } from './service'
+import { setOauthToken } from './service/oauth'
 
 const app = initializeApp(firebaseConfig)
 const auth = getAuth(app)

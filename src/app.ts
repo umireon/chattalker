@@ -1,20 +1,13 @@
-import {
-  ENDPOINT,
-  TWITCH_CLIENT_ID,
-  YOUTUBE_CLIENT_ID,
-  connect,
-  getTwitchLogin,
-  getTwitchToken,
-  getUserData,
-  listenLogout,
-  listenPlay,
-  listenVoiceChange
-} from './service'
+import { ENDPOINT, TWITCH_CLIENT_ID, YOUTUBE_CLIENT_ID } from './constants'
+import { connectTwitch, getTwitchLogin } from './service/twitch'
+import { listenLogout, listenPlay, listenVoiceChange } from './service/ui'
 
 import { firebaseConfig } from './firebaseConfig'
 import { getAnalytics } from 'firebase/analytics'
 import { getAuth } from 'firebase/auth'
 import { getFirestore } from 'firebase/firestore'
+import { getOauthToken } from './service/oauth'
+import { getUserData } from './service/users'
 import { initializeApp } from 'firebase/app'
 
 const app = initializeApp(firebaseConfig)
@@ -38,12 +31,15 @@ auth.onAuthStateChanged(async (user) => {
       }
     }
 
-    const twitchToken = await getTwitchToken(db, user)
-    if (typeof twitchToken === 'undefined') {
-      location.href = '/twitch.html'
-    } else {
+    const twitchToken = await getOauthToken(db, user, 'twitch')
+    if (typeof twitchToken !== 'undefined') {
       const twitchLogin = await getTwitchLogin(TWITCH_CLIENT_ID, twitchToken)
-      connect(analytics, ENDPOINT, user, twitchToken, twitchLogin)
+      connectTwitch(analytics, ENDPOINT, user, twitchToken, twitchLogin)
+    }
+
+    const youtubeToken = await getOauthToken(db, user, 'youtube')
+    if (typeof youtubeToken !== 'undefined') {
+      console.log(youtubeToken)
     }
   }
 })
