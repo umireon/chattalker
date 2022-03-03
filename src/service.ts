@@ -108,7 +108,7 @@ export const listenLogout = (auth: Auth, element: HTMLElement) => {
 export const listenDisconnect = (db: Firestore, user: User, element: HTMLElement) => {
   element.addEventListener('click', async () => {
     await setDoc(doc(collection(db, 'users'), user.uid), {})
-    location.href = '/twitch.html'
+    location.href = '/connect.html'
   })
 }
 

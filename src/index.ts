@@ -13,7 +13,7 @@ const ui = new firebaseui.auth.AuthUI(firebase.auth())
 
 firebase.auth().onAuthStateChanged((user) => {
   if (user) {
-    location.href = '/twitch.html'
+    location.href = '/connect.html'
   } else {
     ui.start('#firebaseui-auth-container', {
       callbacks: {
@@ -22,7 +22,7 @@ firebase.auth().onAuthStateChanged((user) => {
       signInOptions: [
         firebase.auth.EmailAuthProvider.PROVIDER_ID
       ],
-      signInSuccessUrl: '/twitch.html'
+      signInSuccessUrl: '/connect.html'
     })
   }
 })
