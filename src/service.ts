@@ -105,13 +105,6 @@ export const listenLogout = (auth: Auth, element: HTMLElement) => {
   })
 }
 
-export const listenDisconnect = (db: Firestore, user: User, element: HTMLElement) => {
-  element.addEventListener('click', async () => {
-    await setDoc(doc(collection(db, 'users'), user.uid), {})
-    location.href = '/connect.html'
-  })
-}
-
 export const listenPlay = (endpoing: string, user: User, element: HTMLButtonElement) => {
   element.addEventListener('click', async () => {
     element.disabled = true
@@ -147,5 +140,19 @@ export const getTwitchToken = async (db: Firestore, user: User): Promise<string 
   }
 }
 
+export const setOauthToken = async (db: Firestore, user: User, name: 'twitch' | 'youtube') => {
+  const params = new URLSearchParams(location.hash.slice(1))
+  const token = params.get('access_token')
+  if (token) {
+    await setDoc(doc(collection(db, 'users'), user.uid), {
+      [`${name}_access_token`]: token
+    }, { merge: true })
+    return true
+  } else {
+    return false
+  }
+}
+
 export const ENDPOINT = 'https://text-to-speech-bf7bhumxka-uc.a.run.app/'
-export const CLIENT_ID = '386m0kveloa87fbla7yivaw38unkft'
+export const TWITCH_CLIENT_ID = '386m0kveloa87fbla7yivaw38unkft'
+export const YOUTUBE_CLIENT_ID = '110679332753-3t83f2ajs8173btcp3c90g2gmhvob7h5.apps.googleusercontent.com'

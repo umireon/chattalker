@@ -13,7 +13,7 @@ const ui = new firebaseui.auth.AuthUI(firebase.auth())
 
 firebase.auth().onAuthStateChanged((user) => {
   if (user) {
-    location.href = '/connect.html'
+    location.href = '/app.html'
   } else {
     ui.start('#firebaseui-auth-container', {
       callbacks: {
