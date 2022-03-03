@@ -3,6 +3,7 @@ import { connectTwitch, getTwitchLogin } from './service/twitch'
 import { listenLogout, listenPlay, listenVoiceChange } from './service/ui'
 
 import { firebaseConfig } from './firebaseConfig'
+import { getActiveLiveChatIds } from './service/youtube'
 import { getAnalytics } from 'firebase/analytics'
 import { getAuth } from 'firebase/auth'
 import { getFirestore } from 'firebase/firestore'
@@ -16,6 +17,11 @@ const db = getFirestore(app)
 const analytics = getAnalytics(app)
 
 listenLogout(auth, document.querySelector('#logout'))
+
+interface LiveChatMessageResponse {
+  nextPageToken: string
+  pollingIntervalMillis: number
+}
 
 auth.onAuthStateChanged(async (user) => {
   if (user) {
@@ -39,7 +45,26 @@ auth.onAuthStateChanged(async (user) => {
 
     const youtubeToken = await getOauthToken(db, user, 'youtube')
     if (typeof youtubeToken !== 'undefined') {
-      console.log(youtubeToken)
+      const liveChatIds = await getActiveLiveChatIds(youtubeToken)
+      console.log(liveChatIds)
+      const a = async (liveChatId: string, pageToken: string = undefined) => {
+        const query = new URLSearchParams({
+          liveChatId,
+          part: 'id,snippet,authorDetails'
+        })
+        if (pageToken) {
+          query.set('pageToken', pageToken)
+        }
+        const response = await fetch(`https://www.googleapis.com/youtube/v3/liveChat/messages?${query}`, {
+          headers: {
+            Authorization: `Bearer ${youtubeToken}`
+          }
+        })
+        if (!response.ok) throw new Error('Error')
+        const json: LiveChatMessageResponse = await response.json()
+        const { nextPageToken, pollingIntervalMillis } = json
+        return { nextPageToken, pollingIntervalMillis }
+      }
     }
   }
 })
