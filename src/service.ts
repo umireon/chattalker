@@ -145,7 +145,7 @@ export const setOauthToken = async (db: Firestore, user: User, name: 'twitch' | 
   const token = params.get('access_token')
   if (token) {
     await setDoc(doc(collection(db, 'users'), user.uid), {
-      [`${name}_access_token`]: token
+      [`${name}-access-token`]: token
     }, { merge: true })
     return true
   } else {
