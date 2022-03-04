@@ -1,7 +1,7 @@
+import { User, getAuth } from 'firebase/auth'
 import { getAnalytics, logEvent } from 'firebase/analytics'
 
 import { firebaseConfig } from './firebaseConfig'
-import { getAuth, User } from 'firebase/auth'
 // import { getFirestore } from 'firebase/firestore'
 import { initializeApp } from 'firebase/app'
 // import { setOauthToken } from './service/oauth'
@@ -11,13 +11,15 @@ const auth = getAuth(app)
 // const db = getFirestore(app)
 // const analytics = getAnalytics(app)
 
-const setYoutubeToken = async (user: User) => {
+const setYoutubeToken = async (user: User, redirectUri: string) => {
   const params = new URLSearchParams(location.search)
-  if (params.get('state') !== '12345') throw new Error('Nonce does not match!')
+  const state = params.get('state')
   const code = params.get('code')
+  if (state !== '12345') throw new Error('Nonce does not match!')
   if (code) {
+    const query = new URLSearchParams({ code, redirect_uri: redirectUri })
     const idToken = await user.getIdToken()
-    const response = await fetch(`https://oauth2callback-bf7bhumxka-uc.a.run.app?${params}`, {
+    const response = await fetch(`https://oauth2callback-bf7bhumxka-uc.a.run.app?${query}`, {
       headers: {
         Authorization: `Bearer ${idToken}`
       }
@@ -33,6 +35,6 @@ const setYoutubeToken = async (user: User) => {
 
 auth.onAuthStateChanged(async (user) => {
   if (user) {
-    setYoutubeToken(user)
+    setYoutubeToken(user, location.href)
   }
 })

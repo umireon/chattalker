@@ -1,4 +1,4 @@
-import { ENDPOINT, TWITCH_CLIENT_ID, YOUTUBE_CLIENT_ID } from './constants'
+import { ENDPOINT, TWITCH_CLIENT_ID, YOUTUBE_CLIENT_ID } from '../constants'
 import { connectTwitch, getTwitchLogin } from './service/twitch'
 import { listenLogout, listenPlay, listenVoiceChange } from './service/ui'
 
