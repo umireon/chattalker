@@ -49,7 +49,7 @@ auth.onAuthStateChanged(async (user) => {
   if (user) {
     const params = new URLSearchParams(location.search)
     const code = params.get('code')
-    if (!code) throw new Error('Invalid code')  
+    if (!code) throw new Error('Invalid code')
     const oauthResponse = await exchangeYoutubeToken(user, {
       code,
       redirectUri: `${location.origin}${location.pathname}`
