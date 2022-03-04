@@ -35,6 +35,6 @@ const setYoutubeToken = async (user: User, redirectUri: string) => {
 
 auth.onAuthStateChanged(async (user) => {
   if (user) {
-    setYoutubeToken(user, location.href)
+    setYoutubeToken(user, `${location.origin}${location.pathname}`)
   }
 })
