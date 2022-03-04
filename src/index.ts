@@ -2,7 +2,7 @@ import * as firebaseui from 'firebaseui'
 
 import firebase from 'firebase/compat/app'
 
-import { firebaseConfig } from './firebaseConfig'
+import { firebaseConfig } from './firebaseConfig.js'
 
 import 'firebase/compat/auth'
 import 'firebaseui/dist/firebaseui.css'

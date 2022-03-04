@@ -1,15 +1,15 @@
-import { ENDPOINT, TWITCH_CLIENT_ID, YOUTUBE_CLIENT_ID } from '../constants'
-import { connectTwitch, getTwitchLogin } from './service/twitch'
-import { listenLogout, listenPlay, listenVoiceChange } from './service/ui'
+import { ENDPOINT, TWITCH_CLIENT_ID, YOUTUBE_CLIENT_ID } from '../constants.js'
+import { connectTwitch, getTwitchLogin } from './service/twitch.js'
+import { listenLogout, listenPlay, listenVoiceChange } from './service/ui.js'
 
-import { firebaseConfig } from './firebaseConfig'
+import { firebaseConfig } from './firebaseConfig.js'
 import { getAnalytics } from 'firebase/analytics'
 import { getAuth } from 'firebase/auth'
 import { getFirestore } from 'firebase/firestore'
-import { getOauthToken } from './service/oauth'
-import { getUserData } from './service/users'
+import { getOauthToken } from './service/oauth.js'
+import { getUserData } from './service/users.js'
 import { initializeApp } from 'firebase/app'
-import { pollLiveChatMessages } from './service/youtube'
+import { pollLiveChatMessages } from './service/youtube.js'
 
 const app = initializeApp(firebaseConfig)
 const auth = getAuth(app)

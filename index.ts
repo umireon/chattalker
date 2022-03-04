@@ -1,24 +1,21 @@
 import type { Request, Response } from 'express'
 
-import type { Message } from './types'
+import type { Message } from './types.js'
 import { TextToSpeechClient } from '@google-cloud/text-to-speech'
 import { TranslationServiceClient } from '@google-cloud/translate'
-import { YOUTUBE_CLIENT_ID } from './constants'
+import { YOUTUBE_CLIENT_ID } from './constants.js'
 import { encode } from '@msgpack/msgpack'
 import fetch from 'node-fetch'
 import { getAuth } from 'firebase-admin/auth'
 import { http } from '@google-cloud/functions-framework'
 import { initializeApp } from 'firebase-admin/app'
 
-const { CLIENT_SECRET } = process.env
+const { CLIENT_SECRET, PROJECT_ID } = process.env
 
 const client = new TextToSpeechClient()
 const translationClient = new TranslationServiceClient()
 const app = initializeApp()
 const auth = getAuth(app)
-
-const projectId = process.env.PROJECT_ID
-if (typeof projectId === 'undefined') throw new Error('PROJECT_ID not defined')
 
 const handleCors = (req: Request, res: Response) => {
   const { origin } = req.headers
@@ -65,7 +62,7 @@ const handleAuthorization = async (req: Request, res: Response) => {
 const detectLanguage = async (content: string) => {
   const [response] = await translationClient.detectLanguage({
     content,
-    parent: `projects/${projectId}/locations/global`
+    parent: `projects/${PROJECT_ID}/locations/global`
   })
   const { languages } = response
   if (!languages) return 'und'
