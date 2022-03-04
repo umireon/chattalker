@@ -1,6 +1,6 @@
 import type { Request, Response } from 'express'
 
-import FormData from 'form-data'
+import { FormData } from 'formdata-polyfill/esm.min.js'
 import type { Message } from './types.js'
 import { TextToSpeechClient } from '@google-cloud/text-to-speech'
 import { TranslationServiceClient } from '@google-cloud/translate'
@@ -133,7 +133,11 @@ http('oauth2callback', async (req, res) => {
     body: formData,
     method: 'POST'
   })
-  if (!response.ok) throw new Error('Invalid response')
+  if (!response.ok) {
+    const jsonText = await response.text()
+    console.log(jsonText)
+    throw new Error('Invalid response')
+  }
   const jsonText = response.text()
   res.send(jsonText)
 })
