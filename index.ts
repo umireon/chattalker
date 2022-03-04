@@ -107,3 +107,25 @@ http('text-to-speech', async (req, res) => {
   }
   res.send(Buffer.from(encode(message)))
 })
+
+http('oauth2callback', async (req, res) => {
+  // Begin of authorization
+  const { authorization } = req.headers
+  if (typeof authorization === 'undefined') {
+    res.status(403).send('Forbidden')
+    return
+  }
+  const idToken = authorization.split(' ')[1]
+  if (typeof idToken === 'undefined') {
+    res.status(403).send('Forbidden')
+    return
+  }
+  try {
+    await auth.verifyIdToken(idToken)
+  } catch (error) {
+    res.status(403).send('Forbidden')
+    return
+  }
+  // End of authorization
+  res.send('test')
+})

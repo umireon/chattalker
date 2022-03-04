@@ -22,6 +22,20 @@ steps:
       - --trigger-http
       - --allow-unauthenticated
       - --set-env-vars=PROJECT_ID=$PROJECT_ID
+    waitFor: ['backend npm exec esbuild']  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:slim'
+    args:
+      - gcloud
+      - beta
+      - functions
+      - deploy
+      - oauth2callback
+      - --gen2
+      - --region=us-central1
+      - --source=.
+      - --runtime=nodejs16
+      - --trigger-http
+      - --allow-unauthenticated
+      - --set-env-vars=PROJECT_ID=$PROJECT_ID
     waitFor: ['backend npm exec esbuild']
 
   - name: 'node:16-bullseye-slim'
