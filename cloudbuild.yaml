@@ -38,7 +38,6 @@ steps:
       - --runtime=nodejs16
       - --trigger-http
       - --allow-unauthenticated
-      - --set-env-vars=PROJECT_ID=$PROJECT_ID
     waitFor: ['backend npm exec esbuild']
 
   - name: 'node:16-bullseye-slim'
