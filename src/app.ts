@@ -3,6 +3,7 @@ import { connectTwitch, getTwitchLogin } from './service/twitch'
 import { listenLogout, listenPlay, listenVoiceChange } from './service/ui'
 
 import { firebaseConfig } from './firebaseConfig'
+import { getActiveLiveChatIds, pollLiveChatMessages } from './service/youtube'
 import { getAnalytics } from 'firebase/analytics'
 import { getAuth } from 'firebase/auth'
 import { getFirestore } from 'firebase/firestore'
@@ -39,7 +40,12 @@ auth.onAuthStateChanged(async (user) => {
 
     const youtubeToken = await getOauthToken(db, user, 'youtube')
     if (typeof youtubeToken !== 'undefined') {
-      console.log(youtubeToken)
+      const youtubeMain = async () => {
+        for await (const items of pollLiveChatMessages(youtubeToken)) {
+          console.log(items)
+        }
+      }
+      youtubeMain()
     }
   }
 })
