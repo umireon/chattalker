@@ -55,6 +55,7 @@ auth.onAuthStateChanged(async (user) => {
       redirectUri: `${location.origin}${location.pathname}`
     })
     await setYoutubeToken(user, db, oauthResponse)
+    logEvent(analytics, 'youtube_connected')
     location.href = '/app.html'
   }
 })
