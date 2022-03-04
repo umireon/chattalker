@@ -8,7 +8,7 @@ import { getAuth } from 'firebase/auth'
 import { initializeApp } from 'firebase/app'
 
 /* eslint-disable camelcase */
-interface OauthResponse {
+interface YoutubeOauthResponse {
   readonly access_token: string
   readonly expires_in: number
   readonly refresh_token: string
@@ -21,7 +21,8 @@ const auth = getAuth(app)
 const db = getFirestore(app)
 const analytics = getAnalytics(app)
 
-const checkIfOauthResponse = (arg: unknown): arg is OauthResponse => typeof arg === 'object' && arg.token_type === 'Bearer'
+const checkIfYoutubeOauthResponse = (arg: unknown): arg is YoutubeOauthResponse =>
+  typeof arg === 'object' && 'token_type' in arg && arg.token_type === 'Bearer'
 
 const exchangeYoutubeToken = async (user: User, params: { readonly code: string, readonly redirectUri: string}) => {
   const query = new URLSearchParams(params)
@@ -33,7 +34,7 @@ const exchangeYoutubeToken = async (user: User, params: { readonly code: string,
   })
   if (!response.ok) throw new Error('Invalid response')
   const json: unknown = await response.json()
-  if (!checkIfOauthResponse(json)) throw new Error('Invalid response')
+  if (!checkIfYoutubeOauthResponse(json)) throw new Error('Invalid response')
   return json
 }
 
