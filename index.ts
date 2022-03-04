@@ -1,6 +1,5 @@
 import type { Request, Response } from 'express'
 
-import { FormData } from 'formdata-polyfill/esm.min.js'
 import type { Message } from './types.js'
 import { TextToSpeechClient } from '@google-cloud/text-to-speech'
 import { TranslationServiceClient } from '@google-cloud/translate'
@@ -125,14 +124,15 @@ http('oauth2callback', async (req, res) => {
   if (typeof code !== 'string') throw new Error('Invalid code')
   if (typeof redirectUri !== 'string') throw new Error('Invalid redirectUri')
   const { YOUTUBE_CLIENT_SECRET } = process.env
-  const formData = new FormData()
-  formData.append('code', code)
-  formData.append('client_id', YOUTUBE_CLIENT_ID)
-  formData.append('client_secret', YOUTUBE_CLIENT_SECRET)
-  formData.append('redirect_uri', redirectUri)
-  formData.append('grant_type', 'authorization_code')
+  const query = new URLSearchParams({
+    client_id: YOUTUBE_CLIENT_ID,
+    client_secret: YOUTUBE_CLIENT_SECRET,
+    code,
+    grant_type: 'authorization_code',
+    redirect_uri: redirectUri
+  })
   const response = await fetch('https://accounts.google.com/o/oauth2/token', {
-    body: formData,
+    body: query,
     method: 'POST'
   })
   if (!response.ok) {
