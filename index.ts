@@ -109,6 +109,26 @@ http('text-to-speech', async (req, res) => {
 })
 
 http('oauth2callback', async (req, res) => {
+  // Begin of handling CORS
+  const { origin } = req.headers
+  if (typeof origin !== 'undefined') {
+    const { hostname } = new URL(origin)
+    if (hostname === 'localhost') {
+      res.set('Access-Control-Allow-Origin', '*')
+    } else {
+      res.set('Access-Control-Allow-Origin', 'https://chattalker.web.app')
+    }
+  }
+
+  if (req.method === 'OPTIONS') {
+    res.set('Access-Control-Allow-Methods', 'GET')
+    res.set('Access-Control-Allow-Headers', 'Authorization')
+    res.set('Access-Control-Max-Age', '3600')
+    res.status(204).send('')
+    return
+  }
+  // End of handling CORS
+
   // Begin of authorization
   const { authorization } = req.headers
   if (typeof authorization === 'undefined') {
