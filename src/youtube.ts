@@ -13,12 +13,12 @@ const analytics = getAnalytics(app)
 
 auth.onAuthStateChanged(async (user) => {
   if (user) {
-    const isSet = await setOauthToken(db, user, 'youtube')
-    if (isSet) {
-      logEvent(analytics, 'youtube_connected')
-      location.href = '/app.html'
-    } else {
-      throw new Error('Could not connect to YouTube')
-    }
+    // const isSet = await setOauthToken(db, user, 'youtube')
+    // if (isSet) {
+    //   logEvent(analytics, 'youtube_connected')
+    //   location.href = '/app.html'
+    // } else {
+    //   throw new Error('Could not connect to YouTube')
+    // }
   }
 })
