@@ -6,7 +6,9 @@ steps:
       - --
       - esbuild
       - --outdir=.
-      - '*.ts'
+      - constants.ts
+      - index.ts
+      - types.ts
     id: 'backend npm exec esbuild'
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:slim'
     args:
