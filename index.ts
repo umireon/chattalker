@@ -1,5 +1,6 @@
 import type { Request, Response } from 'express'
 
+import FormData = require('form-data')
 import type { Message } from './types.js'
 import { TextToSpeechClient } from '@google-cloud/text-to-speech'
 import { TranslationServiceClient } from '@google-cloud/translate'
