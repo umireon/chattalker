@@ -10,8 +10,6 @@ import { getAuth } from 'firebase-admin/auth'
 import { http } from '@google-cloud/functions-framework'
 import { initializeApp } from 'firebase-admin/app'
 
-const { CLIENT_SECRET, PROJECT_ID } = process.env
-
 const client = new TextToSpeechClient()
 const translationClient = new TranslationServiceClient()
 const app = initializeApp()
@@ -59,10 +57,10 @@ const handleAuthorization = async (req: Request, res: Response) => {
   return true
 }
 
-const detectLanguage = async (content: string) => {
+const detectLanguage = async (projectId: string, content: string) => {
   const [response] = await translationClient.detectLanguage({
     content,
-    parent: `projects/${PROJECT_ID}/locations/global`
+    parent: `projects/${projectId}/locations/global`
   })
   const { languages } = response
   if (!languages) return 'und'
@@ -97,7 +95,8 @@ http('text-to-speech', async (req, res) => {
   }
   const text = req.query.text as string
   const voiceTable = (req.query.voice || {}) as Record<string, string>
-  const language = await detectLanguage(text)
+  const { PROJECT_ID } = process.env
+  const language = await detectLanguage(PROJECT_ID, text)
 
   const [response] = await client.synthesizeSpeech({
     audioConfig: { audioEncoding: 'OGG_OPUS' },
@@ -123,10 +122,11 @@ http('oauth2callback', async (req, res) => {
 
   const { code } = req.query
   if (typeof code !== 'string') throw new Error('Invalid code')
+  const { YOUTUBE_CLIENT_SECRET } = process.env
   const formData = new FormData()
   formData.append('code', code)
   formData.append('client_id', YOUTUBE_CLIENT_ID)
-  formData.append('client_secret', CLIENT_SECRET)
+  formData.append('client_secret', YOUTUBE_CLIENT_SECRET)
   formData.append('grant_type', 'authorization_code')
   const response = await fetch('https://accounts.google.com/o/oauth2/token', {
     body: formData,
