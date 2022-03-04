@@ -3,13 +3,13 @@ import { connectTwitch, getTwitchLogin } from './service/twitch'
 import { listenLogout, listenPlay, listenVoiceChange } from './service/ui'
 
 import { firebaseConfig } from './firebaseConfig'
-import { getActiveLiveChatIds, pollLiveChatMessages } from './service/youtube'
 import { getAnalytics } from 'firebase/analytics'
 import { getAuth } from 'firebase/auth'
 import { getFirestore } from 'firebase/firestore'
 import { getOauthToken } from './service/oauth'
 import { getUserData } from './service/users'
 import { initializeApp } from 'firebase/app'
+import { pollLiveChatMessages } from './service/youtube'
 
 const app = initializeApp(firebaseConfig)
 const auth = getAuth(app)
@@ -63,7 +63,8 @@ const youtubeConnectElement = document.querySelector<HTMLAnchorElement>('a#conne
 const youtubeOauthQuery = new URLSearchParams({
   client_id: YOUTUBE_CLIENT_ID,
   redirect_uri: `${location.href.replace(/app.html$/, 'youtube.html')}`,
-  response_type: 'token',
-  scope: 'https://www.googleapis.com/auth/youtube.readonly'
+  response_type: 'code',
+  scope: 'https://www.googleapis.com/auth/youtube.readonly',
+  state: '12345'
 })
 youtubeConnectElement.href = `https://accounts.google.com/o/oauth2/auth?${youtubeOauthQuery}`
