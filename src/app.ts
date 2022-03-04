@@ -53,7 +53,7 @@ auth.onAuthStateChanged(async (user) => {
 const twitchConnectElement = document.querySelector<HTMLAnchorElement>('a#connect-twitch')
 const twitchOauthQuery = new URLSearchParams({
   client_id: TWITCH_CLIENT_ID,
-  redirect_uri: `${location.origin}${location.pathname}`.replace(/app.html$/, 'twitcb.html'),
+  redirect_uri: `${location.origin}${location.pathname}`.replace(/app.html$/, 'twitch.html'),
   response_type: 'token',
   scope: 'chat:read'
 })
@@ -64,7 +64,6 @@ const youtubeOauthQuery = new URLSearchParams({
   client_id: YOUTUBE_CLIENT_ID,
   redirect_uri: `${location.origin}${location.pathname}`.replace(/app.html$/, 'youtube.html'),
   response_type: 'code',
-  scope: 'https://www.googleapis.com/auth/youtube.readonly',
-  state: '12345'
+  scope: 'https://www.googleapis.com/auth/youtube.readonly'
 })
 youtubeConnectElement.href = `https://accounts.google.com/o/oauth2/auth?${youtubeOauthQuery}`
