@@ -23,23 +23,22 @@ const analytics = getAnalytics(app)
 
 const checkIfOauthResponse = (arg: unknown): arg is OauthResponse => typeof arg === 'object' && arg.token_type === 'Bearer'
 
-const setYoutubeToken = async (user: User, db: Firestore, redirectUri: string) => {
-  const params = new URLSearchParams(location.search)
-  const state = params.get('state')
-  const code = params.get('code')
-  if (state !== '12345') throw new Error('Nonce does not match!')
-  if (!code) throw new Error('Invalid code')
-  const query = new URLSearchParams({ code, redirectUri })
+const exchangeYoutubeToken = async (user: User, params: { readonly code: string, readonly redirectUri: string}) => {
+  const query = new URLSearchParams(params)
   const idToken = await user.getIdToken()
   const response = await fetch(`https://oauth2callback-bf7bhumxka-uc.a.run.app?${query}`, {
     headers: {
       Authorization: `Bearer ${idToken}`
     }
   })
-  if (!response.ok) throw new Error('')
+  if (!response.ok) throw new Error('Invalid response')
   const json: unknown = await response.json()
   if (!checkIfOauthResponse(json)) throw new Error('Invalid response')
-  const { access_token: accessToken, refresh_token: refreshToken } = json
+  return json
+}
+
+const setYoutubeToken = async (user: User, db: Firestore, params: OauthResponse) => {
+  const { access_token: accessToken, refresh_token: refreshToken } = params
   await setDoc(doc(collection(db, 'users'), user.uid), {
     'youtube-access-token': accessToken,
     'youtube-refresh-token': refreshToken
@@ -48,6 +47,14 @@ const setYoutubeToken = async (user: User, db: Firestore, redirectUri: string) =
 
 auth.onAuthStateChanged(async (user) => {
   if (user) {
-    setYoutubeToken(user, db, `${location.origin}${location.pathname}`)
+    const params = new URLSearchParams(location.search)
+    const code = params.get('code')
+    if (!code) throw new Error('Invalid code')  
+    const oauthResponse = await exchangeYoutubeToken(user, {
+      code,
+      redirectUri: `${location.origin}${location.pathname}`
+    })
+    await setYoutubeToken(user, db, oauthResponse)
+    location.href = '/app.html'
   }
 })
