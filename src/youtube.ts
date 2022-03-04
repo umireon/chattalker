@@ -17,7 +17,7 @@ const setYoutubeToken = async (user: User, redirectUri: string) => {
   const code = params.get('code')
   if (state !== '12345') throw new Error('Nonce does not match!')
   if (code) {
-    const query = new URLSearchParams({ code, redirect_uri: redirectUri })
+    const query = new URLSearchParams({ code, redirectUri })
     const idToken = await user.getIdToken()
     const response = await fetch(`https://oauth2callback-bf7bhumxka-uc.a.run.app?${query}`, {
       headers: {

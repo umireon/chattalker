@@ -121,13 +121,15 @@ http('oauth2callback', async (req, res) => {
   if (!handleCors(req, res)) return
   if (!await handleAuthorization(req, res)) return
 
-  const { code } = req.query
+  const { code, redirectUri } = req.query
   if (typeof code !== 'string') throw new Error('Invalid code')
+  if (typeof redirectUri !== 'string') throw new Error('Invalid redirectUri')
   const { YOUTUBE_CLIENT_SECRET } = process.env
   const formData = new FormData()
   formData.append('code', code)
   formData.append('client_id', YOUTUBE_CLIENT_ID)
   formData.append('client_secret', YOUTUBE_CLIENT_SECRET)
+  formData.append('redirect_uri', redirectUri)
   formData.append('grant_type', 'authorization_code')
   const response = await fetch('https://accounts.google.com/o/oauth2/token', {
     body: formData,
