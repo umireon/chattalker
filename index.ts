@@ -140,6 +140,6 @@ http('oauth2callback', async (req, res) => {
     console.log(jsonText)
     throw new Error('Invalid response')
   }
-  const jsonText = response.text()
+  const jsonText = await response.text()
   res.send(jsonText)
 })
