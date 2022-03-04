@@ -2,14 +2,14 @@ import { getAnalytics, logEvent } from 'firebase/analytics'
 
 import { firebaseConfig } from './firebaseConfig'
 import { getAuth } from 'firebase/auth'
-import { getFirestore } from 'firebase/firestore'
+// import { getFirestore } from 'firebase/firestore'
 import { initializeApp } from 'firebase/app'
-import { setOauthToken } from './service/oauth'
+// import { setOauthToken } from './service/oauth'
 
 const app = initializeApp(firebaseConfig)
 const auth = getAuth(app)
-const db = getFirestore(app)
-const analytics = getAnalytics(app)
+// const db = getFirestore(app)
+// const analytics = getAnalytics(app)
 
 auth.onAuthStateChanged(async (user) => {
   if (user) {
