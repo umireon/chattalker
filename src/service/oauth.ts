@@ -28,7 +28,8 @@ export const setOauthToken = async (db: Firestore, user: User, name: 'twitch' | 
 interface YoutubeOauthResponse {
   readonly access_token: string
   readonly expires_in: number
-  readonly refresh_token: string
+  readonly refresh_token?: string
+  readonly scope: string
   readonly token_type: 'Bearer'
 }
 /* eslint-enable camelcase */
@@ -51,11 +52,11 @@ export const exchangeYoutubeToken = async (user: User, { code, endpoint, redirec
 }
 
 export const setYoutubeToken = async (user: User, db: Firestore, params: YoutubeOauthResponse) => {
-  const { access_token: accessToken, refresh_token: refreshToken } = params
-  await setDoc(doc(collection(db, 'users'), user.uid), {
-    'youtube-access-token': accessToken,
-    'youtube-refresh-token': refreshToken
-  }, { merge: true })
+  let data: { readonly 'youtube-access-token': string, readonly 'youtube-refresh-token'?: string } = { 'youtube-access-token': params.access_token }
+  if (typeof params.refresh_token !== 'undefined') {
+    data = { ...data, 'youtube-refresh-token': params.refresh_token }
+  }
+  await setDoc(doc(collection(db, 'users'), user.uid), data, { merge: true })
 }
 
 export const getYoutubeToken = async (db: Firestore, user: User) => {
