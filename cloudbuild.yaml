@@ -23,7 +23,6 @@ steps:
       - --source=.
       - --runtime=nodejs16
       - --trigger-http
-      - --allow-unauthenticated
       - --set-env-vars=PROJECT_ID=$PROJECT_ID
     waitFor: ['backend npm exec esbuild']
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:slim'
@@ -32,13 +31,12 @@ steps:
       - beta
       - functions
       - deploy
-      - oauth2callback
+      - youtube-oauth2callback
       - --gen2
       - --region=us-central1
       - --source=.
       - --runtime=nodejs16
       - --trigger-http
-      - --allow-unauthenticated
     waitFor: ['backend npm exec esbuild']
 
   - name: 'node:16-bullseye-slim'

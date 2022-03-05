@@ -115,7 +115,7 @@ http('text-to-speech', async (req, res) => {
   res.send(Buffer.from(encode(message)))
 })
 
-http('oauth2callback', async (req, res) => {
+http('youtube-oauth2callback', async (req, res) => {
   if (!handleCors(req, res)) return
 
   const { code, redirectUri } = req.query
