@@ -6,14 +6,14 @@ import { TranslationServiceClient } from '@google-cloud/translate'
 import { YOUTUBE_CLIENT_ID } from './constants.js'
 import { encode } from '@msgpack/msgpack'
 import fetch from 'node-fetch'
-import { getAuth } from 'firebase-admin/auth'
+// import { getAuth } from 'firebase-admin/auth'
 import { http } from '@google-cloud/functions-framework'
-import { initializeApp } from 'firebase-admin/app'
+// import { initializeApp } from 'firebase-admin/app'
 
 const client = new TextToSpeechClient()
 const translationClient = new TranslationServiceClient()
-const app = initializeApp()
-const auth = getAuth(app)
+// const app = initializeApp()
+// const auth = getAuth(app)
 
 const handleCors = (req: Request, res: Response) => {
   const { origin } = req.headers
@@ -37,25 +37,25 @@ const handleCors = (req: Request, res: Response) => {
   return true
 }
 
-const handleAuthorization = async (req: Request, res: Response) => {
-  const { authorization } = req.headers
-  if (typeof authorization === 'undefined') {
-    res.status(403).send('Forbidden')
-    return false
-  }
-  const idToken = authorization.split(' ')[1]
-  if (typeof idToken === 'undefined') {
-    res.status(403).send('Forbidden')
-    return false
-  }
-  try {
-    await auth.verifyIdToken(idToken)
-  } catch (error) {
-    res.status(403).send('Forbidden')
-    return false
-  }
-  return true
-}
+// const handleAuthorization = async (req: Request, res: Response) => {
+//   const { authorization } = req.headers
+//   if (typeof authorization === 'undefined') {
+//     res.status(403).send('Forbidden')
+//     return false
+//   }
+//   const idToken = authorization.split(' ')[1]
+//   if (typeof idToken === 'undefined') {
+//     res.status(403).send('Forbidden')
+//     return false
+//   }
+//   try {
+//     await auth.verifyIdToken(idToken)
+//   } catch (error) {
+//     res.status(403).send('Forbidden')
+//     return false
+//   }
+//   return true
+// }
 
 const detectLanguage = async (projectId: string, content: string) => {
   const [response] = await translationClient.detectLanguage({
