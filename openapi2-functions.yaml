@@ -10,7 +10,7 @@ produces:
   - application/octet-stream
 securityDefinitions:
   firebase:
-    authorizationUrl: ""
+    authorizationUrl: ''
     flow: "implicit"
     type: "oauth2"
     x-google-issuer: "https://securetoken.google.com/chattalker"
@@ -40,6 +40,7 @@ paths:
           description: A successful response
           schema:
             type: string
+
   /youtube-oauth2callback:
     get:
       summary: YouTube OAuth2 Callback
@@ -58,6 +59,30 @@ paths:
       operationId: youtube-oauth2callback-cors
       x-google-backend:
         address: https://youtube-oauth2callback-bf7bhumxka-uc.a.run.app
+      responses:
+        '204':
+          description: A successful response
+          schema:
+            type: string
+
+  /youtube-oauth2refresh:
+    get:
+      summary: YouTube OAuth2 Refresh
+      operationId: youtube-oauth2refresh
+      x-google-backend:
+        address: https://youtube-oauth2refresh-bf7bhumxka-uc.a.run.app
+      security:
+        - firebase: []
+      responses:
+        '200':
+          description: A successful response
+          schema:
+            type: string
+    options:
+      summary: YouTube OAuth2 Refresh CORS
+      operationId: youtube-oauth2refresh-cors
+      x-google-backend:
+        address: https://youtube-oauth2refresh-bf7bhumxka-uc.a.run.app
       responses:
         '204':
           description: A successful response
