@@ -70,8 +70,8 @@ export const getYoutubeToken = async (db: Firestore, user: User) => {
 export const refreshYoutubeToken = async (db: Firestore, user: User, { endpoint }: { readonly endpoint: string }) => {
   const docRef = await getDoc(doc(collection(db, 'users'), user.uid))
   const data = docRef.data()
-  if (data && data['refresh-access-token']) {
-    const query = new URLSearchParams({ refreshToken: data['refresh-access-token'] })
+  if (data && data['youtube-refresh-token']) {
+    const query = new URLSearchParams({ refreshToken: data['youtube-refresh-token'] })
     const idToken = await user.getIdToken()
     const response = await fetch(`${endpoint}/youtube-oauth2refresh?${query}`, {
       headers: {

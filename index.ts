@@ -133,7 +133,11 @@ http('youtube-oauth2callback', async (req, res) => {
     body: query,
     method: 'POST'
   })
-  if (!response.ok) throw new Error('Invalid response')
+  if (!response.ok) {
+    const text = await response.text()
+    console.log(text)
+    throw new Error('Invalid response')
+  }
   const json = await response.json()
   res.send(json)
 })
@@ -154,7 +158,11 @@ http('youtube-oauth2refresh', async (req, res) => {
     body: query,
     method: 'POST'
   })
-  if (!response.ok) throw new Error('Invalid response')
+  if (!response.ok) {
+    const text = await response.text()
+    console.log(text)
+    throw new Error('Invalid response')
+  }
   const json = await response.json()
   res.send(json)
 })
