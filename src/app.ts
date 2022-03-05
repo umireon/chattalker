@@ -61,6 +61,7 @@ twitchConnectElement.href = `https://id.twitch.tv/oauth2/authorize?${twitchOauth
 
 const youtubeConnectElement = document.querySelector<HTMLAnchorElement>('a#connect-youtube')
 const youtubeOauthQuery = new URLSearchParams({
+  access_type: 'offline',
   client_id: YOUTUBE_CLIENT_ID,
   redirect_uri: `${location.origin}${location.pathname}`.replace(/app.html$/, 'youtube.html'),
   response_type: 'code',

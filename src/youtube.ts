@@ -1,4 +1,4 @@
-import { exchangeYoutubeToken, setYoutubeToken } from './service/youtube'
+import { exchangeYoutubeToken, setYoutubeToken } from './service/oauth'
 import { getAnalytics, logEvent } from 'firebase/analytics'
 
 import { firebaseConfig } from './firebaseConfig'
