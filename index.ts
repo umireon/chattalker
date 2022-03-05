@@ -133,11 +133,28 @@ http('youtube-oauth2callback', async (req, res) => {
     body: query,
     method: 'POST'
   })
-  if (!response.ok) {
-    const jsonText = await response.text()
-    console.log(jsonText)
-    throw new Error('Invalid response')
-  }
+  if (!response.ok) throw new Error('Invalid response')
+  const json = await response.json()
+  res.send(json)
+})
+
+http('youtube-oauth2refresh', async (req, res) => {
+  if (!handleCors(req, res)) return
+
+  const { refreshToken } = req.query
+  if (typeof refreshToken !== 'string') throw new Error('Invalid refreshToken')
+  const { YOUTUBE_CLIENT_SECRET } = process.env
+  const query = new URLSearchParams({
+    client_id: YOUTUBE_CLIENT_ID,
+    client_secret: YOUTUBE_CLIENT_SECRET,
+    grant_type: 'refresh_token',
+    refresh_token: refreshToken
+  })
+  const response = await fetch('https://oauth2.googleapis.com/token', {
+    body: query,
+    method: 'POST'
+  })
+  if (!response.ok) throw new Error('Invalid response')
   const json = await response.json()
   res.send(json)
 })

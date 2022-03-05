@@ -36,10 +36,10 @@ interface YoutubeOauthResponse {
 const checkIfYoutubeOauthResponse = (arg: any): arg is YoutubeOauthResponse =>
   typeof arg === 'object' && 'token_type' in arg && arg.token_type === 'Bearer'
 
-export const exchangeYoutubeToken = async (user: User, params: { readonly code: string, readonly redirectUri: string}) => {
-  const query = new URLSearchParams(params)
+export const exchangeYoutubeToken = async (user: User, { code, endpoint, redirectUri }: { readonly code: string, readonly endpoint: string, readonly redirectUri: string}) => {
+  const query = new URLSearchParams({ code, redirectUri })
   const idToken = await user.getIdToken()
-  const response = await fetch(`https://oauth2callback-bf7bhumxka-uc.a.run.app?${query}`, {
+  const response = await fetch(`${endpoint}/youtube-oauth2callback?${query}`, {
     headers: {
       Authorization: `Bearer ${idToken}`
     }
@@ -63,5 +63,23 @@ export const getYoutubeToken = async (db: Firestore, user: User) => {
   const data = docRef.data()
   if (data) {
     return data['youtube-access-token']
+  }
+}
+
+export const refreshYoutubeToken = async (db: Firestore, user: User, { endpoint }: { readonly endpoint: string }) => {
+  const docRef = await getDoc(doc(collection(db, 'users'), user.uid))
+  const data = docRef.data()
+  if (data && data['refresh-access-token']) {
+    const query = new URLSearchParams({ refreshToken: data['refresh-access-token'] })
+    const idToken = await user.getIdToken()
+    const response = await fetch(`${endpoint}/youtube-oauth2refresh?${query}`, {
+      headers: {
+        Authorization: `Bearer ${idToken}`
+      }
+    })
+    if (!response.ok) throw new Error('Invalid response')
+    const json = await response.json()
+    if (!checkIfYoutubeOauthResponse(json)) throw new Error('Invalid response')
+    return json
   }
 }

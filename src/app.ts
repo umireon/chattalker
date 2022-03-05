@@ -40,7 +40,7 @@ auth.onAuthStateChanged(async (user) => {
 
     const youtubeToken = await getYoutubeToken(db, user)
     if (typeof youtubeToken !== 'undefined') {
-      connectYoutube(analytics, user, { endpoint: ENDPOINT, token: youtubeToken })
+      connectYoutube(db, analytics, user, { endpoint: ENDPOINT, token: youtubeToken })
     }
   }
 })
