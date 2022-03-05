@@ -38,6 +38,19 @@ steps:
       - --runtime=nodejs16
       - --trigger-http
     waitFor: ['backend npm exec esbuild']
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:slim'
+    args:
+      - gcloud
+      - beta
+      - functions
+      - deploy
+      - youtube-oauth2refresh
+      - --gen2
+      - --region=us-central1
+      - --source=.
+      - --runtime=nodejs16
+      - --trigger-http
+    waitFor: ['backend npm exec esbuild']
 
   - name: 'node:16-bullseye-slim'
     args:
