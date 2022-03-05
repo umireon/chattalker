@@ -1,4 +1,14 @@
 steps:
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:slim'
+    args:
+      - gcloud
+      - api-gateway
+      - api-configs
+      - create
+      - chattalker
+      - --api=chattalker
+      - --openapi-spec=./openapi2-functions.yaml
+
   - name: 'node:16-bullseye-slim'
     args:
       - npm
@@ -10,6 +20,7 @@ steps:
       - index.ts
       - types.ts
     id: 'backend npm exec esbuild'
+    waitFor: ['-']
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:slim'
     args:
       - gcloud

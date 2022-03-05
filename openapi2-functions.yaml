@@ -1,0 +1,34 @@
+swagger: '2.0'
+info:
+  title: chattalker backend
+  description: API of chat message talker on Twitch for OBS and so on
+  version: 0.1.0
+schemes:
+  - https
+produces:
+  - application/json
+  - application/octet-stream
+paths:
+  /text-to-speech:
+    get:
+      summary: Text-to-speech
+      operationId: text-to-speech
+      x-google-backend:
+        address: https://text-to-speech-bf7bhumxka-uc.a.run.app
+      responses:
+        '200':
+          description: A successful response
+          schema:
+            type: string
+        '400':
+          description: Bad Request
+          schema:
+            type: string
+        '403':
+          description: Forbidden
+          schema:
+            type: string
+        '500':
+          description: Internal Server Error
+          schema:
+            type: string

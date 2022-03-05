@@ -87,7 +87,6 @@ const getVoice = (voiceTable: Record<string, string>, languageCode: string) => {
 
 http('text-to-speech', async (req, res) => {
   if (!handleCors(req, res)) return
-  if (!await handleAuthorization(req, res)) return
 
   if (typeof req.query.text === 'undefined') {
     res.status(400).send('Bad Request')
@@ -118,7 +117,6 @@ http('text-to-speech', async (req, res) => {
 
 http('oauth2callback', async (req, res) => {
   if (!handleCors(req, res)) return
-  if (!await handleAuthorization(req, res)) return
 
   const { code, redirectUri } = req.query
   if (typeof code !== 'string') throw new Error('Invalid code')
