@@ -41,7 +41,8 @@ export const getActiveLiveChatIds = async (token: string) => {
   })
   if (!response.ok) throw new YoutubeRequestError('Request failed')
   const json: LiveBroadcastResponse = await response.json()
-  const liveItems = json.items.filter(e => ['ready'].includes(e.status.lifeCycleStatus))
+  console.log(json)
+  const liveItems = json.items.filter(e => ['live', 'ready'].includes(e.status.lifeCycleStatus))
   return liveItems.map(({ snippet: { liveChatId } }) => liveChatId)
 }
 
