@@ -3,13 +3,13 @@ import { connectTwitch, getTwitchLogin } from './service/twitch'
 import { getOauthToken, getYoutubeToken } from './service/oauth'
 import { listenLogout, listenPlay, listenVoiceChange } from './service/ui'
 
+import { connectYoutube } from './service/youtube'
 import { firebaseConfig } from './firebaseConfig'
 import { getAnalytics } from 'firebase/analytics'
 import { getAuth } from 'firebase/auth'
 import { getFirestore } from 'firebase/firestore'
 import { getUserData } from './service/users'
 import { initializeApp } from 'firebase/app'
-import { pollLiveChatMessages } from './service/youtube'
 
 const app = initializeApp(firebaseConfig)
 const auth = getAuth(app)
@@ -40,13 +40,7 @@ auth.onAuthStateChanged(async (user) => {
 
     const youtubeToken = await getYoutubeToken(db, user)
     if (typeof youtubeToken !== 'undefined') {
-      console.log(youtubeToken)
-      const youtubeMain = async () => {
-        for await (const items of pollLiveChatMessages(youtubeToken)) {
-          console.log(items)
-        }
-      }
-      youtubeMain()
+      connectYoutube(analytics, user, { endpoint: ENDPOINT, token: youtubeToken })
     }
   }
 })
