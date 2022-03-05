@@ -30,15 +30,14 @@ paths:
           description: A successful response
           schema:
             type: string
-        '400':
-          description: Bad Request
-          schema:
-            type: string
-        '403':
-          description: Forbidden
-          schema:
-            type: string
-        '500':
-          description: Internal Server Error
+  /youtube-oauth2callback:
+    get:
+      summary: YouTube OAuth2 Callback
+      operationId: youtube-oauth2callback
+      x-google-backend:
+        address: https://youtube-oauth2callback-bf7bhumxka-uc.a.run.app
+      responses:
+        '200':
+          description: A successful response
           schema:
             type: string
