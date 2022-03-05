@@ -2,7 +2,7 @@ import { Message } from '../../types'
 import { User } from 'firebase/auth'
 import { decode } from '@msgpack/msgpack'
 
-export const fetchAudio = async (endpoing: string, user: User, text: string) => {
+export const fetchAudio = async (endpoint: string, user: User, text: string) => {
   const idToken = await user.getIdToken(true)
   const query = new URLSearchParams({ text })
   const form = document.querySelector('form')
@@ -13,7 +13,7 @@ export const fetchAudio = async (endpoing: string, user: User, text: string) => 
       }
     }
   }
-  const response = await fetch(`${endpoing}?${query}`, {
+  const response = await fetch(`${endpoint}/text-to-speech?${query}`, {
     headers: {
       Authorization: `Bearer ${idToken}`
     }
