@@ -1,12 +1,12 @@
 import { ENDPOINT, TWITCH_CLIENT_ID, YOUTUBE_CLIENT_ID } from '../constants'
 import { connectTwitch, getTwitchLogin } from './service/twitch'
+import { getOauthToken, getYoutubeToken } from './service/oauth'
 import { listenLogout, listenPlay, listenVoiceChange } from './service/ui'
 
 import { firebaseConfig } from './firebaseConfig'
 import { getAnalytics } from 'firebase/analytics'
 import { getAuth } from 'firebase/auth'
 import { getFirestore } from 'firebase/firestore'
-import { getOauthToken } from './service/oauth'
 import { getUserData } from './service/users'
 import { initializeApp } from 'firebase/app'
 import { pollLiveChatMessages } from './service/youtube'
@@ -38,8 +38,9 @@ auth.onAuthStateChanged(async (user) => {
       connectTwitch(analytics, ENDPOINT, user, twitchToken, twitchLogin)
     }
 
-    const youtubeToken = await getOauthToken(db, user, 'youtube')
+    const youtubeToken = await getYoutubeToken(db, user)
     if (typeof youtubeToken !== 'undefined') {
+      console.log(youtubeToken)
       const youtubeMain = async () => {
         for await (const items of pollLiveChatMessages(youtubeToken)) {
           console.log(items)

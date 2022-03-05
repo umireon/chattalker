@@ -51,10 +51,17 @@ export const exchangeYoutubeToken = async (user: User, params: { readonly code: 
 }
 
 export const setYoutubeToken = async (user: User, db: Firestore, params: YoutubeOauthResponse) => {
-  console.log(params)
   const { access_token: accessToken, refresh_token: refreshToken } = params
   await setDoc(doc(collection(db, 'users'), user.uid), {
     'youtube-access-token': accessToken,
     'youtube-refresh-token': refreshToken
   }, { merge: true })
+}
+
+export const getYoutubeToken = async (db: Firestore, user: User) => {
+  const docRef = await getDoc(doc(collection(db, 'users'), user.uid))
+  const data = docRef.data()
+  if (data) {
+    return data['youtube-access-token']
+  }
 }
