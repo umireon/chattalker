@@ -16,8 +16,6 @@ securityDefinitions:
     x-google-issuer: "https://securetoken.google.com/chattalker"
     x-google-jwks_uri: "https://www.googleapis.com/service_accounts/v1/metadata/x509/securetoken@system.gserviceaccount.com"
     x-google-audiences: "chattalker"
-security:
-  - firebase: []
 paths:
   /text-to-speech:
     get:
@@ -25,6 +23,8 @@ paths:
       operationId: text-to-speech
       x-google-backend:
         address: https://text-to-speech-bf7bhumxka-uc.a.run.app
+      security:
+        - firebase: []
       responses:
         '200':
           description: A successful response
@@ -46,6 +46,8 @@ paths:
       operationId: youtube-oauth2callback
       x-google-backend:
         address: https://youtube-oauth2callback-bf7bhumxka-uc.a.run.app
+      security:
+        - firebase: []
       responses:
         '200':
           description: A successful response
