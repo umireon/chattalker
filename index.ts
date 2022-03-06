@@ -73,6 +73,7 @@ http('text-to-speech', async (req, res) => {
   const text = req.query.text as string
   const voiceTable = (req.query.voice || {}) as Record<string, string>
   const { PROJECT_ID } = process.env
+  if (typeof PROJECT_ID === 'undefined') throw new Error('PROJECT_ID not provided')
   const language = await detectLanguage(PROJECT_ID, text)
 
   const [response] = await client.synthesizeSpeech({
@@ -82,16 +83,15 @@ http('text-to-speech', async (req, res) => {
   })
 
   const { audioContent } = response
-  if (!audioContent) {
+  if (audioContent === null) {
     res.status(500).send('Internal Server Error')
     return
   }
-  // const message: Message = {
-  //   audioContent: coarseUint8Array(audioContent),
-  //   language
-  // }
+
   const formData = new FormData()
-  formData.append('audioContent', new Blob([coarseUint8Array(audioContent)]))
+  formData.append('audioContent', new Blob([coarseUint8Array(audioContent)], {
+    type: 'audio/ogg'
+  }))
   formData.append('language', language)
   const blob = formDataToBlob(formData)
   const arrayBuffer = await blob.arrayBuffer()
