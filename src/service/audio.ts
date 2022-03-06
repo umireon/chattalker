@@ -1,7 +1,5 @@
 import type { AppContext } from '../../constants'
-import type { Message } from '../../types'
 import type { User } from 'firebase/auth'
-import { decode } from '@msgpack/msgpack'
 
 export const fetchAudio = async ({ textToSpeechEndpoint }: AppContext, user: User, text: string) => {
   const idToken = await user.getIdToken(true)
@@ -21,8 +19,9 @@ export const fetchAudio = async ({ textToSpeechEndpoint }: AppContext, user: Use
   })
   if (!response.ok) throw new Error('Invalid message')
   const formData = await response.formData()
-  return {
-    audioContent: formData.get('audioContent') as File,
-    language: formData.get('language') as string
-  }
+  const audioContent = formData.get('audioContent')
+  const language = formData.get('language')
+  if (typeof audioContent === 'string') throw new Error('Invalid audioContent')
+  if (typeof language !== 'string') throw new Error('Invalid language')
+  return { audioContent, language }
 }
