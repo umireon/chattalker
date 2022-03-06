@@ -39,7 +39,7 @@ export const listenPlay = (context: AppContext, user: User, element: HTMLButtonE
     element.disabled = true
     const { audioContent, language } = await fetchAudio(context, user, element.value)
     element.disabled = false
-    playAudio(new Blob([audioContent]))
+    playAudio(audioContent)
     showLanguage(language)
     showText(element.value)
   })

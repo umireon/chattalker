@@ -20,6 +20,9 @@ export const fetchAudio = async ({ textToSpeechEndpoint }: AppContext, user: Use
     }
   })
   if (!response.ok) throw new Error('Invalid message')
-  const arrayBuffer = await response.arrayBuffer()
-  return decode(arrayBuffer) as Message
+  const formData = await response.formData()
+  return {
+    audioContent: formData.get('audioContent') as File,
+    language: formData.get('language') as string
+  }
 }

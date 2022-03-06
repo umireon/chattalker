@@ -96,7 +96,7 @@ http('text-to-speech', async (req, res) => {
   const blob = formDataToBlob(formData)
   const arrayBuffer = await blob.arrayBuffer()
   res.set('Content-Type', blob.type)
-  res.send(arrayBuffer)
+  res.send(Buffer.from(arrayBuffer))
 })
 
 http('youtube-oauth2callback', async (req, res) => {
