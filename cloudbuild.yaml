@@ -8,7 +8,6 @@ steps:
       - --outdir=.
       - constants.ts
       - index.ts
-      - types.ts
     id: 'backend npm exec esbuild'
     waitFor: ['-']
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:slim'
