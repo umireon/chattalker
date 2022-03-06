@@ -17,9 +17,9 @@ export const userConverter: FirestoreDataConverter<UserData> = {
     const data = snapshot.data()
     return {
       'twitch-access-token': data['twitch-access-token'],
-      'voice-en': data['voice-enn'],
+      'voice-en': data['voice-en'],
       'voice-ja': data['voice-ja'],
-      'voice-und': data['voice-un'],
+      'voice-und': data['voice-und'],
       'youtube-access-token': data['youtube-access-token'],
       'youtube-refresh-token': data['youtube-refresh-token']
     }
