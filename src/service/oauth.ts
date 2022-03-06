@@ -26,7 +26,7 @@ export const setOauthToken = async (db: Firestore, user: User, name: 'twitch' | 
 }
 
 /* eslint-disable camelcase */
-interface YoutubeOauthResponse {
+export interface YoutubeOauthResponse {
   readonly access_token: string
   readonly expires_in: number
   readonly refresh_token?: string
@@ -38,7 +38,7 @@ interface YoutubeOauthResponse {
 const checkIfYoutubeOauthResponse = (arg: any): arg is YoutubeOauthResponse =>
   typeof arg === 'object' && 'token_type' in arg && arg.token_type === 'Bearer'
 
-interface ExchangeYoutubeTokenParams {
+export interface ExchangeYoutubeTokenParams {
   readonly code: string
   readonly redirectUri: string
 }

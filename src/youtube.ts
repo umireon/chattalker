@@ -1,7 +1,7 @@
+import { DEFAULT_CONTEXT, firebaseConfig } from '../constants'
 import { exchangeYoutubeToken, setYoutubeToken } from './service/oauth'
 import { getAnalytics, logEvent } from 'firebase/analytics'
 
-import { DEFAULT_CONTEXT, firebaseConfig } from '../constants'
 import { getAuth } from 'firebase/auth'
 import { getFirestore } from 'firebase/firestore'
 import { initializeApp } from 'firebase/app'

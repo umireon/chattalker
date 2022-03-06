@@ -1,6 +1,6 @@
-import { firebaseConfig } from '../constants'
 import { getAnalytics, logEvent } from 'firebase/analytics'
 
+import { firebaseConfig } from '../constants'
 import { getAuth } from 'firebase/auth'
 import { getFirestore } from 'firebase/firestore'
 import { initializeApp } from 'firebase/app'
