@@ -1,6 +1,6 @@
 import { DEFAULT_CONTEXT, firebaseConfig } from '../constants'
 import { connectTwitch, getTwitchLogin } from './service/twitch'
-import { getOauthToken, getYoutubeToken } from './service/oauth'
+import { getTwitchToken, getYoutubeToken } from './service/oauth'
 import { listenLogout, listenPlay, listenVoiceChange } from './service/ui'
 
 import { connectYoutube } from './service/youtube'
@@ -31,7 +31,7 @@ auth.onAuthStateChanged(async (user) => {
       }
     }
 
-    const twitchToken = await getOauthToken(db, user, 'twitch')
+    const twitchToken = await getTwitchToken(db, user)
     if (typeof twitchToken !== 'undefined') {
       const twitchLogin = await getTwitchLogin(DEFAULT_CONTEXT, twitchToken)
       connectTwitch(DEFAULT_CONTEXT, analytics, user, {

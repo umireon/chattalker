@@ -36,7 +36,6 @@
     "@google-cloud/functions-framework": "^3.0.0",
     "@google-cloud/text-to-speech": "^3.4.0",
     "@google-cloud/translate": "^6.3.1",
-    "@msgpack/msgpack": "^2.7.2",
     "fetch-blob": "^3.1.4",
     "formdata-polyfill": "^4.0.10",
     "node-fetch": "^3.2.1"

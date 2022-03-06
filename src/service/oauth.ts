@@ -5,24 +5,13 @@ import type { Firestore } from 'firebase/firestore'
 import type { User } from 'firebase/auth'
 import type { UserData } from './users'
 
-export const getOauthToken = async (db: Firestore, user: User, name: 'twitch' | 'youtube'): Promise<string | undefined> => {
+export const getTwitchToken = async (db: Firestore, user: User) => {
   const data = await getUserData(db, user)
-  if (data) {
-    return data[`${name}-access-token`]
-  }
+  return data['twitch-access-token']
 }
 
-export const setOauthToken = async (db: Firestore, user: User, name: 'twitch' | 'youtube') => {
-  const params = new URLSearchParams(location.hash.slice(1))
-  const token = params.get('access_token')
-  if (token) {
-    await setUserData(db, user, {
-      [`${name}-access-token`]: token
-    })
-    return true
-  } else {
-    return false
-  }
+export const setTwitchToken = async (db: Firestore, user: User, token: string) => {
+  await setUserData(db, user, { 'twitch-access-token': token })
 }
 
 /* eslint-disable camelcase */
