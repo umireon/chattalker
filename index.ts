@@ -1,6 +1,8 @@
-import type { Request, Response } from 'express'
+import { FormData, formDataToBlob } from 'formdata-polyfill/esm.min.js'
 
+import { Blob } from 'fetch-blob'
 import { DEFAULT_CONTEXT } from './constants.js'
+import type { HttpFunction } from '@google-cloud/functions-framework'
 import type { Message } from './types.js'
 import { TextToSpeechClient } from '@google-cloud/text-to-speech'
 import { TranslationServiceClient } from '@google-cloud/translate'
@@ -11,7 +13,7 @@ import { http } from '@google-cloud/functions-framework'
 const client = new TextToSpeechClient()
 const translationClient = new TranslationServiceClient()
 
-const handleCors = (req: Request, res: Response) => {
+const handleCors: HttpFunction = (req, res) => {
   const { origin } = req.headers
   if (typeof origin !== 'undefined') {
     const { hostname } = new URL(origin)
@@ -84,11 +86,17 @@ http('text-to-speech', async (req, res) => {
     res.status(500).send('Internal Server Error')
     return
   }
-  const message: Message = {
-    audioContent: coarseUint8Array(audioContent),
-    language
-  }
-  res.send(Buffer.from(encode(message)))
+  // const message: Message = {
+  //   audioContent: coarseUint8Array(audioContent),
+  //   language
+  // }
+  const formData = new FormData()
+  formData.append('audioContent', new Blob([coarseUint8Array(audioContent)]))
+  formData.append('language', language)
+  const blob = formDataToBlob(formData)
+  const arrayBuffer = await blob.arrayBuffer()
+  res.set('Content-Type', blob.type)
+  res.send(arrayBuffer)
 })
 
 http('youtube-oauth2callback', async (req, res) => {
