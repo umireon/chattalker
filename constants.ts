@@ -1,3 +1,3 @@
 export const ENDPOINT = 'https://chattalker-34in68ly.uc.gateway.dev'
 export const TWITCH_CLIENT_ID = '386m0kveloa87fbla7yivaw38unkft'
-export const YOUTUBE_CLIENT_ID = '110679332753-3t83f2ajs8173btcp3c90g2gmhvob7h5.apps.googleusercontent.com'
+export const YOUTUBE_CLIENT_ID = '244926935062-j7pehh8c98tg19crb1ipbugd3ikdrpcn.apps.googleusercontent.com'
