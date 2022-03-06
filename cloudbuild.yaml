@@ -36,6 +36,7 @@ steps:
       - --source=.
       - --runtime=nodejs16
       - --trigger-http
+      - --set-env-vars=PROJECT_ID=$PROJECT_ID
     waitFor: ['backend npm exec esbuild']
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:slim'
     args:
@@ -49,6 +50,7 @@ steps:
       - --source=.
       - --runtime=nodejs16
       - --trigger-http
+      - --set-env-vars=PROJECT_ID=$PROJECT_ID
     waitFor: ['backend npm exec esbuild']
 
   - name: 'node:16-bullseye-slim'
