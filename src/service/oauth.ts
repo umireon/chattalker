@@ -1,12 +1,12 @@
-import { collection, doc, getDoc, setDoc } from 'firebase/firestore'
+import { getUserData, setUserData } from './users'
 
 import type { AppContext } from '../../constants'
 import type { Firestore } from 'firebase/firestore'
 import type { User } from 'firebase/auth'
+import type { UserData } from './users'
 
 export const getOauthToken = async (db: Firestore, user: User, name: 'twitch' | 'youtube'): Promise<string | undefined> => {
-  const docRef = await getDoc(doc(collection(db, 'users'), user.uid))
-  const data = docRef.data()
+  const data = await getUserData(db, user)
   if (data) {
     return data[`${name}-access-token`]
   }
@@ -16,9 +16,9 @@ export const setOauthToken = async (db: Firestore, user: User, name: 'twitch' | 
   const params = new URLSearchParams(location.hash.slice(1))
   const token = params.get('access_token')
   if (token) {
-    await setDoc(doc(collection(db, 'users'), user.uid), {
+    await setUserData(db, user, {
       [`${name}-access-token`]: token
-    }, { merge: true })
+    })
     return true
   } else {
     return false
@@ -58,26 +58,23 @@ export const exchangeYoutubeToken = async ({ youtubeCallbackEndpoint }: AppConte
 }
 
 export const setYoutubeToken = async (user: User, db: Firestore, params: YoutubeOauthResponse) => {
-  let data: { readonly 'youtube-access-token': string, readonly 'youtube-refresh-token'?: string } = { 'youtube-access-token': params.access_token }
+  let data: UserData = { 'youtube-access-token': params.access_token }
   if (typeof params.refresh_token !== 'undefined') {
     data = { ...data, 'youtube-refresh-token': params.refresh_token }
   }
-  await setDoc(doc(collection(db, 'users'), user.uid), data, { merge: true })
+  await setUserData(db, user, data)
 }
 
 export const getYoutubeToken = async (db: Firestore, user: User) => {
-  const docRef = await getDoc(doc(collection(db, 'users'), user.uid))
-  const data = docRef.data()
-  if (data) {
-    return data['youtube-access-token']
-  }
+  const data = await getUserData(db, user)
+  return data['youtube-access-token']
 }
 
 export const refreshYoutubeToken = async ({ youtubeRefreshEndpoint }: AppContext, db: Firestore, user: User) => {
-  const docRef = await getDoc(doc(collection(db, 'users'), user.uid))
-  const data = docRef.data()
-  if (data && data['youtube-refresh-token']) {
-    const query = new URLSearchParams({ refreshToken: data['youtube-refresh-token'] })
+  const data = await getUserData(db, user)
+  const refreshToken = data['youtube-refresh-token']
+  if (typeof refreshToken !== 'undefined') {
+    const query = new URLSearchParams({ refreshToken })
     const idToken = await user.getIdToken()
     const response = await fetch(`${youtubeRefreshEndpoint}?${query}`, {
       headers: {
