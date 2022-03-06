@@ -2,9 +2,9 @@ import { playAudio, showLanguage, showText } from './ui'
 import { refreshYoutubeToken, setYoutubeToken } from './oauth'
 
 import type { Analytics } from 'firebase/analytics'
+import type { AppContext } from '../../constants'
 import type { Firestore } from 'firebase/firestore'
 import type { User } from 'firebase/auth'
-
 import { fetchAudio } from './audio'
 import { logEvent } from 'firebase/analytics'
 
@@ -91,7 +91,12 @@ export async function * pollLiveChatMessages (token: string) {
   }
 }
 
-export const connectYoutube = async (db: Firestore, analytics: Analytics, user: User, { endpoint, token }: { readonly endpoint: string, readonly token: string }) => {
+interface ConnectYoutubeParams {
+  token: string
+}
+
+export const connectYoutube = async (context: AppContext, db: Firestore, analytics: Analytics, user: User, params: ConnectYoutubeParams) => {
+  const { token } = params
   try {
     for await (const items of pollLiveChatMessages(token)) {
       for (const item of items) {
@@ -99,7 +104,7 @@ export const connectYoutube = async (db: Firestore, analytics: Analytics, user: 
         const chatTime = new Date(item.snippet.publishedAt).getTime()
         const freshTime = new Date().getTime() - 10 * 1000
         if (chatTime > freshTime && typeof displayMessage !== 'undefined') {
-          const { audioContent, language } = await fetchAudio(endpoint, user, displayMessage)
+          const { audioContent, language } = await fetchAudio(context, user, displayMessage)
           playAudio(new Blob([audioContent]))
           showLanguage(language)
           showText(displayMessage)
@@ -109,9 +114,9 @@ export const connectYoutube = async (db: Firestore, analytics: Analytics, user: 
     }
   } catch (e) {
     if (e instanceof YoutubeRequestError) {
-      const oauthResponse = await refreshYoutubeToken(db, user, { endpoint })
+      const oauthResponse = await refreshYoutubeToken(context, db, user)
       await setYoutubeToken(user, db, oauthResponse)
-      connectYoutube(db, analytics, user, { endpoint, token })
+      connectYoutube(context, db, analytics, user, params)
     }
   }
 }

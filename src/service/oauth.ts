@@ -1,5 +1,6 @@
 import { collection, doc, getDoc, setDoc } from 'firebase/firestore'
 
+import type { AppContext } from '../../constants'
 import type { Firestore } from 'firebase/firestore'
 import type { User } from 'firebase/auth'
 
@@ -37,10 +38,15 @@ interface YoutubeOauthResponse {
 const checkIfYoutubeOauthResponse = (arg: any): arg is YoutubeOauthResponse =>
   typeof arg === 'object' && 'token_type' in arg && arg.token_type === 'Bearer'
 
-export const exchangeYoutubeToken = async (user: User, { code, endpoint, redirectUri }: { readonly code: string, readonly endpoint: string, readonly redirectUri: string}) => {
+interface ExchangeYoutubeTokenParams {
+  readonly code: string
+  readonly redirectUri: string
+}
+
+export const exchangeYoutubeToken = async ({ youtubeCallbackEndpoint }: AppContext, user: User, { code, redirectUri }: ExchangeYoutubeTokenParams) => {
   const query = new URLSearchParams({ code, redirectUri })
   const idToken = await user.getIdToken()
-  const response = await fetch(`${endpoint}/youtube-oauth2callback?${query}`, {
+  const response = await fetch(`${youtubeCallbackEndpoint}?${query}`, {
     headers: {
       Authorization: `Bearer ${idToken}`
     }
@@ -67,13 +73,13 @@ export const getYoutubeToken = async (db: Firestore, user: User) => {
   }
 }
 
-export const refreshYoutubeToken = async (db: Firestore, user: User, { endpoint }: { readonly endpoint: string }) => {
+export const refreshYoutubeToken = async ({ youtubeRefreshEndpoint }: AppContext, db: Firestore, user: User) => {
   const docRef = await getDoc(doc(collection(db, 'users'), user.uid))
   const data = docRef.data()
   if (data && data['youtube-refresh-token']) {
     const query = new URLSearchParams({ refreshToken: data['youtube-refresh-token'] })
     const idToken = await user.getIdToken()
-    const response = await fetch(`${endpoint}/youtube-oauth2refresh?${query}`, {
+    const response = await fetch(`${youtubeRefreshEndpoint}?${query}`, {
       headers: {
         Authorization: `Bearer ${idToken}`
       }

@@ -1,10 +1,9 @@
-import { ENDPOINT, TWITCH_CLIENT_ID, YOUTUBE_CLIENT_ID } from '../constants'
+import { DEFAULT_CONTEXT, firebaseConfig } from '../constants'
 import { connectTwitch, getTwitchLogin } from './service/twitch'
 import { getOauthToken, getYoutubeToken } from './service/oauth'
 import { listenLogout, listenPlay, listenVoiceChange } from './service/ui'
 
 import { connectYoutube } from './service/youtube'
-import { firebaseConfig } from './firebaseConfig'
 import { getAnalytics } from 'firebase/analytics'
 import { getAuth } from 'firebase/auth'
 import { getFirestore } from 'firebase/firestore'
@@ -21,7 +20,7 @@ listenLogout(auth, document.querySelector('#logout'))
 auth.onAuthStateChanged(async (user) => {
   if (user) {
     for (const element of document.querySelectorAll<HTMLButtonElement>('button.play')) {
-      listenPlay(ENDPOINT, user, element)
+      listenPlay(DEFAULT_CONTEXT, user, element)
     }
 
     const data = await getUserData(db, user)
@@ -34,20 +33,23 @@ auth.onAuthStateChanged(async (user) => {
 
     const twitchToken = await getOauthToken(db, user, 'twitch')
     if (typeof twitchToken !== 'undefined') {
-      const twitchLogin = await getTwitchLogin(TWITCH_CLIENT_ID, twitchToken)
-      connectTwitch(analytics, ENDPOINT, user, twitchToken, twitchLogin)
+      const twitchLogin = await getTwitchLogin(DEFAULT_CONTEXT, twitchToken)
+      connectTwitch(DEFAULT_CONTEXT, analytics, user, {
+        login: twitchLogin,
+        token: twitchToken
+      })
     }
 
     const youtubeToken = await getYoutubeToken(db, user)
     if (typeof youtubeToken !== 'undefined') {
-      connectYoutube(db, analytics, user, { endpoint: ENDPOINT, token: youtubeToken })
+      connectYoutube(DEFAULT_CONTEXT, db, analytics, user, { token: youtubeToken })
     }
   }
 })
 
 const twitchConnectElement = document.querySelector<HTMLAnchorElement>('a#connect-twitch')
 const twitchOauthQuery = new URLSearchParams({
-  client_id: TWITCH_CLIENT_ID,
+  client_id: DEFAULT_CONTEXT.twitchClientId,
   redirect_uri: `${location.origin}${location.pathname}`.replace(/app.html$/, 'twitch.html'),
   response_type: 'token',
   scope: 'chat:read'
@@ -57,7 +59,7 @@ twitchConnectElement.href = `https://id.twitch.tv/oauth2/authorize?${twitchOauth
 const youtubeConnectElement = document.querySelector<HTMLAnchorElement>('a#connect-youtube')
 const youtubeOauthQuery = new URLSearchParams({
   access_type: 'offline',
-  client_id: YOUTUBE_CLIENT_ID,
+  client_id: DEFAULT_CONTEXT.youtubeClientId,
   redirect_uri: `${location.origin}${location.pathname}`.replace(/app.html$/, 'youtube.html'),
   response_type: 'code',
   scope: 'https://www.googleapis.com/auth/youtube.readonly'

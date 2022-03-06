@@ -1,6 +1,8 @@
-import { Auth, User } from 'firebase/auth'
-import { Firestore, collection, doc, setDoc } from 'firebase/firestore'
+import type { Auth, User } from 'firebase/auth'
+import { collection, doc, setDoc } from 'firebase/firestore'
 
+import type { AppContext } from '../../constants'
+import type { Firestore } from 'firebase/firestore'
 import { fetchAudio } from './audio'
 
 export const playAudio = (blob: Blob) => {
@@ -32,10 +34,10 @@ export const listenLogout = (auth: Auth, element: HTMLElement) => {
   })
 }
 
-export const listenPlay = (endpoing: string, user: User, element: HTMLButtonElement) => {
+export const listenPlay = (context: AppContext, user: User, element: HTMLButtonElement) => {
   element.addEventListener('click', async () => {
     element.disabled = true
-    const { audioContent, language } = await fetchAudio(endpoing, user, element.value)
+    const { audioContent, language } = await fetchAudio(context, user, element.value)
     element.disabled = false
     playAudio(new Blob([audioContent]))
     showLanguage(language)

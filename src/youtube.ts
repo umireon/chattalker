@@ -1,8 +1,7 @@
 import { exchangeYoutubeToken, setYoutubeToken } from './service/oauth'
 import { getAnalytics, logEvent } from 'firebase/analytics'
 
-import { ENDPOINT } from '../constants'
-import { firebaseConfig } from './firebaseConfig'
+import { DEFAULT_CONTEXT, firebaseConfig } from '../constants'
 import { getAuth } from 'firebase/auth'
 import { getFirestore } from 'firebase/firestore'
 import { initializeApp } from 'firebase/app'
@@ -17,9 +16,8 @@ auth.onAuthStateChanged(async (user) => {
     const params = new URLSearchParams(location.search)
     const code = params.get('code')
     if (!code) throw new Error('Invalid code')
-    const oauthResponse = await exchangeYoutubeToken(user, {
+    const oauthResponse = await exchangeYoutubeToken(DEFAULT_CONTEXT, user, {
       code,
-      endpoint: ENDPOINT,
       redirectUri: `${location.origin}${location.pathname}`
     })
     await setYoutubeToken(user, db, oauthResponse)

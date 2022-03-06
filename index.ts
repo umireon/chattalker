@@ -1,19 +1,15 @@
 import type { Request, Response } from 'express'
 
+import { DEFAULT_CONTEXT } from './constants.js'
 import type { Message } from './types.js'
 import { TextToSpeechClient } from '@google-cloud/text-to-speech'
 import { TranslationServiceClient } from '@google-cloud/translate'
-import { YOUTUBE_CLIENT_ID } from './constants.js'
 import { encode } from '@msgpack/msgpack'
 import fetch from 'node-fetch'
-// import { getAuth } from 'firebase-admin/auth'
 import { http } from '@google-cloud/functions-framework'
-// import { initializeApp } from 'firebase-admin/app'
 
 const client = new TextToSpeechClient()
 const translationClient = new TranslationServiceClient()
-// const app = initializeApp()
-// const auth = getAuth(app)
 
 const handleCors = (req: Request, res: Response) => {
   const { origin } = req.headers
@@ -36,26 +32,6 @@ const handleCors = (req: Request, res: Response) => {
 
   return true
 }
-
-// const handleAuthorization = async (req: Request, res: Response) => {
-//   const { authorization } = req.headers
-//   if (typeof authorization === 'undefined') {
-//     res.status(403).send('Forbidden')
-//     return false
-//   }
-//   const idToken = authorization.split(' ')[1]
-//   if (typeof idToken === 'undefined') {
-//     res.status(403).send('Forbidden')
-//     return false
-//   }
-//   try {
-//     await auth.verifyIdToken(idToken)
-//   } catch (error) {
-//     res.status(403).send('Forbidden')
-//     return false
-//   }
-//   return true
-// }
 
 const detectLanguage = async (projectId: string, content: string) => {
   const [response] = await translationClient.detectLanguage({
@@ -123,7 +99,7 @@ http('youtube-oauth2callback', async (req, res) => {
   if (typeof redirectUri !== 'string') throw new Error('Invalid redirectUri')
   const { YOUTUBE_CLIENT_SECRET } = process.env
   const query = new URLSearchParams({
-    client_id: YOUTUBE_CLIENT_ID,
+    client_id: DEFAULT_CONTEXT.youtubeClientId,
     client_secret: YOUTUBE_CLIENT_SECRET,
     code,
     grant_type: 'authorization_code',
@@ -149,7 +125,7 @@ http('youtube-oauth2refresh', async (req, res) => {
   if (typeof refreshToken !== 'string') throw new Error('Invalid refreshToken')
   const { YOUTUBE_CLIENT_SECRET } = process.env
   const query = new URLSearchParams({
-    client_id: YOUTUBE_CLIENT_ID,
+    client_id: DEFAULT_CONTEXT.youtubeClientId,
     client_secret: YOUTUBE_CLIENT_SECRET,
     grant_type: 'refresh_token',
     refresh_token: refreshToken
