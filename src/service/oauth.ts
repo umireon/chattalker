@@ -24,7 +24,7 @@ export interface YoutubeOauthResponse {
 }
 /* eslint-enable camelcase */
 
-const checkIfYoutubeOauthResponse = (arg: any): arg is YoutubeOauthResponse =>
+const validateYoutubeOauthResponse = (arg: any): arg is YoutubeOauthResponse =>
   typeof arg === 'object' && 'token_type' in arg && arg.token_type === 'Bearer'
 
 export interface ExchangeYoutubeTokenParams {
@@ -42,7 +42,7 @@ export const exchangeYoutubeToken = async ({ youtubeCallbackEndpoint }: AppConte
   })
   if (!response.ok) throw new Error('Invalid response')
   const json = await response.json()
-  if (!checkIfYoutubeOauthResponse(json)) throw new Error('Invalid response')
+  if (!validateYoutubeOauthResponse(json)) throw new Error('Invalid response')
   return json
 }
 
@@ -72,7 +72,7 @@ export const refreshYoutubeToken = async ({ youtubeRefreshEndpoint }: AppContext
     })
     if (!response.ok) throw new Error('Invalid response')
     const json = await response.json()
-    if (!checkIfYoutubeOauthResponse(json)) throw new Error('Invalid response')
+    if (!validateYoutubeOauthResponse(json)) throw new Error('Invalid response')
     return json
   }
 }

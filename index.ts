@@ -3,13 +3,12 @@ import { FormData, formDataToBlob } from 'formdata-polyfill/esm.min.js'
 import { Blob } from 'fetch-blob'
 import { DEFAULT_CONTEXT } from './constants.js'
 import type { HttpFunction } from '@google-cloud/functions-framework'
+import type { ParsedQs } from 'qs'
+import { SecretManagerServiceClient } from '@google-cloud/secret-manager'
 import { TextToSpeechClient } from '@google-cloud/text-to-speech'
 import { TranslationServiceClient } from '@google-cloud/translate'
 import fetch from 'node-fetch'
 import { http } from '@google-cloud/functions-framework'
-
-const client = new TextToSpeechClient()
-const translationClient = new TranslationServiceClient()
 
 const handleCors: HttpFunction = (req, res) => {
   const { origin } = req.headers
@@ -33,8 +32,13 @@ const handleCors: HttpFunction = (req, res) => {
   return true
 }
 
-const detectLanguage = async (projectId: string, content: string) => {
-  const [response] = await translationClient.detectLanguage({
+interface DetectLanguageOption {
+  projectId: string
+  content: string
+}
+
+const detectLanguage = async (client: TranslationServiceClient, { projectId, content }: DetectLanguageOption) => {
+  const [response] = await client.detectLanguage({
     content,
     parent: `projects/${projectId}/locations/global`
   })
@@ -44,7 +48,7 @@ const detectLanguage = async (projectId: string, content: string) => {
   return languageCode || 'und'
 }
 
-const coarseUint8Array = (data: Uint8Array | string): Uint8Array => {
+const coarseIntoUint8Array = (data: Uint8Array | string): Uint8Array => {
   if (typeof data === 'string') {
     const encoder = new TextEncoder()
     return encoder.encode(data)
@@ -61,33 +65,77 @@ const getVoice = (voiceTable: Record<string, string>, languageCode: string) => {
   }
 }
 
+interface GetYoutubeClientSecretOption {
+  readonly name?: string
+  readonly projectId: string
+  readonly version?: string
+}
+
+const DEFAULT_YOUTUBE_CLIENT_SECRET_VERSION = '1'
+
+const coarseIntoString = (data: Uint8Array | string): string => {
+  if (typeof data === 'string') {
+    return data
+  } else {
+    const decoder = new TextDecoder()
+    return decoder.decode(data)
+  }
+}
+
+const getYoutubeClientSecret = async (client: SecretManagerServiceClient, {
+  name = 'youtube-client-secret',
+  projectId,
+  version = DEFAULT_YOUTUBE_CLIENT_SECRET_VERSION
+}: GetYoutubeClientSecretOption) => {
+  const [response] = await client.accessSecretVersion({
+    name: `projects/${projectId}/secrets/youtube-client-secret/versions/${version}.`
+  })
+  return coarseIntoString(response.payload.data)
+}
+
+const validateVoice = (arg: string | ParsedQs | string[] | ParsedQs[]): arg is Record<string, string> => {
+  if (typeof arg === 'string' || Array.isArray(arg)) return false
+  for (const name in arg) {
+    if (typeof arg[name] !== 'string') return false
+  }
+  return true
+}
+
 http('text-to-speech', async (req, res) => {
   if (!handleCors(req, res)) return
 
-  if (typeof req.query.text === 'undefined') {
-    res.status(400).send('Bad Request')
-    return
-  }
-  const text = req.query.text as string
-  const voiceTable = (req.query.voice || {}) as Record<string, string>
+  // Validate environment
   const { PROJECT_ID } = process.env
   if (typeof PROJECT_ID === 'undefined') throw new Error('PROJECT_ID not provided')
-  const language = await detectLanguage(PROJECT_ID, text)
 
-  const [response] = await client.synthesizeSpeech({
-    audioConfig: { audioEncoding: 'OGG_OPUS' },
-    input: { text },
-    voice: getVoice(voiceTable, language)
-  })
-
-  const { audioContent } = response
-  if (audioContent === null) {
-    res.status(500).send('Internal Server Error')
+  // Validate query
+  if (typeof req.query.text !== 'string') {
+    res.status(400).send('Invalid text')
     return
   }
+  if (!validateVoice(req.query.voice)) {
+    res.status(400).send('Invalid voice')
+    return
+  }
+  const { text, voice } = req.query
 
+  // Detect language
+  const translationClient = new TranslationServiceClient()
+  const language = await detectLanguage(translationClient, { content: text, projectId: PROJECT_ID })
+
+  // Synthesize speech
+  const textToSpeechClient = new TextToSpeechClient()
+  const [response] = await textToSpeechClient.synthesizeSpeech({
+    audioConfig: { audioEncoding: 'OGG_OPUS' },
+    input: { text },
+    voice: getVoice(voice, language)
+  })
+  const { audioContent } = response
+  if (audioContent === null) throw new Error('Invalid response')
+
+  // Compose response
   const formData = new FormData()
-  formData.append('audioContent', new Blob([coarseUint8Array(audioContent)], {
+  formData.append('audioContent', new Blob([coarseIntoUint8Array(audioContent)], {
     type: 'audio/ogg'
   }))
   formData.append('language', language)
@@ -100,14 +148,27 @@ http('text-to-speech', async (req, res) => {
 http('youtube-oauth2callback', async (req, res) => {
   if (!handleCors(req, res)) return
 
+  // Validate environment
+  const { PROJECT_ID } = process.env
+  if (typeof PROJECT_ID === 'undefined') throw new Error('PROJECT_ID not provided')
+  const secretManagerClient = new SecretManagerServiceClient()
+  const clientSecret = await getYoutubeClientSecret(secretManagerClient, { projectId: PROJECT_ID })
+
+  // Validate query
+  if (typeof req.query.code !== 'string') {
+    res.status(400).send('Invalid code')
+    return
+  }
+  if (typeof req.query.redirectUri !== 'string') {
+    res.status(400).send('Invalid redirectUri')
+    return
+  }
   const { code, redirectUri } = req.query
-  if (typeof code !== 'string') throw new Error('Invalid code')
-  if (typeof redirectUri !== 'string') throw new Error('Invalid redirectUri')
-  const { YOUTUBE_CLIENT_SECRET } = process.env
-  if (typeof YOUTUBE_CLIENT_SECRET === 'undefined') throw new Error('YOUTUBE_CLIENT_SECRET not provided')
+
+  // Exchange code
   const query = new URLSearchParams({
     client_id: DEFAULT_CONTEXT.youtubeClientId,
-    client_secret: YOUTUBE_CLIENT_SECRET,
+    client_secret: clientSecret,
     code,
     grant_type: 'authorization_code',
     redirect_uri: redirectUri
@@ -128,13 +189,23 @@ http('youtube-oauth2callback', async (req, res) => {
 http('youtube-oauth2refresh', async (req, res) => {
   if (!handleCors(req, res)) return
 
+  // Validate environment
+  const { PROJECT_ID } = process.env
+  if (typeof PROJECT_ID === 'undefined') throw new Error('PROJECT_ID not provided')
+  const secretManagerClient = new SecretManagerServiceClient()
+  const clientSecret = await getYoutubeClientSecret(secretManagerClient, { projectId: PROJECT_ID })
+
+  // Validate query
+  if (typeof req.query.refreshToken !== 'string') {
+    res.status(400).send('Invalid refreshToken')
+    return
+  }
   const { refreshToken } = req.query
-  if (typeof refreshToken !== 'string') throw new Error('Invalid refreshToken')
-  const { YOUTUBE_CLIENT_SECRET } = process.env
-  if (typeof YOUTUBE_CLIENT_SECRET === 'undefined') throw new Error('YOUTUBE_CLIENT_SECRET not provided')
+
+  // Refresh token
   const query = new URLSearchParams({
     client_id: DEFAULT_CONTEXT.youtubeClientId,
-    client_secret: YOUTUBE_CLIENT_SECRET,
+    client_secret: clientSecret,
     grant_type: 'refresh_token',
     refresh_token: refreshToken
   })
