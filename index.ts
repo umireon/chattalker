@@ -98,6 +98,7 @@ http('youtube-oauth2callback', async (req, res) => {
   if (typeof code !== 'string') throw new Error('Invalid code')
   if (typeof redirectUri !== 'string') throw new Error('Invalid redirectUri')
   const { YOUTUBE_CLIENT_SECRET } = process.env
+  if (typeof YOUTUBE_CLIENT_SECRET === 'undefined') throw new Error('YOUTUBE_CLIENT_SECRET not provided')
   const query = new URLSearchParams({
     client_id: DEFAULT_CONTEXT.youtubeClientId,
     client_secret: YOUTUBE_CLIENT_SECRET,
@@ -124,6 +125,7 @@ http('youtube-oauth2refresh', async (req, res) => {
   const { refreshToken } = req.query
   if (typeof refreshToken !== 'string') throw new Error('Invalid refreshToken')
   const { YOUTUBE_CLIENT_SECRET } = process.env
+  if (typeof YOUTUBE_CLIENT_SECRET === 'undefined') throw new Error('YOUTUBE_CLIENT_SECRET not provided')
   const query = new URLSearchParams({
     client_id: DEFAULT_CONTEXT.youtubeClientId,
     client_secret: YOUTUBE_CLIENT_SECRET,
