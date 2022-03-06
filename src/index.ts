@@ -22,7 +22,7 @@ firebase.auth().onAuthStateChanged((user) => {
       signInOptions: [
         firebase.auth.EmailAuthProvider.PROVIDER_ID
       ],
-      signInSuccessUrl: '/connect.html'
+      signInSuccessUrl: '/app.html'
     })
   }
 })
