@@ -16,7 +16,7 @@ export const getTwitchLogin = async (clientId: string, token: string) => {
   return login
 }
 
-export const connectTwitch = async (analytics: Analytics, endpoint: string, user: User, twitchToken: string, twitchLogin: string) => {
+export const connectTwitch = (analytics: Analytics, endpoint: string, user: User, twitchToken: string, twitchLogin: string) => {
   const socket = new WebSocket('wss://irc-ws.chat.twitch.tv')
   socket.addEventListener('open', () => {
     socket.send(`PASS oauth:${twitchToken}`)
