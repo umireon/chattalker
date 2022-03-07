@@ -116,7 +116,7 @@ export const connectYoutube = async (context: AppContext, db: Firestore, analyti
     if (e instanceof YoutubeRequestError) {
       const oauthResponse = await refreshYoutubeToken(context, db, user)
       await setYoutubeToken(user, db, oauthResponse)
-      connectYoutube(context, db, analytics, user, params)
+      connectYoutube(context, db, analytics, user, { ...params, token: oauthResponse.access_token })
     }
   }
 }
