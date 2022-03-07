@@ -12,26 +12,23 @@ export interface UserData {
   readonly 'youtube-refresh-token'?: string
 }
 
+export const extractUserData = (data: UserData) => {
+  let result: UserData = {}
+  if (data['twitch-access-token']) result = { ...result, 'twitch-access-token': data['twitch-access-token'] }
+  if (data['voice-en']) result = { ...result, 'voice-en': data['voice-en'] }
+  if (data['voice-ja']) result = { ...result, 'voice-ja': data['voice-ja'] }
+  if (data['voice-und']) result = { ...result, 'voice-und': data['voice-und'] }
+  if (data['youtube-access-token']) result = { ...result, 'youtube-access-token': data['youtube-access-token'] }
+  if (data['youtube-refresh-token']) result = { ...result, 'youtube-refresh-token': data['youtube-refresh-token'] }
+  return result
+}
+
 export const userConverter: FirestoreDataConverter<UserData> = {
   fromFirestore: snapshot => {
     const data = snapshot.data()
-    return {
-      'twitch-access-token': data['twitch-access-token'],
-      'voice-en': data['voice-en'],
-      'voice-ja': data['voice-ja'],
-      'voice-und': data['voice-und'],
-      'youtube-access-token': data['youtube-access-token'],
-      'youtube-refresh-token': data['youtube-refresh-token']
-    }
+    return extractUserData(data)
   },
-  toFirestore: data => ({
-    'twitch-access-token': data['twitch-access-token'],
-    'voice-en': data['voice-enn'],
-    'voice-ja': data['voice-ja'],
-    'voice-und': data['voice-un'],
-    'youtube-access-token': data['youtube-access-token'],
-    'youtube-refresh-token': data['youtube-refresh-token']
-  })
+  toFirestore: extractUserData
 }
 
 export const getUsersCollection = (db: Firestore) => collection(db, 'users').withConverter(userConverter)
