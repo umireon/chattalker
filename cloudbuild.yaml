@@ -19,10 +19,10 @@ steps:
       - text-to-speech
       - --gen2
       - --region=us-central1
-      - --source=.
       - --runtime=nodejs16
-      - --trigger-http
+      - --service-account=cloudfunctions@chattalker.iam.gserviceaccount.com
       - --set-env-vars=PROJECT_ID=$PROJECT_ID
+      - --trigger-http
     waitFor: ['backend npm exec esbuild']
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:slim'
     args:
@@ -33,10 +33,10 @@ steps:
       - youtube-oauth2callback
       - --gen2
       - --region=us-central1
-      - --source=.
       - --runtime=nodejs16
-      - --trigger-http
+      - --service-account=cloudfunctions@chattalker.iam.gserviceaccount.com
       - --set-env-vars=PROJECT_ID=$PROJECT_ID
+      - --trigger-http
     waitFor: ['backend npm exec esbuild']
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:slim'
     args:
@@ -47,10 +47,10 @@ steps:
       - youtube-oauth2refresh
       - --gen2
       - --region=us-central1
-      - --source=.
       - --runtime=nodejs16
-      - --trigger-http
+      - --service-account=cloudfunctions@chattalker.iam.gserviceaccount.com
       - --set-env-vars=PROJECT_ID=$PROJECT_ID
+      - --trigger-http
     waitFor: ['backend npm exec esbuild']
 
   - name: 'node:16-bullseye-slim'
