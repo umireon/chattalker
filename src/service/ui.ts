@@ -5,7 +5,7 @@ import type { AppContext } from '../../constants'
 import type { Firestore } from 'firebase/firestore'
 import { fetchAudio } from './audio'
 
-interface PlayerElements {
+export interface PlayerElements {
   readonly audioElement: HTMLAudioElement
   readonly languageElement: HTMLElement
   readonly textElement: HTMLElement
