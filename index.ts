@@ -71,7 +71,7 @@ interface GetYoutubeClientSecretOption {
   readonly version?: string
 }
 
-const DEFAULT_YOUTUBE_CLIENT_SECRET_VERSION = '1'
+const DEFAULT_YOUTUBE_CLIENT_SECRET_VERSION = 'latest'
 
 const coarseIntoString = (data: Uint8Array | string): string => {
   if (typeof data === 'string') {
@@ -88,7 +88,7 @@ const getYoutubeClientSecret = async (client: SecretManagerServiceClient, {
   version = DEFAULT_YOUTUBE_CLIENT_SECRET_VERSION
 }: GetYoutubeClientSecretOption) => {
   const [response] = await client.accessSecretVersion({
-    name: `projects/${projectId}/secrets/youtube-client-secret/versions/${version}.`
+    name: `projects/${projectId}/secrets/${name}/versions/${version}.`
   })
   return coarseIntoString(response.payload.data)
 }
@@ -105,8 +105,8 @@ http('text-to-speech', async (req, res) => {
   if (!handleCors(req, res)) return
 
   // Validate environment
-  const { MY_PROJECT_ID } = process.env
-  if (typeof MY_PROJECT_ID === 'undefined') throw new Error('MY_PROJECT_ID not provided')
+  const { PROJECT_ID } = process.env
+  if (typeof PROJECT_ID === 'undefined') throw new Error('PROJECT_ID not provided')
 
   // Validate query
   if (typeof req.query.text !== 'string') {
@@ -121,7 +121,7 @@ http('text-to-speech', async (req, res) => {
 
   // Detect language
   const translationClient = new TranslationServiceClient()
-  const language = await detectLanguage(translationClient, { content: text, projectId: MY_PROJECT_ID })
+  const language = await detectLanguage(translationClient, { content: text, projectId: PROJECT_ID })
 
   // Synthesize speech
   const textToSpeechClient = new TextToSpeechClient()
@@ -149,10 +149,10 @@ http('youtube-oauth2callback', async (req, res) => {
   if (!handleCors(req, res)) return
 
   // Validate environment
-  const { MY_PROJECT_ID } = process.env
-  if (typeof MY_PROJECT_ID === 'undefined') throw new Error('MY_PROJECT_ID not provided')
+  const { PROJECT_ID } = process.env
+  if (typeof PROJECT_ID === 'undefined') throw new Error('PROJECT_ID not provided')
   const secretManagerClient = new SecretManagerServiceClient()
-  const clientSecret = await getYoutubeClientSecret(secretManagerClient, { projectId: MY_PROJECT_ID })
+  const clientSecret = await getYoutubeClientSecret(secretManagerClient, { projectId: PROJECT_ID })
 
   // Validate query
   if (typeof req.query.code !== 'string') {
@@ -190,10 +190,10 @@ http('youtube-oauth2refresh', async (req, res) => {
   if (!handleCors(req, res)) return
 
   // Validate environment
-  const { MY_PROJECT_ID } = process.env
-  if (typeof MY_PROJECT_ID === 'undefined') throw new Error('PROJECT_ID not provided')
+  const { PROJECT_ID } = process.env
+  if (typeof PROJECT_ID === 'undefined') throw new Error('PROJECT_ID not provided')
   const secretManagerClient = new SecretManagerServiceClient()
-  const clientSecret = await getYoutubeClientSecret(secretManagerClient, { projectId: MY_PROJECT_ID })
+  const clientSecret = await getYoutubeClientSecret(secretManagerClient, { projectId: PROJECT_ID })
 
   // Validate query
   if (typeof req.query.refreshToken !== 'string') {
