@@ -7,7 +7,6 @@ schemes:
   - https
 produces:
   - application/json
-  - application/octet-stream
 securityDefinitions:
   firebase:
     authorizationUrl: ''
@@ -23,13 +22,20 @@ paths:
       operationId: text-to-speech
       x-google-backend:
         address: https://text-to-speech-bf7bhumxka-uc.a.run.app
+      produces:
+        - multipart/form-data
       security:
         - firebase: []
       responses:
         '200':
           description: A successful response
           schema:
-            type: string
+            type: object
+            properties:
+              audioContent:
+                type: binary
+              language:
+                type: string
     options:
       summary: Text-to-speech CORS
       operationId: text-to-speech-cors
@@ -38,8 +44,6 @@ paths:
       responses:
         '204':
           description: A successful response
-          schema:
-            type: string
 
   /youtube-oauth2callback:
     get:
@@ -53,7 +57,19 @@ paths:
         '200':
           description: A successful response
           schema:
-            type: string
+            type: object
+            properties:
+              access_token:
+                type: string
+              expires_in:
+                type: integer
+              refresh_token:
+                type: string
+              scope:
+                type: string
+              token_type:
+                type: string
+              
     options:
       summary: YouTube OAuth2 Callback CORS
       operationId: youtube-oauth2callback-cors
@@ -62,8 +78,6 @@ paths:
       responses:
         '204':
           description: A successful response
-          schema:
-            type: string
 
   /youtube-oauth2refresh:
     get:
@@ -77,7 +91,16 @@ paths:
         '200':
           description: A successful response
           schema:
-            type: string
+            type: object
+            properties:
+              access_token:
+                type: string
+              expires_in:
+                type: integer
+              scope:
+                type: string
+              token_type:
+                type: string
     options:
       summary: YouTube OAuth2 Refresh CORS
       operationId: youtube-oauth2refresh-cors
@@ -86,5 +109,3 @@ paths:
       responses:
         '204':
           description: A successful response
-          schema:
-            type: string
