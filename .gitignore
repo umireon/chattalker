@@ -107,3 +107,4 @@ dist
 .DS_Store
 
 *.js
+!jest.config.js
