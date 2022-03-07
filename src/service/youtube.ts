@@ -76,6 +76,7 @@ export const getLiveChatMessages = async (token: string, liveChatId: string, pag
   })
   if (!response.ok) throw new YoutubeRequestError('Request failed')
   const json: LiveChatMessageResponse = await response.json()
+  console.log(json)
   return json
 }
 

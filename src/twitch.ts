@@ -7,6 +7,8 @@ import { getUserData } from './service/users'
 import { initializeApp } from 'firebase/app'
 import { setTwitchToken } from './service/oauth'
 
+import 'three-dots/dist/three-dots.min.css'
+
 const app = initializeApp(firebaseConfig)
 const auth = getAuth(app)
 const db = getFirestore(app)
@@ -27,6 +29,11 @@ auth.onAuthStateChanged(async (user) => {
 
     await setTwitchToken(db, user, token)
     logEvent(analytics, 'twitch_connected')
-    location.href = '/app.html'
+    location.href = 'app.html'
   }
 })
+
+setTimeout(() => {
+  const resetElement = document.querySelector('button')
+  resetElement.disabled = false
+}, 20000)
