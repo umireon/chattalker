@@ -7,6 +7,8 @@ import { getFirestore } from 'firebase/firestore'
 import { getUserData } from './service/users'
 import { initializeApp } from 'firebase/app'
 
+import 'three-dots/dist/three-dots.min.css'
+
 const app = initializeApp(firebaseConfig)
 const auth = getAuth(app)
 const db = getFirestore(app)
@@ -31,6 +33,11 @@ auth.onAuthStateChanged(async (user) => {
     })
     await setYoutubeToken(user, db, oauthResponse)
     logEvent(analytics, 'youtube_connected')
-    location.href = '/app.html'
+    location.href = 'app.html'
   }
 })
+
+setTimeout(() => {
+  const resetElement = document.querySelector('button')
+  resetElement.disabled = false
+}, 20000)

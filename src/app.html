@@ -2,6 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>ChatTalker</title>
   </head>
   <body>
@@ -81,10 +82,10 @@
         <button type="button" class="play" value="42">▶️</button>
       </p>
     </form>
-    <button id="connect-twitch">Connect to Twitch</button>
-    <button id="connect-youtube">Connect to YouTube</button>
-    <p><button id="logout">Logout</button></p>
-    <p><button onclick="location.reload()">Reload</button></p>
+    <button type="button" id="connect-twitch">Connect to Twitch</button>
+    <button type="button" id="connect-youtube">Connect to YouTube</button>
+    <p><button type="button" id="logout">Logout</button></p>
+    <p><button type="button" onclick="location.reload()">Reload</button></p>
     <h2>Chat</h2>
     <p><span id="language"></span><span id="text"></span></p>
     <script type="module" src="app.ts"></script>
