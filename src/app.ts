@@ -1,13 +1,13 @@
 import { DEFAULT_CONTEXT, firebaseConfig } from '../constants'
 import { connectTwitch, getTwitchLogin } from './service/twitch'
 import { getTwitchToken, getYoutubeToken } from './service/oauth'
+import { getUserData, setUserData } from './service/users'
 import { listenLogout, listenPlay, listenVoiceChange } from './service/ui'
 
 import { connectYoutube } from './service/youtube'
 import { getAnalytics } from 'firebase/analytics'
 import { getAuth } from 'firebase/auth'
 import { getFirestore } from 'firebase/firestore'
-import { getUserData } from './service/users'
 import { initializeApp } from 'firebase/app'
 
 const app = initializeApp(firebaseConfig)
@@ -44,24 +44,34 @@ auth.onAuthStateChanged(async (user) => {
     if (typeof youtubeToken !== 'undefined') {
       connectYoutube(DEFAULT_CONTEXT, db, analytics, user, { token: youtubeToken })
     }
+
+    const twitchConnectElement = document.querySelector<HTMLButtonElement>('button#connect-twitch')
+    twitchConnectElement.addEventListener('click', async () => {
+      const nonce = Math.random().toString()
+      await setUserData(db, user, { nonce })
+      const query = new URLSearchParams({
+        client_id: DEFAULT_CONTEXT.twitchClientId,
+        redirect_uri: `${location.origin}${location.pathname}`.replace(/app.html$/, 'twitch.html'),
+        response_type: 'token',
+        scope: 'chat:read',
+        state: nonce
+      })
+      location.href = `https://id.twitch.tv/oauth2/authorize?${query}`
+    })
+
+    const youtubeConnectElement = document.querySelector<HTMLButtonElement>('button#connect-youtube')
+    youtubeConnectElement.addEventListener('click', async () => {
+      const nonce = Math.random().toString()
+      await setUserData(db, user, { nonce })
+      const query = new URLSearchParams({
+        access_type: 'offline',
+        client_id: DEFAULT_CONTEXT.youtubeClientId,
+        redirect_uri: `${location.origin}${location.pathname}`.replace(/app.html$/, 'youtube.html'),
+        response_type: 'code',
+        scope: 'https://www.googleapis.com/auth/youtube.readonly',
+        state: nonce
+      })
+      location.href = `https://accounts.google.com/o/oauth2/auth?${query}`
+    })
   }
 })
-
-const twitchConnectElement = document.querySelector<HTMLAnchorElement>('a#connect-twitch')
-const twitchOauthQuery = new URLSearchParams({
-  client_id: DEFAULT_CONTEXT.twitchClientId,
-  redirect_uri: `${location.origin}${location.pathname}`.replace(/app.html$/, 'twitch.html'),
-  response_type: 'token',
-  scope: 'chat:read'
-})
-twitchConnectElement.href = `https://id.twitch.tv/oauth2/authorize?${twitchOauthQuery}`
-
-const youtubeConnectElement = document.querySelector<HTMLAnchorElement>('a#connect-youtube')
-const youtubeOauthQuery = new URLSearchParams({
-  access_type: 'offline',
-  client_id: DEFAULT_CONTEXT.youtubeClientId,
-  redirect_uri: `${location.origin}${location.pathname}`.replace(/app.html$/, 'youtube.html'),
-  response_type: 'code',
-  scope: 'https://www.googleapis.com/auth/youtube.readonly'
-})
-youtubeConnectElement.href = `https://accounts.google.com/o/oauth2/auth?${youtubeOauthQuery}`

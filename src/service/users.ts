@@ -4,6 +4,7 @@ import { collection, doc, getDoc, setDoc } from 'firebase/firestore'
 import type { User } from 'firebase/auth'
 
 export interface UserData {
+  readonly 'nonce'?: string
   readonly 'twitch-access-token'?: string
   readonly 'voice-en'?: string
   readonly 'voice-ja'?: string
@@ -14,6 +15,7 @@ export interface UserData {
 
 export const extractUserData = (data: UserData) => {
   let result: UserData = {}
+  if (data.nonce) result = { ...result, nonce: data.nonce }
   if (data['twitch-access-token']) result = { ...result, 'twitch-access-token': data['twitch-access-token'] }
   if (data['voice-en']) result = { ...result, 'voice-en': data['voice-en'] }
   if (data['voice-ja']) result = { ...result, 'voice-ja': data['voice-ja'] }

@@ -4,6 +4,7 @@ import { getAnalytics, logEvent } from 'firebase/analytics'
 
 import { getAuth } from 'firebase/auth'
 import { getFirestore } from 'firebase/firestore'
+import { getUserData } from './service/users'
 import { initializeApp } from 'firebase/app'
 
 const app = initializeApp(firebaseConfig)
@@ -14,8 +15,16 @@ const analytics = getAnalytics(app)
 auth.onAuthStateChanged(async (user) => {
   if (user) {
     const params = new URLSearchParams(location.search)
+
     const code = params.get('code')
     if (!code) throw new Error('Invalid code')
+
+    const userData = await getUserData(db, user)
+    if (typeof userData.nonce === 'undefined') throw new Error('Nonce not stored')
+    const expectedState = userData.nonce
+    const actualState = params.get('state')
+    if (actualState !== expectedState) throw new Error('Nonce does not match')
+
     const oauthResponse = await exchangeYoutubeToken(DEFAULT_CONTEXT, user, {
       code,
       redirectUri: `${location.origin}${location.pathname}`
