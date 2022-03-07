@@ -62,19 +62,18 @@ export const getYoutubeToken = async (db: Firestore, user: User) => {
 export const refreshYoutubeToken = async ({ youtubeRefreshEndpoint }: AppContext, db: Firestore, user: User) => {
   const data = await getUserData(db, user)
   const refreshToken = data['youtube-refresh-token']
-  if (typeof refreshToken !== 'undefined') {
-    const query = new URLSearchParams({ refreshToken })
-    const idToken = await user.getIdToken()
-    const response = await fetch(`${youtubeRefreshEndpoint}?${query}`, {
-      headers: {
-        Authorization: `Bearer ${idToken}`
-      }
-    })
-    if (!response.ok) throw new Error('Invalid response')
-    const json = await response.json()
-    if (!validateYoutubeOauthResponse(json)) throw new Error('Invalid response')
-    return json
-  }
+  if (typeof refreshToken === 'undefined') throw new Error('Refresh token not stored')
+  const query = new URLSearchParams({ refreshToken })
+  const idToken = await user.getIdToken()
+  const response = await fetch(`${youtubeRefreshEndpoint}?${query}`, {
+    headers: {
+      Authorization: `Bearer ${idToken}`
+    }
+  })
+  if (!response.ok) throw new Error('Invalid response')
+  const json = await response.json()
+  if (!validateYoutubeOauthResponse(json)) throw new Error('Invalid response')
+  return json
 }
 
 export const generateNonce = (): string => {
