@@ -105,8 +105,8 @@ http('text-to-speech', async (req, res) => {
   if (!handleCors(req, res)) return
 
   // Validate environment
-  const { PROJECT_ID } = process.env
-  if (typeof PROJECT_ID === 'undefined') throw new Error('PROJECT_ID not provided')
+  const { MY_PROJECT_ID } = process.env
+  if (typeof MY_PROJECT_ID === 'undefined') throw new Error('MY_PROJECT_ID not provided')
 
   // Validate query
   if (typeof req.query.text !== 'string') {
@@ -121,7 +121,7 @@ http('text-to-speech', async (req, res) => {
 
   // Detect language
   const translationClient = new TranslationServiceClient()
-  const language = await detectLanguage(translationClient, { content: text, projectId: PROJECT_ID })
+  const language = await detectLanguage(translationClient, { content: text, projectId: MY_PROJECT_ID })
 
   // Synthesize speech
   const textToSpeechClient = new TextToSpeechClient()
@@ -149,10 +149,10 @@ http('youtube-oauth2callback', async (req, res) => {
   if (!handleCors(req, res)) return
 
   // Validate environment
-  const { PROJECT_ID } = process.env
-  if (typeof PROJECT_ID === 'undefined') throw new Error('PROJECT_ID not provided')
+  const { MY_PROJECT_ID } = process.env
+  if (typeof MY_PROJECT_ID === 'undefined') throw new Error('MY_PROJECT_ID not provided')
   const secretManagerClient = new SecretManagerServiceClient()
-  const clientSecret = await getYoutubeClientSecret(secretManagerClient, { projectId: PROJECT_ID })
+  const clientSecret = await getYoutubeClientSecret(secretManagerClient, { projectId: MY_PROJECT_ID })
 
   // Validate query
   if (typeof req.query.code !== 'string') {
@@ -190,10 +190,10 @@ http('youtube-oauth2refresh', async (req, res) => {
   if (!handleCors(req, res)) return
 
   // Validate environment
-  const { PROJECT_ID } = process.env
-  if (typeof PROJECT_ID === 'undefined') throw new Error('PROJECT_ID not provided')
+  const { MY_PROJECT_ID } = process.env
+  if (typeof MY_PROJECT_ID === 'undefined') throw new Error('PROJECT_ID not provided')
   const secretManagerClient = new SecretManagerServiceClient()
-  const clientSecret = await getYoutubeClientSecret(secretManagerClient, { projectId: PROJECT_ID })
+  const clientSecret = await getYoutubeClientSecret(secretManagerClient, { projectId: MY_PROJECT_ID })
 
   // Validate query
   if (typeof req.query.refreshToken !== 'string') {
