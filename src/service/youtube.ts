@@ -4,6 +4,7 @@ import { refreshYoutubeToken, setYoutubeToken } from './oauth'
 import type { Analytics } from 'firebase/analytics'
 import type { AppContext } from '../../constants'
 import type { Firestore } from 'firebase/firestore'
+import type { PlayerElements } from './ui'
 import type { User } from 'firebase/auth'
 import { fetchAudio } from './audio'
 import { logEvent } from 'firebase/analytics'
@@ -96,7 +97,7 @@ interface ConnectYoutubeParams {
   token: string
 }
 
-export const connectYoutube = async (context: AppContext, db: Firestore, analytics: Analytics, user: User, params: ConnectYoutubeParams) => {
+export const connectYoutube = async (context: AppContext, db: Firestore, analytics: Analytics, user: User, playerElements: PlayerElements, params: ConnectYoutubeParams) => {
   const { token } = params
   try {
     for await (const items of pollLiveChatMessages(token)) {
@@ -106,9 +107,9 @@ export const connectYoutube = async (context: AppContext, db: Firestore, analyti
         const freshTime = new Date().getTime() - 10 * 1000
         if (chatTime > freshTime && typeof displayMessage !== 'undefined') {
           const { audioContent, language } = await fetchAudio(context, user, displayMessage)
-          playAudio(new Blob([audioContent]))
-          showLanguage(language)
-          showText(displayMessage)
+          playAudio(playerElements, new Blob([audioContent]))
+          showLanguage(playerElements, language)
+          showText(playerElements, displayMessage)
           logEvent(analytics, 'chat_played')
         }
       }
@@ -117,7 +118,7 @@ export const connectYoutube = async (context: AppContext, db: Firestore, analyti
     if (e instanceof YoutubeRequestError) {
       const oauthResponse = await refreshYoutubeToken(context, db, user)
       await setYoutubeToken(user, db, oauthResponse)
-      connectYoutube(context, db, analytics, user, { ...params, token: oauthResponse.access_token })
+      connectYoutube(context, db, analytics, user, playerElements, { ...params, token: oauthResponse.access_token })
     }
   }
 }

@@ -2,6 +2,7 @@ import { Analytics, logEvent } from 'firebase/analytics'
 import { playAudio, showLanguage, showText } from './ui'
 
 import type { AppContext } from '../../constants'
+import type { PlayerElements } from './ui'
 import type { User } from 'firebase/auth'
 import { fetchAudio } from './audio'
 
@@ -22,7 +23,7 @@ export interface ConnectTwitchParams {
   token: string
 }
 
-export const connectTwitch = (context: AppContext, analytics: Analytics, user: User, params: ConnectTwitchParams) => {
+export const connectTwitch = (context: AppContext, analytics: Analytics, user: User, playerElements: PlayerElements, params: ConnectTwitchParams) => {
   const { login, token } = params
   const socket = new WebSocket('wss://irc-ws.chat.twitch.tv')
   socket.addEventListener('open', () => {
@@ -38,9 +39,9 @@ export const connectTwitch = (context: AppContext, analytics: Analytics, user: U
     const m = event.data.match(privmsgRegexp)
     if (m) {
       const { audioContent, language } = await fetchAudio(context, user, m[1])
-      playAudio(new Blob([audioContent]))
-      showLanguage(language)
-      showText(m[1])
+      playAudio(playerElements, audioContent)
+      showLanguage(playerElements, language)
+      showText(playerElements, m[1])
       logEvent(analytics, 'chat_played')
     }
   })
@@ -53,7 +54,7 @@ export const connectTwitch = (context: AppContext, analytics: Analytics, user: U
   socket.addEventListener('close', event => {
     console.log(event)
     setTimeout(() => {
-      connectTwitch(context, analytics, user, params)
+      connectTwitch(context, analytics, user, playerElements, params)
     }, 1000)
   })
   socket.addEventListener('error', event => {

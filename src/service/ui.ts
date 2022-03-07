@@ -5,26 +5,23 @@ import type { AppContext } from '../../constants'
 import type { Firestore } from 'firebase/firestore'
 import { fetchAudio } from './audio'
 
-export const playAudio = (blob: Blob) => {
-  const element = document.querySelector('audio')
-  if (element !== null) {
-    element.src = URL.createObjectURL(blob)
-    element.play()
-  }
+interface PlayerElements {
+  readonly audioElement: HTMLAudioElement
+  readonly languageElement: HTMLElement
+  readonly textElement: HTMLElement
 }
 
-export const showLanguage = (language: string) => {
-  const element = document.querySelector('#language')
-  if (element !== null) {
-    element.textContent = language
-  }
+export const playAudio = ({ audioElement }: PlayerElements, blob: Blob) => {
+  audioElement.src = URL.createObjectURL(blob)
+  audioElement.play()
 }
 
-export const showText = (text: string) => {
-  const element = document.querySelector('#text')
-  if (element !== null) {
-    element.textContent = text
-  }
+export const showLanguage = ({ languageElement }: PlayerElements, language: string) => {
+  languageElement.textContent = language
+}
+
+export const showText = ({ textElement }: PlayerElements, text: string) => {
+  textElement.textContent = text
 }
 
 export const listenLogout = (auth: Auth, element: HTMLElement) => {
@@ -34,14 +31,14 @@ export const listenLogout = (auth: Auth, element: HTMLElement) => {
   })
 }
 
-export const listenPlay = (context: AppContext, user: User, element: HTMLButtonElement) => {
+export const listenPlay = (context: AppContext, user: User, playerElements: PlayerElements, element: HTMLButtonElement) => {
   element.addEventListener('click', async () => {
     element.disabled = true
     const { audioContent, language } = await fetchAudio(context, user, element.value)
     element.disabled = false
-    playAudio(audioContent)
-    showLanguage(language)
-    showText(element.value)
+    playAudio(playerElements, audioContent)
+    showLanguage(playerElements, language)
+    showText(playerElements, element.value)
   })
 }
 

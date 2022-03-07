@@ -4,6 +4,7 @@ import { generateNonce, getTwitchToken, getYoutubeToken } from './service/oauth'
 import { getUserData, setUserData } from './service/users'
 import { listenLogout, listenPlay, listenVoiceChange } from './service/ui'
 
+import type { PlayerElements } from './service/ui'
 import { connectYoutube } from './service/youtube'
 import { getAnalytics } from 'firebase/analytics'
 import { getAuth } from 'firebase/auth'
@@ -19,8 +20,14 @@ listenLogout(auth, document.querySelector('#logout'))
 
 auth.onAuthStateChanged(async (user) => {
   if (user) {
+    const playerElements: PlayerElements = {
+      audioElement: document.querySelector('audio'),
+      languageElement: document.querySelector('#language'),
+      textElement: document.querySelector('#text')
+    }
+
     for (const element of document.querySelectorAll<HTMLButtonElement>('button.play')) {
-      listenPlay(DEFAULT_CONTEXT, user, element)
+      listenPlay(DEFAULT_CONTEXT, user, playerElements, element)
     }
 
     const data = await getUserData(db, user)
@@ -34,7 +41,7 @@ auth.onAuthStateChanged(async (user) => {
     const twitchToken = await getTwitchToken(db, user)
     if (typeof twitchToken !== 'undefined') {
       const twitchLogin = await getTwitchLogin(DEFAULT_CONTEXT, twitchToken)
-      connectTwitch(DEFAULT_CONTEXT, analytics, user, {
+      connectTwitch(DEFAULT_CONTEXT, analytics, user, playerElements, {
         login: twitchLogin,
         token: twitchToken
       })
@@ -42,7 +49,7 @@ auth.onAuthStateChanged(async (user) => {
 
     const youtubeToken = await getYoutubeToken(db, user)
     if (typeof youtubeToken !== 'undefined') {
-      connectYoutube(DEFAULT_CONTEXT, db, analytics, user, { token: youtubeToken })
+      connectYoutube(DEFAULT_CONTEXT, db, analytics, user, playerElements, { token: youtubeToken })
     }
 
     const twitchConnectElement = document.querySelector<HTMLButtonElement>('button#connect-twitch')
