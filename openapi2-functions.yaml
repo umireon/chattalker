@@ -33,7 +33,7 @@ paths:
             type: object
             properties:
               audioContent:
-                type: binary
+                type: string
               language:
                 type: string
     options:
