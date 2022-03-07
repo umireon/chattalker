@@ -1,6 +1,6 @@
 import { DEFAULT_CONTEXT, firebaseConfig } from '../constants'
 import { connectTwitch, getTwitchLogin } from './service/twitch'
-import { getTwitchToken, getYoutubeToken } from './service/oauth'
+import { generateNonce, getTwitchToken, getYoutubeToken } from './service/oauth'
 import { getUserData, setUserData } from './service/users'
 import { listenLogout, listenPlay, listenVoiceChange } from './service/ui'
 
@@ -47,7 +47,7 @@ auth.onAuthStateChanged(async (user) => {
 
     const twitchConnectElement = document.querySelector<HTMLButtonElement>('button#connect-twitch')
     twitchConnectElement.addEventListener('click', async () => {
-      const nonce = Math.random().toString()
+      const nonce = generateNonce()
       await setUserData(db, user, { nonce })
       const query = new URLSearchParams({
         client_id: DEFAULT_CONTEXT.twitchClientId,
@@ -61,7 +61,7 @@ auth.onAuthStateChanged(async (user) => {
 
     const youtubeConnectElement = document.querySelector<HTMLButtonElement>('button#connect-youtube')
     youtubeConnectElement.addEventListener('click', async () => {
-      const nonce = Math.random().toString()
+      const nonce = generateNonce()
       await setUserData(db, user, { nonce })
       const query = new URLSearchParams({
         access_type: 'offline',

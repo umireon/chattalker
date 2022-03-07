@@ -76,3 +76,10 @@ export const refreshYoutubeToken = async ({ youtubeRefreshEndpoint }: AppContext
     return json
   }
 }
+
+export const generateNonce = (): string => {
+  const array = new Uint32Array(1)
+  const generated = crypto.getRandomValues(array)
+  const nonce = generated[0].toString(16).padStart(8, '0')
+  return nonce
+}
