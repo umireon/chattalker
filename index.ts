@@ -71,7 +71,7 @@ interface GetYoutubeClientSecretOption {
   readonly version?: string
 }
 
-const DEFAULT_YOUTUBE_CLIENT_SECRET_VERSION = 'latest'
+const DEFAULT_YOUTUBE_CLIENT_SECRET_VERSION = '1'
 
 const coarseIntoString = (data: Uint8Array | string): string => {
   if (typeof data === 'string') {
@@ -88,7 +88,7 @@ const getYoutubeClientSecret = async (client: SecretManagerServiceClient, {
   version = DEFAULT_YOUTUBE_CLIENT_SECRET_VERSION
 }: GetYoutubeClientSecretOption) => {
   const [response] = await client.accessSecretVersion({
-    name: `projects/${projectId}/secrets/${name}/versions/${version}.`
+    name: `projects/${projectId}/secrets/${name}/versions/${version}`
   })
   return coarseIntoString(response.payload.data)
 }
