@@ -4,7 +4,7 @@ import { fetchAudio } from './audio'
 
 test('a', async () => {
   const context = { textToSpeechEndpoint: 'ENDPOINT' } as AppContext
-  const user = {} as User
+  const user = { getIdToken: jest.fn().mockImplementation(() => 'TOKEN') } as unknown as User
   const text = 'TEXT'
   await fetchAudio(context, user, text)
 })
