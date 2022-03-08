@@ -21,7 +21,7 @@ export const fetchAudio = async ({ textToSpeechEndpoint }: AppContext, user: Use
   const formData = await response.formData()
   const audioContent = formData.get('audioContent')
   const language = formData.get('language')
-  if (typeof audioContent === 'string') throw new Error('Invalid audioContent')
+  if (typeof audioContent === 'string' || audioContent === null) throw new Error('Invalid audioContent')
   if (typeof language !== 'string') throw new Error('Invalid language')
   return { audioContent, language }
 }

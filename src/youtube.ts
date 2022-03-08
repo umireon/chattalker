@@ -39,5 +39,6 @@ auth.onAuthStateChanged(async (user) => {
 
 setTimeout(() => {
   const resetElement = document.querySelector('button')
+  if (resetElement === null) throw new Error('Reset button not found')
   resetElement.disabled = false
 }, 20000)

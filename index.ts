@@ -90,11 +90,12 @@ const getYoutubeClientSecret = async (client: SecretManagerServiceClient, {
   const [response] = await client.accessSecretVersion({
     name: `projects/${projectId}/secrets/${name}/versions/${version}`
   })
+  if (!response.payload || !response.payload.data) throw new Error('Invalid response')
   return coarseIntoString(response.payload.data)
 }
 
-const validateVoice = (arg: string | ParsedQs | string[] | ParsedQs[]): arg is Record<string, string> => {
-  if (typeof arg === 'string' || Array.isArray(arg)) return false
+const validateVoice = (arg: string | ParsedQs | string[] | ParsedQs[] | undefined): arg is Record<string, string> => {
+  if (typeof arg === 'undefined' || typeof arg === 'string' || Array.isArray(arg)) return false
   for (const name in arg) {
     if (typeof arg[name] !== 'string') return false
   }
@@ -131,7 +132,7 @@ http('text-to-speech', async (req, res) => {
     voice: getVoice(voice, language)
   })
   const { audioContent } = response
-  if (audioContent === null) throw new Error('Invalid response')
+  if (!audioContent) throw new Error('Invalid response')
 
   // Compose response
   const formData = new FormData()

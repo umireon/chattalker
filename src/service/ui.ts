@@ -7,8 +7,8 @@ import { fetchAudio } from './audio'
 
 export interface PlayerElements {
   readonly audioElement: HTMLAudioElement
-  readonly languageElement: HTMLElement
-  readonly textElement: HTMLElement
+  readonly languageElement: Element
+  readonly textElement: Element
 }
 
 export const playAudio = ({ audioElement }: PlayerElements, blob: Blob) => {
@@ -24,7 +24,7 @@ export const showText = ({ textElement }: PlayerElements, text: string) => {
   textElement.textContent = text
 }
 
-export const listenLogout = (auth: Auth, element: HTMLElement) => {
+export const listenLogout = (auth: Auth, element: Element) => {
   element.addEventListener('click', async () => {
     await auth.signOut()
     location.href = '/'

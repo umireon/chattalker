@@ -6,7 +6,8 @@
     "start": "parcel src/*.html",
     "build": "parcel build src/*.html",
     "lint": "eslint --ext .ts src *.ts",
-    "test": "jest"
+    "test": "jest",
+    "tsc": "tsc"
   },
   "repository": {
     "type": "git",
