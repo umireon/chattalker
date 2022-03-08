@@ -26,6 +26,19 @@ paths:
         - multipart/form-data
       security:
         - firebase: []
+      parameters:
+        - in: query
+          name: text
+          type: string
+        - in: query
+          name: 'voice[en]'
+          type: string
+        - in: query
+          name: 'voice[ja]'
+          type: string
+        - in: query
+          name: 'voice[und]'
+          type: string
       responses:
         '200':
           description: A successful response
@@ -53,6 +66,13 @@ paths:
         address: https://youtube-oauth2callback-bf7bhumxka-uc.a.run.app
       security:
         - firebase: []
+      parameters:
+        - in: query
+          name: code
+          type: string
+        - in: query
+          name: redirectUri
+          type: string
       responses:
         '200':
           description: A successful response
@@ -87,6 +107,10 @@ paths:
         address: https://youtube-oauth2refresh-bf7bhumxka-uc.a.run.app
       security:
         - firebase: []
+      parameters:
+        - in: query
+          name: refreshToken
+          type: string
       responses:
         '200':
           description: A successful response
