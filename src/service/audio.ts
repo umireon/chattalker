@@ -1,15 +1,33 @@
 import type { AppContext } from '../../constants'
 import type { User } from 'firebase/auth'
 
-export const fetchAudio = async ({ textToSpeechEndpoint }: AppContext, user: User, text: string) => {
+export const VOICE_KEYS = ['voice[en]', 'voice[ja]', 'voice[und]'] as const
+export type VoiceKeys = typeof VOICE_KEYS[number]
+export interface Voice {
+  readonly 'voice[en]'?: string
+  readonly 'voice[ja]'?: string
+  readonly 'voice[und]'?: string
+}
+
+export const readVoiceFromForm = (form: HTMLFormElement) => {
+  let voice: Voice = {}
+  const formData = new FormData(form)
+  for (const key of VOICE_KEYS) {
+    const value = formData.get(key)
+    if (value !== null) {
+      voice = { ...voice, [key]: value }
+    }
+  }
+  return voice
+}
+
+export const fetchAudio = async ({ textToSpeechEndpoint }: AppContext, user: User, voice: Voice, text: string) => {
   const idToken = await user.getIdToken(true)
   const query = new URLSearchParams({ text })
-  const form = document.querySelector('form')
-  if (form !== null) {
-    for (const [key, value] of new FormData(form)) {
-      if (typeof value === 'string') {
-        query.append(key, value)
-      }
+  for (const key of VOICE_KEYS) {
+    const value = voice[key]
+    if (typeof value !== 'undefined') {
+      query.append(key, value)
     }
   }
   const response = await fetch(`${textToSpeechEndpoint}?${query}`, {

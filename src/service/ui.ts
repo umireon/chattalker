@@ -1,9 +1,9 @@
 import type { Auth, User } from 'firebase/auth'
 import { collection, doc, setDoc } from 'firebase/firestore'
+import { fetchAudio, readVoiceFromForm } from './audio'
 
 import type { AppContext } from '../../constants'
 import type { Firestore } from 'firebase/firestore'
-import { fetchAudio } from './audio'
 
 export interface PlayerElements {
   readonly audioElement: HTMLAudioElement
@@ -34,7 +34,9 @@ export const listenLogout = (auth: Auth, element: Element) => {
 export const listenPlay = (context: AppContext, user: User, playerElements: PlayerElements, element: HTMLButtonElement) => {
   element.addEventListener('click', async () => {
     element.disabled = true
-    const { audioContent, language } = await fetchAudio(context, user, element.value)
+    const form = document.querySelector('form')
+    const voice = form === null ? {} : readVoiceFromForm(form)
+    const { audioContent, language } = await fetchAudio(context, user, voice, element.value)
     element.disabled = false
     playAudio(playerElements, audioContent)
     showLanguage(playerElements, language)

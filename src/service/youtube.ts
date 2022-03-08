@@ -1,3 +1,4 @@
+import { fetchAudio, readVoiceFromForm } from './audio'
 import { playAudio, showLanguage, showText } from './ui'
 import { refreshYoutubeToken, setYoutubeToken } from './oauth'
 
@@ -6,7 +7,6 @@ import type { AppContext } from '../../constants'
 import type { Firestore } from 'firebase/firestore'
 import type { PlayerElements } from './ui'
 import type { User } from 'firebase/auth'
-import { fetchAudio } from './audio'
 import { logEvent } from 'firebase/analytics'
 
 export class YoutubeRequestError extends Error {}
@@ -106,7 +106,9 @@ export const connectYoutube = async (context: AppContext, db: Firestore, analyti
         const chatTime = new Date(item.snippet.publishedAt).getTime()
         const freshTime = new Date().getTime() - 10 * 1000
         if (chatTime > freshTime && typeof displayMessage !== 'undefined') {
-          const { audioContent, language } = await fetchAudio(context, user, displayMessage)
+          const form = document.querySelector('form')
+          const voice = form === null ? {} : readVoiceFromForm(form)
+          const { audioContent, language } = await fetchAudio(context, user, voice, displayMessage)
           playAudio(playerElements, new Blob([audioContent]))
           showLanguage(playerElements, language)
           showText(playerElements, displayMessage)
