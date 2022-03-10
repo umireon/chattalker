@@ -24,6 +24,7 @@ export interface ConnectTwitchParams {
 }
 
 export const connectTwitch = (context: AppContext, analytics: Analytics, user: User, playerElements: PlayerElements, params: ConnectTwitchParams) => {
+  const { loadingElement } = playerElements
   const { login, token } = params
   const socket = new WebSocket('wss://irc-ws.chat.twitch.tv')
   socket.addEventListener('open', () => {
@@ -40,7 +41,9 @@ export const connectTwitch = (context: AppContext, analytics: Analytics, user: U
     if (m) {
       const form = document.querySelector('form')
       const voice = form === null ? {} : readVoiceFromForm(form)
+      loadingElement.classList.remove('hidden')
       const { audioContent, language } = await fetchAudio(context, user, voice, m[1])
+      loadingElement.classList.add('hidden')
       playAudio(playerElements, audioContent)
       showLanguage(playerElements, language)
       showText(playerElements, m[1])

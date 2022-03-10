@@ -98,6 +98,7 @@ interface ConnectYoutubeParams {
 }
 
 export const connectYoutube = async (context: AppContext, db: Firestore, analytics: Analytics, user: User, playerElements: PlayerElements, params: ConnectYoutubeParams) => {
+  const { loadingElement } = playerElements
   const { token } = params
   try {
     for await (const items of pollLiveChatMessages(token)) {
@@ -108,7 +109,9 @@ export const connectYoutube = async (context: AppContext, db: Firestore, analyti
         if (chatTime > freshTime && typeof displayMessage !== 'undefined') {
           const form = document.querySelector('form')
           const voice = form === null ? {} : readVoiceFromForm(form)
+          loadingElement.classList.remove('hidden')
           const { audioContent, language } = await fetchAudio(context, user, voice, displayMessage)
+          loadingElement.classList.add('hidden')
           playAudio(playerElements, new Blob([audioContent]))
           showLanguage(playerElements, language)
           showText(playerElements, displayMessage)

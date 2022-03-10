@@ -8,6 +8,7 @@ import type { Firestore } from 'firebase/firestore'
 export interface PlayerElements {
   readonly audioElement: HTMLAudioElement
   readonly languageElement: Element
+  readonly loadingElement: Element
   readonly textElement: Element
 }
 
@@ -32,12 +33,15 @@ export const listenLogout = (auth: Auth, element: Element) => {
 }
 
 export const listenPlay = (context: AppContext, user: User, playerElements: PlayerElements, element: HTMLButtonElement) => {
+  const { loadingElement } = playerElements
   element.addEventListener('click', async () => {
     element.disabled = true
+    loadingElement.classList.remove('hidden')
     const form = document.querySelector('form')
     const voice = form === null ? {} : readVoiceFromForm(form)
     const { audioContent, language } = await fetchAudio(context, user, voice, element.value)
     element.disabled = false
+    loadingElement.classList.add('hidden')
     playAudio(playerElements, audioContent)
     showLanguage(playerElements, language)
     showText(playerElements, element.value)

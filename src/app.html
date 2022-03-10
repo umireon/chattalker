@@ -3,6 +3,11 @@
   <head>
     <meta charset="utf-8"/>
     <title>ChatTalker</title>
+    <style>
+      .hidden {
+        display: none;
+      }
+    </style>
   </head>
   <body>
     <h1>ChatTalker - Ready!</h1>
@@ -87,7 +92,7 @@
     <p><button type="button" id="logout">Logout</button></p>
     <p><button type="button" onclick="location.reload()">Reload</button></p>
     <h2>Chat</h2>
-    <p><span id="language"></span><span id="text"></span></p>
+    <p><span id="language"></span><span id="text"></span><div id="loading" class="dot-bricks hidden"></div></p>
     <script type="module" src="app.ts"></script>
   </body>
 </html>

@@ -11,6 +11,8 @@ import { getAuth } from 'firebase/auth'
 import { getFirestore } from 'firebase/firestore'
 import { initializeApp } from 'firebase/app'
 
+import 'three-dots/dist/three-dots.min.css'
+
 const app = initializeApp(firebaseConfig)
 const auth = getAuth(app)
 const db = getFirestore(app)
@@ -24,9 +26,10 @@ auth.onAuthStateChanged(async (user) => {
   if (user) {
     const audioElement = document.querySelector('audio')
     const languageElement = document.querySelector('#language')
+    const loadingElement = document.querySelector('#loading')
     const textElement = document.querySelector('#text')
-    if (audioElement === null || languageElement === null || textElement === null) throw new Error('Player elements not found')
-    const playerElements: PlayerElements = { audioElement, languageElement, textElement }
+    if (audioElement === null || languageElement === null || loadingElement === null || textElement === null) throw new Error('Player elements not found')
+    const playerElements: PlayerElements = { audioElement, languageElement, loadingElement, textElement }
 
     for (const element of document.querySelectorAll<HTMLButtonElement>('button.play')) {
       listenPlay(DEFAULT_CONTEXT, user, playerElements, element)
