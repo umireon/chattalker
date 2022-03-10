@@ -61,7 +61,7 @@ steps:
       - run
       - build
     waitFor: ['npm ci']
-    id: 'frontend npm run build'
+    id: 'npm run build'
   - name: 'gcr.io/$PROJECT_ID/firebase'
     args:
       - deploy
