@@ -3,9 +3,11 @@
   "version": "0.1.0",
   "description": "Chat message talker on Twitch for OBS and so on",
   "scripts": {
-    "start": "parcel src/*.html",
     "build": "parcel build src/*.html",
+    "build-functions": "esbuild --outdir=. constants.ts index.ts",
     "lint": "eslint --ext .ts src *.ts",
+    "start": "parcel src/*.html",
+    "functions-framework": "functions-framework",
     "test": "jest",
     "tsc": "tsc"
   },
@@ -24,6 +26,7 @@
     "@types/jest": "^27.4.1",
     "@typescript-eslint/eslint-plugin": "^5.12.1",
     "@typescript-eslint/parser": "^5.12.1",
+    "esbuild": "^0.14.25",
     "eslint": "^7.32.0",
     "eslint-config-standard": "^16.0.3",
     "eslint-plugin-import": "^2.25.4",
