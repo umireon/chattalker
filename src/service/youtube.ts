@@ -1,5 +1,5 @@
-import { fetchAudio, readVoiceFromForm } from './audio'
-import { playAudio, showLanguage, showText } from './ui'
+import { fetchAudio } from './audio'
+import { playAudio, readVoiceFromPlayer, showLanguage, showText } from './ui'
 import { refreshYoutubeToken, setYoutubeToken } from './oauth'
 
 import type { Analytics } from 'firebase/analytics'
@@ -107,8 +107,7 @@ export const connectYoutube = async (context: AppContext, db: Firestore, analyti
         const chatTime = new Date(item.snippet.publishedAt).getTime()
         const freshTime = new Date().getTime() - 10 * 1000
         if (chatTime > freshTime && typeof displayMessage !== 'undefined') {
-          const form = document.querySelector('form')
-          const voice = form === null ? {} : readVoiceFromForm(form)
+          const voice = readVoiceFromPlayer(playerElements)
           loadingElement.classList.remove('hidden')
           const { audioContent, language } = await fetchAudio(context, user, voice, displayMessage)
           loadingElement.classList.add('hidden')

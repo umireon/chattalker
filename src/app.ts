@@ -28,8 +28,10 @@ auth.onAuthStateChanged(async (user) => {
     const languageElement = document.querySelector('#language')
     const loadingElement = document.querySelector('#loading')
     const textElement = document.querySelector('#text')
-    if (audioElement === null || languageElement === null || loadingElement === null || textElement === null) throw new Error('Player elements not found')
-    const playerElements: PlayerElements = { audioElement, languageElement, loadingElement, textElement }
+    const voiceFormElement = document.querySelector('form')
+    if (audioElement === null || languageElement === null ||
+      loadingElement === null || textElement === null || voiceFormElement === null) throw new Error('Player elements not found')
+    const playerElements: PlayerElements = { audioElement, languageElement, loadingElement, textElement, voiceFormElement }
 
     for (const element of document.querySelectorAll<HTMLButtonElement>('button.play')) {
       listenPlay(DEFAULT_CONTEXT, user, playerElements, element)

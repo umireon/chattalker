@@ -1,6 +1,6 @@
 import type { Auth, User } from 'firebase/auth'
 import { collection, doc, setDoc } from 'firebase/firestore'
-import { fetchAudio, readVoiceFromForm } from './audio'
+import { fetchAudio, Voice, VOICE_KEYS } from './audio'
 
 import type { AppContext } from '../../constants'
 import type { Firestore } from 'firebase/firestore'
@@ -10,6 +10,19 @@ export interface PlayerElements {
   readonly languageElement: Element
   readonly loadingElement: Element
   readonly textElement: Element
+  readonly voiceFormElement: HTMLFormElement
+}
+
+export const readVoiceFromPlayer = ({ voiceFormElement }: PlayerElements) => {
+  let voice: Voice = {}
+  const formData = new FormData(voiceFormElement)
+  for (const key of VOICE_KEYS) {
+    const value = formData.get(key)
+    if (value !== null) {
+      voice = { ...voice, [key]: value }
+    }
+  }
+  return voice
 }
 
 export const playAudio = ({ audioElement }: PlayerElements, blob: Blob) => {
@@ -38,7 +51,7 @@ export const listenPlay = (context: AppContext, user: User, playerElements: Play
     element.disabled = true
     loadingElement.classList.remove('hidden')
     const form = document.querySelector('form')
-    const voice = form === null ? {} : readVoiceFromForm(form)
+    const voice = form === null ? {} : readVoiceFromPlayer(playerElements)
     const { audioContent, language } = await fetchAudio(context, user, voice, element.value)
     element.disabled = false
     loadingElement.classList.add('hidden')

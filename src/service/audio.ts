@@ -9,7 +9,7 @@ export interface Voice {
   readonly 'voice[und]'?: string
 }
 
-export const readVoiceFromForm = (form: HTMLFormElement) => {
+export const readVoiceFromPlayer = (form: HTMLFormElement) => {
   let voice: Voice = {}
   const formData = new FormData(form)
   for (const key of VOICE_KEYS) {

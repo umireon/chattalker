@@ -1,10 +1,10 @@
 import { Analytics, logEvent } from 'firebase/analytics'
-import { fetchAudio, readVoiceFromForm } from './audio'
-import { playAudio, showLanguage, showText } from './ui'
+import { playAudio, readVoiceFromPlayer, showLanguage, showText } from './ui'
 
 import type { AppContext } from '../../constants'
 import type { PlayerElements } from './ui'
 import type { User } from 'firebase/auth'
+import { fetchAudio } from './audio'
 
 export const getTwitchLogin = async ({ twitchClientId }: AppContext, token: string) => {
   const response = await fetch('https://api.twitch.tv/helix/users', {
@@ -40,7 +40,7 @@ export const connectTwitch = (context: AppContext, analytics: Analytics, user: U
     const m = event.data.match(privmsgRegexp)
     if (m) {
       const form = document.querySelector('form')
-      const voice = form === null ? {} : readVoiceFromForm(form)
+      const voice = form === null ? {} : readVoiceFromPlayer(playerElements)
       loadingElement.classList.remove('hidden')
       const { audioContent, language } = await fetchAudio(context, user, voice, m[1])
       loadingElement.classList.add('hidden')
