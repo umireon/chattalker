@@ -1,4 +1,3 @@
-import { fetchAudio } from './audio'
 import { playAudio, readVoiceFromPlayer, showLanguage, showText } from './ui'
 import { refreshYoutubeToken, setYoutubeToken } from './oauth'
 
@@ -7,6 +6,7 @@ import type { AppContext } from '../../constants'
 import type { Firestore } from 'firebase/firestore'
 import type { PlayerElements } from './ui'
 import type { User } from 'firebase/auth'
+import { fetchAudio } from './audio'
 import { logEvent } from 'firebase/analytics'
 
 export class YoutubeRequestError extends Error {}
