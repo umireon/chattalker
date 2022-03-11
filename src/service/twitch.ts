@@ -39,8 +39,7 @@ export const connectTwitch = (context: AppContext, analytics: Analytics, user: U
   socket.addEventListener('message', async event => {
     const m = event.data.match(privmsgRegexp)
     if (m) {
-      const form = document.querySelector('form')
-      const voice = form === null ? {} : readVoiceFromPlayer(playerElements)
+      const voice = readVoiceFromPlayer(playerElements)
       loadingElement.classList.remove('hidden')
       const { audioContent, language } = await fetchAudio(context, user, voice, m[1])
       loadingElement.classList.add('hidden')

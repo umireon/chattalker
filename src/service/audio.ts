@@ -9,18 +9,6 @@ export interface Voice {
   readonly 'voice[und]'?: string
 }
 
-export const readVoiceFromPlayer = (form: HTMLFormElement) => {
-  let voice: Voice = {}
-  const formData = new FormData(form)
-  for (const key of VOICE_KEYS) {
-    const value = formData.get(key)
-    if (value !== null) {
-      voice = { ...voice, [key]: value }
-    }
-  }
-  return voice
-}
-
 export const fetchAudio = async ({ textToSpeechEndpoint }: AppContext, user: User, voice: Voice, text: string) => {
   const idToken = await user.getIdToken(true)
   const query = new URLSearchParams({ text })
