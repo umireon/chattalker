@@ -1,5 +1,5 @@
 import { Analytics, logEvent } from 'firebase/analytics'
-import { playAudio, readVoiceFromPlayer, showLanguage, showText } from './ui'
+import { hideLoadingElement, playAudio, readVoiceFromPlayer, showLanguage, showLoadingElement, showText } from './ui'
 
 import type { AppContext } from '../../constants'
 import type { PlayerElements } from './ui'
@@ -24,7 +24,6 @@ export interface ConnectTwitchParams {
 }
 
 export const connectTwitch = (context: AppContext, analytics: Analytics, user: User, playerElements: PlayerElements, params: ConnectTwitchParams) => {
-  const { loadingElement } = playerElements
   const { login, token } = params
   const socket = new WebSocket('wss://irc-ws.chat.twitch.tv')
   socket.addEventListener('open', () => {
@@ -40,9 +39,9 @@ export const connectTwitch = (context: AppContext, analytics: Analytics, user: U
     const m = event.data.match(privmsgRegexp)
     if (m) {
       const voice = readVoiceFromPlayer(playerElements)
-      loadingElement.classList.remove('hidden')
+      showLoadingElement(playerElements)
       const { audioContent, language } = await fetchAudio(context, user, voice, m[1])
-      loadingElement.classList.add('hidden')
+      hideLoadingElement(playerElements)
       playAudio(playerElements, audioContent)
       showLanguage(playerElements, language)
       showText(playerElements, m[1])

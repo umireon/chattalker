@@ -14,6 +14,14 @@ export interface PlayerElements {
   readonly voiceFormElement: HTMLFormElement
 }
 
+export const showLoadingElement = ({ loadingElement }: PlayerElements) => {
+  loadingElement.classList.remove('hidden')
+}
+
+export const hideLoadingElement = ({ loadingElement }: PlayerElements) => {
+  loadingElement.classList.add('hidden')
+}
+
 export const readVoiceFromPlayer = ({ voiceFormElement }: PlayerElements) => {
   let voice: Voice = {}
   const formData = new FormData(voiceFormElement)

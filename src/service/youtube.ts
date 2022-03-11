@@ -1,4 +1,4 @@
-import { playAudio, readVoiceFromPlayer, showLanguage, showText } from './ui'
+import { hideLoadingElement, playAudio, readVoiceFromPlayer, showLanguage, showLoadingElement, showText } from './ui'
 import { refreshYoutubeToken, setYoutubeToken } from './oauth'
 
 import type { Analytics } from 'firebase/analytics'
@@ -98,7 +98,6 @@ interface ConnectYoutubeParams {
 }
 
 export const connectYoutube = async (context: AppContext, db: Firestore, analytics: Analytics, user: User, playerElements: PlayerElements, params: ConnectYoutubeParams) => {
-  const { loadingElement } = playerElements
   const { token } = params
   try {
     for await (const items of pollLiveChatMessages(token)) {
@@ -108,9 +107,9 @@ export const connectYoutube = async (context: AppContext, db: Firestore, analyti
         const freshTime = new Date().getTime() - 10 * 1000
         if (chatTime > freshTime && typeof displayMessage !== 'undefined') {
           const voice = readVoiceFromPlayer(playerElements)
-          loadingElement.classList.remove('hidden')
+          showLoadingElement(playerElements)
           const { audioContent, language } = await fetchAudio(context, user, voice, displayMessage)
-          loadingElement.classList.add('hidden')
+          hideLoadingElement(playerElements)
           playAudio(playerElements, new Blob([audioContent]))
           showLanguage(playerElements, language)
           showText(playerElements, displayMessage)
