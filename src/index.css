@@ -1,15 +1,17 @@
+@import url("variables.css");
+
 body {
   margin: 0;
   padding: 0;
 }
 
 header {
-  background: rgb(201, 226, 225);
+  background: var(--main-bg-color);
   margin: 0;
 }
 
 header h1 {
-  color: #39464a;
+  color: var(--main-fg-color);
   font-size: 150px;
   margin: 0;
   padding: 100px;
@@ -17,7 +19,7 @@ header h1 {
 }
 
 footer {
-  background: #39464a;
+  background: var(--main-fg-color);
   padding: 30px 0;
 }
 
