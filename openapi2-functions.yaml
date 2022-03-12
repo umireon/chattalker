@@ -50,8 +50,8 @@ paths:
               language:
                 type: string
     options:
-      summary: Text-to-speech CORS
-      operationId: text-to-speech-cors
+      summary: Text-to-speech Preflight
+      operationId: text-to-speech-preflight
       x-google-backend:
         address: https://text-to-speech-bf7bhumxka-uc.a.run.app
       responses:
@@ -91,8 +91,8 @@ paths:
                 type: string
               
     options:
-      summary: YouTube OAuth2 Callback CORS
-      operationId: youtube-oauth2callback-cors
+      summary: YouTube OAuth2 Callback Preflight
+      operationId: youtube-oauth2callback-preflight
       x-google-backend:
         address: https://youtube-oauth2callback-bf7bhumxka-uc.a.run.app
       responses:
@@ -126,8 +126,8 @@ paths:
               token_type:
                 type: string
     options:
-      summary: YouTube OAuth2 Refresh CORS
-      operationId: youtube-oauth2refresh-cors
+      summary: YouTube OAuth2 Refresh Preflight
+      operationId: youtube-oauth2refresh-preflight
       x-google-backend:
         address: https://youtube-oauth2refresh-bf7bhumxka-uc.a.run.app
       responses:
