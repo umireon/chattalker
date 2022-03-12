@@ -10,6 +10,7 @@ import { getAnalytics } from 'firebase/analytics'
 import { getAuth } from 'firebase/auth'
 import { getFirestore } from 'firebase/firestore'
 import { initializeApp } from 'firebase/app'
+import { sendKeepAliveToTextToSpeech } from './service/audio'
 
 import 'three-dots/dist/three-dots.min.css'
 
@@ -92,5 +93,10 @@ auth.onAuthStateChanged(async (user) => {
       })
       location.href = `https://accounts.google.com/o/oauth2/auth?${query}`
     })
+
+    setInterval(() => {
+      sendKeepAliveToTextToSpeech(DEFAULT_CONTEXT, user)
+    }, 60000)
+    sendKeepAliveToTextToSpeech(DEFAULT_CONTEXT, user)
   }
 })

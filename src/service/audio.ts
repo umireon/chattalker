@@ -31,3 +31,13 @@ export const fetchAudio = async ({ textToSpeechEndpoint }: AppContext, user: Use
   if (typeof language !== 'string') throw new Error('Invalid language')
   return { audioContent, language }
 }
+
+export const sendKeepAliveToTextToSpeech = async ({ textToSpeechEndpoint }: AppContext, user: User) => {
+  const idToken = await user.getIdToken(true)
+  const response = await fetch(textToSpeechEndpoint, {
+    headers: {
+      Authorization: `Bearer ${idToken}`
+    }
+  })
+  return response.ok
+}
