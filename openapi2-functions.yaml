@@ -135,3 +135,22 @@ paths:
       responses:
         '204':
           description: A successful response
+
+  /authenticate-with-token:
+    get:
+      summary: Authenticate with token
+      operationId: authenticate-with-token
+      x-google-backend:
+        address: https://authenticate-with-token-bf7bhumxka-uc.a.run.app
+      parameters:
+        - in: query
+          name: token
+          type: string
+        - in: query
+          name: uid
+          type: string
+      responses:
+        '200':
+          description: A successful response
+          schema:
+            type: string
