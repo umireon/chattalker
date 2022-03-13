@@ -98,5 +98,19 @@ auth.onAuthStateChanged(async (user) => {
       sendKeepAliveToTextToSpeech(DEFAULT_CONTEXT, user)
     }, 60000)
     sendKeepAliveToTextToSpeech(DEFAULT_CONTEXT, user)
+
+    const generateUrlButtonElement = document.querySelector<HTMLButtonElement>('button#generate-url')
+    const urlElement = document.querySelector<HTMLInputElement>('input#url')
+    if (generateUrlButtonElement === null) throw new Error('Generate URL button not found')
+    if (urlElement === null) throw new Error('URL input not found')
+    generateUrlButtonElement.addEventListener('click', async () => {
+      const table = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!_'
+      const buffer = new Uint8Array(256)
+      const uintToken = crypto.getRandomValues(buffer)
+      const token = Array.from(uintToken, e => table[e >> 2]).join('')
+      await setUserData(db, user, { token })
+      const query = new URLSearchParams({ token, uid: user.uid })
+      urlElement.value = `${location.origin}${location.pathname}#${query}`
+    })
   }
 })
