@@ -1,4 +1,5 @@
 .devcontainer/
+dist/
 src/
 node_modules/
 .editorconfig
