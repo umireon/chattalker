@@ -9,6 +9,7 @@ node_modules/
 .gitignore
 cloudbuild.yaml
 firebase.json
+jest.config.js
 LICENSE
 openapi2-functions.yaml
 README.md
