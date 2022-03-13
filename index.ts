@@ -7,7 +7,6 @@ import type { ParsedQs } from 'qs'
 import { SecretManagerServiceClient } from '@google-cloud/secret-manager'
 import { TextToSpeechClient } from '@google-cloud/text-to-speech'
 import { TranslationServiceClient } from '@google-cloud/translate'
-import { createHash } from 'crypto'
 import fetch from 'node-fetch'
 import { getAuth } from 'firebase-admin/auth'
 import { getFirestore } from 'firebase-admin/firestore'
@@ -249,18 +248,14 @@ http('authenticate-with-token', async (req, res) => {
     return
   }
   const { token, uid } = req.query
-  const m = token.match(/[0-9a-f]/gi)
-  if (m === null) throw new Error('Malformed token')
-  const tokenArray = new Uint8Array(m.map(str => parseInt(str, 16)))
-  const actualHash = createHash('sha512').update(tokenArray).digest('hex')
 
   // Verify token
   const docRef = await db.collection('users').doc(uid).get()
   const data = docRef.data()
   if (!data) throw new Error('Record could not be fetched')
-  const expectedHash = data['token-digest']
-  if (!expectedHash) throw new Error('token-digest not found')
-  if (actualHash !== expectedHash) {
+  const expectedToken = data.token
+  if (!expectedToken) throw new Error('token not found')
+  if (token !== expectedToken) {
     res.status(401).send({})
     return
   }
