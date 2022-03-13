@@ -12,6 +12,7 @@ export interface UserData {
   readonly 'twitch-access-token'?: string
   readonly 'youtube-access-token'?: string
   readonly 'youtube-refresh-token'?: string
+  readonly 'token-hash'?: string
 
   readonly 'voice-en'?: string
   readonly 'voice-ja'?: string
@@ -24,6 +25,7 @@ export const extractUserData = (data: UserData) => {
   if (data['twitch-access-token']) result = { ...result, 'twitch-access-token': data['twitch-access-token'] }
   if (data['youtube-access-token']) result = { ...result, 'youtube-access-token': data['youtube-access-token'] }
   if (data['youtube-refresh-token']) result = { ...result, 'youtube-refresh-token': data['youtube-refresh-token'] }
+  if (data['token-hash']) result = { ...result, 'token-hash': data['token-hash'] }
 
   for (const key of VOICE_KEYS) {
     if (data[key]) result = { ...result, [key]: data[key] }

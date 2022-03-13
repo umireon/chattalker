@@ -1,13 +1,14 @@
-import { DEFAULT_CONTEXT, firebaseConfig } from '../constants'
+import { AppContext, DEFAULT_CONTEXT, firebaseConfig } from '../constants'
 import { connectTwitch, getTwitchLogin } from './service/twitch'
 import { generateNonce, getTwitchToken, getYoutubeToken } from './service/oauth'
+import { getAuth, signInWithCustomToken } from 'firebase/auth'
 import { getUserData, setUserData, validateVoiceKeys } from './service/users'
 import { listenLogout, listenPlay, listenVoiceChange } from './service/ui'
 
+import type { Auth } from 'firebase/auth'
 import type { PlayerElements } from './service/ui'
 import { connectYoutube } from './service/youtube'
 import { getAnalytics } from 'firebase/analytics'
-import { getAuth } from 'firebase/auth'
 import { getFirestore } from 'firebase/firestore'
 import { initializeApp } from 'firebase/app'
 import { sendKeepAliveToTextToSpeech } from './service/audio'
@@ -22,6 +23,27 @@ const analytics = getAnalytics(app)
 const logoutElement = document.querySelector('#logout')
 if (logoutElement === null) throw new Error('Logout element not found')
 listenLogout(auth, logoutElement)
+
+interface AuthenticateWithTokenOptions {
+  readonly token: string
+  readonly uid: string
+}
+
+const authenticateWithToken = async (auth: Auth, { authenticateWithTokenEndpoint }: AppContext, { token, uid }: AuthenticateWithTokenOptions) => {
+  const query = new URLSearchParams({ token, uid })
+  const response = await fetch(`${authenticateWithTokenEndpoint}?${query}`)
+  if (!response.ok) throw new Error('Authentication failed')
+  const customToken = await response.text()
+  console.log(customToken)
+  await signInWithCustomToken(auth, customToken)
+}
+
+const params = new URLSearchParams(location.hash.slice(1))
+const token = params.get('token')
+const uid = params.get('uid')
+if (token && uid) {
+  authenticateWithToken(auth, DEFAULT_CONTEXT, { token, uid })
+}
 
 auth.onAuthStateChanged(async (user) => {
   if (user) {
@@ -98,5 +120,22 @@ auth.onAuthStateChanged(async (user) => {
       sendKeepAliveToTextToSpeech(DEFAULT_CONTEXT, user)
     }, 60000)
     sendKeepAliveToTextToSpeech(DEFAULT_CONTEXT, user)
+
+    const uint8ArrayToHexString = (array: Uint8Array) => Array.from(array, b => b.toString(16).padStart(2, '0')).join('')
+    const generateUrlButtonElement = document.querySelector<HTMLButtonElement>('button#generate-url')
+    const urlElement = document.querySelector<HTMLInputElement>('input#url')
+    if (generateUrlButtonElement === null) throw new Error('Generate URL button not found')
+    if (urlElement === null) throw new Error('URL input not found')
+    generateUrlButtonElement.addEventListener('click', async () => {
+      const buffer = new Uint8Array(256)
+      const tokenArray = crypto.getRandomValues(buffer)
+      const token = uint8ArrayToHexString(tokenArray)
+      const tokenHashBuffer = await crypto.subtle.digest('SHA-512', tokenArray)
+      const tokenHashArray = new Uint8Array(tokenHashBuffer)
+      const tokenHash = uint8ArrayToHexString(tokenHashArray)
+      await setUserData(db, user, { 'token-hash': tokenHash })
+      const query = new URLSearchParams({ token, uid: user.uid })
+      urlElement.value = `${location.origin}${location.pathname}#${query}`
+    })
   }
 })

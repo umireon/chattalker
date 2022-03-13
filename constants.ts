@@ -1,4 +1,5 @@
 export interface AppContext {
+  readonly authenticateWithTokenEndpoint: string
   readonly textToSpeechEndpoint: string
   readonly twitchClientId: string
   readonly youtubeCallbackEndpoint: string
@@ -7,6 +8,7 @@ export interface AppContext {
 }
 
 export const DEFAULT_CONTEXT: AppContext = {
+  authenticateWithTokenEndpoint: 'https://chattalker-34in68ly.uc.gateway.dev/authenticate-with-token',
   textToSpeechEndpoint: 'https://chattalker-34in68ly.uc.gateway.dev/text-to-speech',
   twitchClientId: '386m0kveloa87fbla7yivaw38unkft',
   youtubeCallbackEndpoint: 'https://chattalker-34in68ly.uc.gateway.dev/youtube-oauth2callback',

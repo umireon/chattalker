@@ -7,8 +7,12 @@ import type { ParsedQs } from 'qs'
 import { SecretManagerServiceClient } from '@google-cloud/secret-manager'
 import { TextToSpeechClient } from '@google-cloud/text-to-speech'
 import { TranslationServiceClient } from '@google-cloud/translate'
+import { createHash } from 'crypto'
 import fetch from 'node-fetch'
+import { getAuth } from 'firebase-admin/auth'
+import { getFirestore } from 'firebase-admin/firestore'
 import { http } from '@google-cloud/functions-framework'
+import { initializeApp } from 'firebase-admin/app'
 
 const handleCors: HttpFunction = (req, res) => {
   const { origin } = req.headers
@@ -225,4 +229,43 @@ http('youtube-oauth2refresh', async (req, res) => {
   }
   const json = await response.json()
   res.send(json)
+})
+
+http('authenticate-with-token', async (req, res) => {
+  if (!handleCors(req, res)) return
+
+  // Initialize environment
+  const app = initializeApp()
+  const auth = getAuth(app)
+  const db = getFirestore(app)
+
+  // Validate query
+  if (typeof req.query.token !== 'string') {
+    res.status(400).send('Invalid token')
+    return
+  }
+  if (typeof req.query.uid !== 'string') {
+    res.status(400).send('Invalid uid')
+    return
+  }
+  const { token, uid } = req.query
+  const m = token.match(/[0-9a-f]/gi)
+  if (m === null) throw new Error('Malformed token')
+  const tokenArray = new Uint8Array(m.map(str => parseInt(str, 16)))
+  const actualHash = createHash('sha512').update(tokenArray).digest('hex')
+
+  // Verify token
+  const docRef = await db.collection('users').doc(uid).get()
+  const data = docRef.data()
+  if (!data) throw new Error('Record could not be fetched')
+  const expectedHash = data['token-digest']
+  if (!expectedHash) throw new Error('token-digest not found')
+  if (actualHash !== expectedHash) {
+    res.status(401).send({})
+    return
+  }
+
+  // Generate custom token
+  const customToken = await auth.createCustomToken(uid)
+  res.send(JSON.parse(customToken))
 })
