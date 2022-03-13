@@ -111,7 +111,7 @@ http('text-to-speech', async (req, res) => {
 
   // Validate query
   if (req.query.keepAlive === 'true') {
-    res.status(204)
+    res.status(204).send('')
     return
   }
   if (typeof req.query.text !== 'string') {
