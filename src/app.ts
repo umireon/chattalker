@@ -121,7 +121,6 @@ auth.onAuthStateChanged(async (user) => {
     }, 60000)
     sendKeepAliveToTextToSpeech(DEFAULT_CONTEXT, user)
 
-
     const uint8ArrayToHexString = (array: Uint8Array) => Array.from(array, b => b.toString(16).padStart(2, '0')).join('')
     const generateUrlButtonElement = document.querySelector<HTMLButtonElement>('button#generate-url')
     const urlElement = document.querySelector<HTMLInputElement>('input#url')
