@@ -9,6 +9,9 @@ import { TextToSpeechClient } from '@google-cloud/text-to-speech'
 import { TranslationServiceClient } from '@google-cloud/translate'
 import fetch from 'node-fetch'
 import { http } from '@google-cloud/functions-framework'
+import { initializeApp } from 'firebase-admin/app'
+import { getFirestore } from 'firebase-admin/firestore'
+import { getAuth } from 'firebase-admin/auth'
 
 const handleCors: HttpFunction = (req, res) => {
   const { origin } = req.headers
@@ -225,4 +228,37 @@ http('youtube-oauth2refresh', async (req, res) => {
   }
   const json = await response.json()
   res.send(json)
+})
+
+http('authenticate-with-token', async (req, res) => {
+  if (!handleCors(req, res)) return
+
+  // Initialize environment
+  const app = initializeApp()
+  const auth = getAuth(app)
+  const db = getFirestore(app)
+
+  // Validate query
+  if (typeof req.query.token !== 'string') {
+    res.status(400).send('Invalid token')
+    return
+  }
+  if (typeof req.query.uid !== 'string') {
+    res.status(400).send('Invalid uid')
+    return
+  }
+  const { token, uid } = req.query
+
+  // Verify token
+  const docRef = await db.collection('users').doc(uid).get()
+  const data = docRef.data()
+  if (!data || data.token) throw new Error('token not found')
+  if (token !== data.token) {
+    res.status(401).send({})
+    return
+  }
+
+  // Generate custom token
+  const customToken = await auth.createCustomToken(uid)
+  res.send(JSON.parse(customToken))
 })
