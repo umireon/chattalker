@@ -54,6 +54,20 @@ steps:
       - --set-env-vars=PROJECT_ID=$PROJECT_ID
       - --trigger-http
     waitFor: ['npm run build-functions']
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:slim'
+    args:
+      - gcloud
+      - beta
+      - functions
+      - deploy
+      - authenticate-with-token
+      - --gen2
+      - --region=us-central1
+      - --runtime=nodejs16
+      - --service-account=cloudfunctions@chattalker.iam.gserviceaccount.com
+      - --set-env-vars=PROJECT_ID=$PROJECT_ID
+      - --trigger-http
+    waitFor: ['npm run build-functions']
 
   - name: 'node:16-bullseye-slim'
     args:
