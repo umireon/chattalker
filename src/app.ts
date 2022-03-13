@@ -127,15 +127,18 @@ auth.onAuthStateChanged(async (user) => {
     if (generateUrlButtonElement === null) throw new Error('Generate URL button not found')
     if (urlElement === null) throw new Error('URL input not found')
     generateUrlButtonElement.addEventListener('click', async () => {
-      const buffer = new Uint8Array(256)
-      const tokenArray = crypto.getRandomValues(buffer)
-      const token = uint8ArrayToHexString(tokenArray)
-      const tokenHashBuffer = await crypto.subtle.digest('SHA-512', tokenArray)
-      const tokenHashArray = new Uint8Array(tokenHashBuffer)
-      const tokenHash = uint8ArrayToHexString(tokenHashArray)
-      await setUserData(db, user, { 'token-hash': tokenHash })
-      const query = new URLSearchParams({ token, uid: user.uid })
-      urlElement.value = `${location.origin}${location.pathname}#${query}`
+      const { token } = await getUserData(db, user)
+      if (token) {
+        const query = new URLSearchParams({ token: token, uid: user.uid })
+        urlElement.value = `${location.origin}${location.pathname}#${query}`
+      } else {
+        const buffer = new Uint8Array(256)
+        const newTokenArray = crypto.getRandomValues(buffer)
+        const newToken = uint8ArrayToHexString(newTokenArray)
+        await setUserData(db, user, { token: newToken })
+        const query = new URLSearchParams({ token: newToken, uid: user.uid })
+        urlElement.value = `${location.origin}${location.pathname}#${query}`
+      }
     })
   }
 })
