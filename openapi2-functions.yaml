@@ -49,6 +49,8 @@ paths:
                 type: string
               language:
                 type: string
+        '204':
+          description: Keep Alive
     options:
       summary: Text-to-speech Preflight
       operationId: text-to-speech-preflight

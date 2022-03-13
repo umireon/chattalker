@@ -34,7 +34,8 @@ export const fetchAudio = async ({ textToSpeechEndpoint }: AppContext, user: Use
 
 export const sendKeepAliveToTextToSpeech = async ({ textToSpeechEndpoint }: AppContext, user: User) => {
   const idToken = await user.getIdToken(true)
-  const response = await fetch(textToSpeechEndpoint, {
+  const query = new URLSearchParams({ keepAlive: 'true' })
+  const response = await fetch(`${textToSpeechEndpoint}?${query}`, {
     headers: {
       Authorization: `Bearer ${idToken}`
     }

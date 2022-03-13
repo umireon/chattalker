@@ -110,6 +110,10 @@ http('text-to-speech', async (req, res) => {
   if (typeof PROJECT_ID === 'undefined') throw new Error('PROJECT_ID not provided')
 
   // Validate query
+  if (req.query.keepAlive === 'true') {
+    res.status(204)
+    return
+  }
   if (typeof req.query.text !== 'string') {
     res.status(400).send('Invalid text')
     return
