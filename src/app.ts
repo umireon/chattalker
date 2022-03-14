@@ -1,11 +1,11 @@
 import { AppContext, DEFAULT_CONTEXT, firebaseConfig } from '../constants'
+import type { Auth, User } from 'firebase/auth'
 import { connectTwitch, getTwitchLogin } from './service/twitch'
 import { generateNonce, getTwitchToken, getYoutubeToken } from './service/oauth'
 import { getAuth, signInWithCustomToken } from 'firebase/auth'
 import { getUserData, setUserData, validateVoiceKeys } from './service/users'
 import { listenLogout, listenPlay, listenVoiceChange } from './service/ui'
 
-import type { Auth } from 'firebase/auth'
 import type { PlayerElements } from './service/ui'
 import { connectYoutube } from './service/youtube'
 import { getAnalytics } from 'firebase/analytics'
@@ -35,18 +35,12 @@ const authenticateWithToken = async (auth: Auth, { authenticateWithTokenEndpoint
   if (!response.ok) throw new Error('Authentication failed')
   const customToken = await response.text()
   console.log(customToken)
-  const user = await signInWithCustomToken(auth, customToken)
-  return user
+  const credential = await signInWithCustomToken(auth, customToken)
+  console.log(credential)
+  return credential
 }
 
-const params = new URLSearchParams(location.hash.slice(1))
-const token = params.get('token')
-const uid = params.get('uid')
-if (token && uid) {
-  await authenticateWithToken(auth, DEFAULT_CONTEXT, { token, uid })
-}
-
-auth.onAuthStateChanged(async (user) => {
+const initializePageWithUser = async (user: User | null) => {
   if (user) {
     const audioElement = document.querySelector('audio')
     const languageElement = document.querySelector('#language')
@@ -142,4 +136,18 @@ auth.onAuthStateChanged(async (user) => {
       }
     })
   }
-})
+}
+
+const initializePage = async (auth: Auth) => {
+  const params = new URLSearchParams(location.hash.slice(1))
+  const token = params.get('token')
+  const uid = params.get('uid')
+  if (token && uid) {
+    authenticateWithToken(auth, DEFAULT_CONTEXT, { token, uid })
+    auth.onAuthStateChanged(initializePageWithUser)
+  } else {
+    auth.onAuthStateChanged(initializePageWithUser)
+  }
+}
+
+initializePage(auth)
