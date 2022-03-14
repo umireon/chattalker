@@ -263,5 +263,6 @@ http('authenticate-with-token', async (req, res) => {
 
   // Generate custom token
   const customToken = await auth.createCustomToken(uid)
+  console.log(customToken)
   res.send(JSON.parse(customToken))
 })
