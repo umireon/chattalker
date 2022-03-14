@@ -143,8 +143,8 @@ const initializePage = async (auth: Auth) => {
   const token = params.get('token')
   const uid = params.get('uid')
   if (token && uid) {
-    authenticateWithToken(auth, DEFAULT_CONTEXT, { token, uid })
-    auth.onAuthStateChanged(initializePageWithUser)
+    const credential = await authenticateWithToken(auth, DEFAULT_CONTEXT, { token, uid })
+    initializePageWithUser(credential.user)
   } else {
     auth.onAuthStateChanged(initializePageWithUser)
   }
