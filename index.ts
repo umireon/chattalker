@@ -137,7 +137,7 @@ http('text-to-speech', async (req, res) => {
   // Synthesize speech
   const textToSpeechClient = new TextToSpeechClient()
   const [response] = await textToSpeechClient.synthesizeSpeech({
-    audioConfig: { audioEncoding: 'OGG_OPUS' },
+    audioConfig: { audioEncoding: 'MP3' },
     input: { text },
     voice: getVoice(voice, language)
   })
