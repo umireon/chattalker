@@ -1,33 +1,41 @@
 {
-    "env": {
-        "browser": true,
-        "es2021": true,
-        "jest/globals": true
+  "env": {
+    "browser": true,
+    "es2021": true,
+    "jest/globals": true,
+    "node": true
+  },
+  "extends": [
+    "plugin:react/recommended",
+    "standard"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
     },
-    "extends": [
-        "standard"
+    "ecmaVersion": "latest",
+    "sourceType": "module"
+  },
+  "plugins": [
+    "jest",
+    "react",
+    "@typescript-eslint"
+  ],
+  "rules": {
+    "sort-keys": "error",
+    "sort-imports": [
+      "error",
+      {
+        "memberSyntaxSortOrder": [
+          "all",
+          "multiple",
+          "single",
+          "none"
+        ]
+      }
     ],
-    "parser": "@typescript-eslint/parser",
-    "parserOptions": {
-        "ecmaVersion": "latest",
-        "sourceType": "module"
-    },
-    "plugins": [
-        "@typescript-eslint",
-        "jest"
-    ],
-    "rules": {
-      "sort-keys": "error",
-      "sort-imports": [
-        "error",
-        {
-          "memberSyntaxSortOrder": [
-            "all",
-            "multiple",
-            "single",
-            "none"
-          ]
-        }
-      ]
-    }
+    "no-use-before-define": "off",
+    "@typescript-eslint/no-use-before-define": ["error"]
+  }
 }

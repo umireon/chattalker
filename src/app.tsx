@@ -9,6 +9,9 @@ import { listenLogout, listenPlay, listenVoiceChange } from './service/ui'
 import type { Analytics } from 'firebase/analytics'
 import type { Firestore } from 'firebase/firestore'
 import type { PlayerElements } from './service/ui'
+import React from 'react'
+import ReactDOM from 'react-dom'
+import { VoiceForm } from './component/VoiceForm'
 import { connectYoutube } from './service/youtube'
 import { getAnalytics } from 'firebase/analytics'
 import { getFirestore } from 'firebase/firestore'
@@ -178,3 +181,12 @@ const db = getFirestore(app)
 const analytics = getAnalytics(app)
 
 initializePage(db, analytics, auth)
+
+const rootElement = document.getElementById('root')
+if (rootElement === null) throw new Error('Root not found')
+ReactDOM.render(
+  <React.StrictMode>
+    <VoiceForm />
+  </React.StrictMode>,
+  rootElement
+)
