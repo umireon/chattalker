@@ -55,8 +55,10 @@ export const listenLogout = (auth: Auth, element: Element) => {
 }
 
 export const listenPlay = (context: AppContext, user: User, playerElements: PlayerElements, element: HTMLButtonElement) => {
-  const { loadingElement } = playerElements
+  const { audioElement, loadingElement } = playerElements
   element.addEventListener('click', async () => {
+    audioElement.play()
+    audioElement.pause()
     element.disabled = true
     loadingElement.classList.remove('hidden')
     const form = document.querySelector('form')
