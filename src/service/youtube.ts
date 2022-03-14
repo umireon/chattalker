@@ -28,6 +28,14 @@ export interface LiveBroadcastResponse {
   readonly items: LiveBroadcastResource[]
 }
 
+const checkIfQuotaError = (json: any) => {
+  if (!json.error) return false
+  if (!Array.isArray(json.error.errors)) return false
+  if (!json.error.errors[0]) return false
+  if (json.error.errors[0].domain !== 'youtube.quota') return false
+  return true
+}
+
 export const getActiveLiveChatIds = async (token: string) => {
   const query = new URLSearchParams({
     broadcastType: 'all',
@@ -40,7 +48,14 @@ export const getActiveLiveChatIds = async (token: string) => {
       Authorization: `Bearer ${token}`
     }
   })
-  if (!response.ok) throw new YoutubeRequestError('Request failed')
+  if (!response.ok) {
+    const json = await response.json()
+    if (checkIfQuotaError(json)) {
+      throw new Error('Quota error')
+    } else {
+      throw new YoutubeRequestError('Request failed')
+    }
+  }
   const json: LiveBroadcastResponse = await response.json()
   console.log(json)
   const liveItems = json.items.filter(e => ['live', 'ready'].includes(e.status.lifeCycleStatus))
@@ -75,7 +90,14 @@ export const getLiveChatMessages = async (token: string, liveChatId: string, pag
       Authorization: `Bearer ${token}`
     }
   })
-  if (!response.ok) throw new YoutubeRequestError('Request failed')
+  if (!response.ok) {
+    const json = await response.json()
+    if (checkIfQuotaError(json)) {
+      throw new Error('Quota error')
+    } else {
+      throw new YoutubeRequestError('Request failed')
+    }
+  }
   const json: LiveChatMessageResponse = await response.json()
   console.log(json)
   return json
@@ -122,6 +144,8 @@ export const connectYoutube = async (context: AppContext, db: Firestore, analyti
       const oauthResponse = await refreshYoutubeToken(context, db, user)
       await setYoutubeToken(user, db, oauthResponse)
       connectYoutube(context, db, analytics, user, playerElements, { ...params, token: oauthResponse.access_token })
+    } else {
+      throw e
     }
   }
 }
