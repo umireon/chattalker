@@ -64,7 +64,7 @@ steps:
       - --gen2
       - --region=us-central1
       - --runtime=nodejs16
-      - --service-account=244926935062-compute@developer.gserviceaccount.com
+      - --service-account=cloudfunctions@chattalker.iam.gserviceaccount.com
       - --set-env-vars=PROJECT_ID=$PROJECT_ID
       - --trigger-http
     waitFor: ['npm run build-functions']
