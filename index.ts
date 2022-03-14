@@ -105,6 +105,11 @@ const validateVoice = (arg: string | ParsedQs | string[] | ParsedQs[] | undefine
   return true
 }
 
+// Initialize environment
+const app = initializeApp()
+const auth = getAuth(app)
+const db = getFirestore(app)
+
 http('text-to-speech', async (req, res) => {
   if (!handleCors(req, res)) return
 
@@ -232,11 +237,6 @@ http('youtube-oauth2refresh', async (req, res) => {
 
 http('authenticate-with-token', async (req, res) => {
   if (!handleCors(req, res)) return
-
-  // Initialize environment
-  const app = initializeApp()
-  const auth = getAuth(app)
-  const db = getFirestore(app)
 
   // Validate query
   if (typeof req.query.token !== 'string') {

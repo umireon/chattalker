@@ -35,14 +35,15 @@ const authenticateWithToken = async (auth: Auth, { authenticateWithTokenEndpoint
   if (!response.ok) throw new Error('Authentication failed')
   const customToken = await response.text()
   console.log(customToken)
-  await signInWithCustomToken(auth, customToken)
+  const user = await signInWithCustomToken(auth, customToken)
+  return user
 }
 
 const params = new URLSearchParams(location.hash.slice(1))
 const token = params.get('token')
 const uid = params.get('uid')
 if (token && uid) {
-  authenticateWithToken(auth, DEFAULT_CONTEXT, { token, uid })
+  await authenticateWithToken(auth, DEFAULT_CONTEXT, { token, uid })
 }
 
 auth.onAuthStateChanged(async (user) => {
