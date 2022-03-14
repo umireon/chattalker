@@ -147,7 +147,7 @@ http('text-to-speech', async (req, res) => {
   // Compose response
   const formData = new FormData()
   formData.append('audioContent', new Blob([coarseIntoUint8Array(audioContent)], {
-    type: 'audio/ogg'
+    type: 'audio/mpeg'
   }))
   formData.append('language', language)
   const blob = formDataToBlob(formData)
