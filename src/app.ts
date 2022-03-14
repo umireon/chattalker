@@ -135,6 +135,12 @@ const initializePageWithUser = async (user: User | null) => {
         urlElement.value = `${location.origin}${location.pathname}#${query}`
       }
     })
+
+    const copyButtonElement = document.querySelector<HTMLButtonElement>('button#copy-url')
+    if (copyButtonElement === null) throw new Error('Copy URL button not found')
+    copyButtonElement.addEventListener('click', async () => {
+      await navigator.clipboard.writeText(urlElement.value)
+    })
   }
 }
 
