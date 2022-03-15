@@ -58,7 +58,7 @@ export const listenPlay = (context: AppContext, user: User, playerElements: Play
   const { audioElement, loadingElement } = playerElements
   element.addEventListener('click', async () => {
     audioElement.play()
-    audioElement.pause()
+    setTimeout(() => { audioElement.pause() }, 1)
     element.disabled = true
     loadingElement.classList.remove('hidden')
     const form = document.querySelector('form')
