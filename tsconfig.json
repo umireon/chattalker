@@ -11,8 +11,7 @@
     "strictFunctionTypes": true,
     "useUnknownInCatchVariables": true,
     "noImplicitReturns": true,
-    "skipLibCheck": true,
-    "jsx": "react"
+    "skipLibCheck": true                                 /* Skip type checking all .d.ts files. */
   },
   "typeAcquisition": {
     "include": [
