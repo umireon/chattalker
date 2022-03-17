@@ -1,5 +1,5 @@
 # ChatTalker
-Chat message talker on Twitch for OBS and so on
+Chat message talker on Twitch and YouTube for OBS and so on.
 
 [![ChatTalker Logo](/src/icon.png "ChatTaler Logo")](https://chattalker.web.app/)
 

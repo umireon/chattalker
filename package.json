@@ -1,7 +1,7 @@
 {
   "name": "chattalker",
   "version": "0.1.0",
-  "description": "Chat message talker on Twitch for OBS and so on",
+  "description": "Chat message talker on Twitch and YouTube for OBS and so on.",
   "scripts": {
     "build": "parcel build src/*.html",
     "build-functions": "esbuild --outdir=. constants.ts index.ts",
