@@ -12,7 +12,8 @@ header {
 
 header h1 {
   color: var(--main-fg-color);
-  font-size: 15vw;
+  font-family: 'Roboto', sans-serif;
+  font-size: 17vw;
   margin: 0;
   padding: 100px 0;
   text-align: center;
