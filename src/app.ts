@@ -159,7 +159,6 @@ const initializePageWithUser = async (db: Firestore, analytics: Analytics, user:
     connectYoutube(DEFAULT_CONTEXT, db, analytics, user, playerElements, { token: youtubeToken })
       .catch(e => {
         Toastify({ text: e.toString() }).showToast()
-        return undefined
       })
   }
 }
