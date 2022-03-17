@@ -83,9 +83,16 @@ const listenGenerateUrlButton = (db: Firestore, user: User, button: HTMLButtonEl
   })
 }
 
-const listenCopyButton = (button: HTMLButtonElement, urlElement: HTMLInputElement) => {
+const listenCopyUrlButton = (button: HTMLButtonElement, urlElement: HTMLInputElement) => {
   button.addEventListener('click', async () => {
     await navigator.clipboard.writeText(urlElement.value)
+  })
+}
+
+const listenResetUrlButton = (db: Firestore, user: User, button: HTMLButtonElement, urlElement: HTMLInputElement) => {
+  button.addEventListener('click', async () => {
+    setUserData(db, user, { token: '' })
+    urlElement.value = ''
   })
 }
 
@@ -133,9 +140,13 @@ const initializePageWithUser = async (db: Firestore, analytics: Analytics, user:
   if (urlInput === null) throw new Error('URL input not found')
   listenGenerateUrlButton(db, user, generateUrlButton, urlInput)
 
-  const copyButton = document.querySelector<HTMLButtonElement>('button#copy-url')
-  if (copyButton === null) throw new Error('Copy URL button not found')
-  listenCopyButton(copyButton, urlInput)
+  const copyUrlButton = document.querySelector<HTMLButtonElement>('button#copy-url')
+  if (copyUrlButton === null) throw new Error('Copy URL button not found')
+  listenCopyUrlButton(copyUrlButton, urlInput)
+
+  const resetUrlButton = document.querySelector<HTMLButtonElement>('button#reset-url')
+  if (resetUrlButton === null) throw new Error('Copy URL button not found')
+  listenResetUrlButton(db, user, resetUrlButton, urlInput)
 
   const twitchToken = await getTwitchToken(db, user)
   if (typeof twitchToken !== 'undefined') {
