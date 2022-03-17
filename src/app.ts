@@ -114,20 +114,6 @@ const initializePageWithUser = async (db: Firestore, analytics: Analytics, user:
     }
   }
 
-  const twitchToken = await getTwitchToken(db, user)
-  if (typeof twitchToken !== 'undefined') {
-    const twitchLogin = await getTwitchLogin(DEFAULT_CONTEXT, twitchToken)
-    connectTwitch(DEFAULT_CONTEXT, analytics, user, playerElements, {
-      login: twitchLogin,
-      token: twitchToken
-    })
-  }
-
-  const youtubeToken = await getYoutubeToken(db, user)
-  if (typeof youtubeToken !== 'undefined') {
-    connectYoutube(DEFAULT_CONTEXT, db, analytics, user, playerElements, { token: youtubeToken })
-  }
-
   const twitchConnectElement = document.querySelector<HTMLButtonElement>('button#connect-twitch')
   if (twitchConnectElement === null) throw new Error('Connect Twitch element not found')
   listenTwitchConnectButton(db, user, twitchConnectElement)
@@ -150,6 +136,20 @@ const initializePageWithUser = async (db: Firestore, analytics: Analytics, user:
   const copyButton = document.querySelector<HTMLButtonElement>('button#copy-url')
   if (copyButton === null) throw new Error('Copy URL button not found')
   listenCopyButton(copyButton, urlInput)
+
+  const twitchToken = await getTwitchToken(db, user)
+  if (typeof twitchToken !== 'undefined') {
+    const twitchLogin = await getTwitchLogin(DEFAULT_CONTEXT, twitchToken)
+    connectTwitch(DEFAULT_CONTEXT, analytics, user, playerElements, {
+      login: twitchLogin,
+      token: twitchToken
+    })
+  }
+
+  const youtubeToken = await getYoutubeToken(db, user)
+  if (typeof youtubeToken !== 'undefined') {
+    connectYoutube(DEFAULT_CONTEXT, db, analytics, user, playerElements, { token: youtubeToken })
+  }
 }
 
 const initializePage = async (db: Firestore, analytics: Analytics, auth: Auth) => {
