@@ -9,6 +9,7 @@ import { listenLogout, listenPlay, listenVoiceChange } from './service/ui'
 import type { Analytics } from 'firebase/analytics'
 import type { Firestore } from 'firebase/firestore'
 import type { PlayerElements } from './service/ui'
+import Toastify from 'toastify-js'
 import { connectYoutube } from './service/youtube'
 import { getAnalytics } from 'firebase/analytics'
 import { getFirestore } from 'firebase/firestore'
@@ -16,6 +17,7 @@ import { initializeApp } from 'firebase/app'
 import { sendKeepAliveToTextToSpeech } from './service/audio'
 
 import 'three-dots/dist/three-dots.min.css'
+import 'toastify-js/src/toastify.css'
 
 interface AuthenticateWithTokenOptions {
   readonly token: string
@@ -140,10 +142,16 @@ const initializePageWithUser = async (db: Firestore, analytics: Analytics, user:
   const twitchToken = await getTwitchToken(db, user)
   if (typeof twitchToken !== 'undefined') {
     const twitchLogin = await getTwitchLogin(DEFAULT_CONTEXT, twitchToken)
-    connectTwitch(DEFAULT_CONTEXT, analytics, user, playerElements, {
-      login: twitchLogin,
-      token: twitchToken
-    })
+      .catch(e => {
+        Toastify({ text: e.toString() }).showToast()
+        return undefined
+      })
+    if (typeof twitchLogin !== 'undefined') {
+      connectTwitch(DEFAULT_CONTEXT, analytics, user, playerElements, {
+        login: twitchLogin,
+        token: twitchToken
+      })
+    }
   }
 
   const youtubeToken = await getYoutubeToken(db, user)

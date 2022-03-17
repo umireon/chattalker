@@ -6,15 +6,30 @@ import type { PlayerElements } from './ui'
 import type { User } from 'firebase/auth'
 import { fetchAudio } from './audio'
 
-export const getTwitchLogin = async ({ twitchClientId }: AppContext, token: string) => {
+interface TwitchUsersData {
+  readonly login: string
+}
+
+interface TwitchUsersResponse {
+  readonly data: TwitchUsersData[]
+}
+
+export const validateTwitchUsersResponse = (arg: any): arg is TwitchUsersResponse => {
+  if (typeof arg === 'undefined' || arg === null) return false
+  return Array.isArray(arg.data)
+}
+
+export const getTwitchLogin = async ({ twitchClientId }: AppContext, token: string): Promise<string> => {
   const response = await fetch('https://api.twitch.tv/helix/users', {
     headers: {
       Authorization: `Bearer ${token}`,
       'Client-Id': twitchClientId
     }
   })
-  if (!response.ok) throw new Error('Twitch login couldnot be retrieved!')
-  const { data: [{ login }] } = await response.json()
+  if (!response.ok) throw new Error('Twitch login could not be retrieved!')
+  const json: unknown = await response.json()
+  if (!validateTwitchUsersResponse(json)) throw new Error('Invalid response')
+  const { data: [{ login }] } = json
   return login
 }
 
