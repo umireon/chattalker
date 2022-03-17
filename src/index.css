@@ -12,9 +12,9 @@ header {
 
 header h1 {
   color: var(--main-fg-color);
-  font-size: 150px;
+  font-size: 15vw;
   margin: 0;
-  padding: 100px;
+  padding: 100px 0;
   text-align: center;
 }
 
