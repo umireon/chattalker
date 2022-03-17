@@ -29,9 +29,7 @@ const authenticateWithToken = async (auth: Auth, { authenticateWithTokenEndpoint
   const response = await fetch(`${authenticateWithTokenEndpoint}?${query}`)
   if (!response.ok) throw new Error('Authentication failed')
   const customToken = await response.text()
-  console.log(customToken)
   const credential = await signInWithCustomToken(auth, customToken)
-  console.log(credential)
   return credential
 }
 
