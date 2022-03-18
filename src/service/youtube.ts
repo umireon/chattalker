@@ -11,21 +11,21 @@ import { logEvent } from 'firebase/analytics'
 
 export class YoutubeRequestError extends Error {}
 
-export interface LiveBroadcastSnippet {
+export interface YoutubeLiveBroadcastSnippet {
   readonly liveChatId: string
 }
 
-export interface LiveBroadcastStatus {
+export interface YoutubeLiveBroadcastStatus {
   readonly lifeCycleStatus: string
 }
 
-export interface LiveBroadcastResource {
-  readonly snippet: LiveBroadcastSnippet
-  readonly status: LiveBroadcastStatus
+export interface YoutubeLiveBroadcastResource {
+  readonly snippet: YoutubeLiveBroadcastSnippet
+  readonly status: YoutubeLiveBroadcastStatus
 }
 
-export interface LiveBroadcastResponse {
-  readonly items: LiveBroadcastResource[]
+export interface YoutubeLiveBroadcastResponse {
+  readonly items: YoutubeLiveBroadcastResource[]
 }
 
 const checkIfQuotaError = (json: any) => {
@@ -36,7 +36,22 @@ const checkIfQuotaError = (json: any) => {
   return true
 }
 
-export const getActiveLiveChatIds = async (token: string) => {
+export const validateYoutubeLiveBroadcastResponse = (arg: any): arg is YoutubeLiveBroadcastResponse => Array.isArray(arg.items)
+
+export const handleYoutubeLiveBroadcastResponse = (ok: boolean, json: any): string[] => {
+  if (!ok) {
+    if (checkIfQuotaError(json)) {
+      throw new Error('Quota error')
+    } else {
+      throw new YoutubeRequestError('Request failed')
+    }
+  }
+  if (!validateYoutubeLiveBroadcastResponse(json)) throw new Error('Invalid response')
+  const liveItems = json.items.filter(e => ['live', 'ready'].includes(e.status.lifeCycleStatus))
+  return liveItems.map(({ snippet: { liveChatId } }) => liveChatId)
+}
+
+export const getActiveLiveChatIds = async (token: string): Promise<string[]> => {
   const query = new URLSearchParams({
     broadcastType: 'all',
     maxResults: '10',
@@ -48,36 +63,40 @@ export const getActiveLiveChatIds = async (token: string) => {
       Authorization: `Bearer ${token}`
     }
   })
-  if (!response.ok) {
-    const json = await response.json()
+  const json = await response.json()
+  return handleYoutubeLiveBroadcastResponse(response.ok, json)
+}
+
+export interface YoutubeLiveChatMessageSnippet {
+  readonly displayMessage?: string
+  readonly publishedAt: string
+}
+
+export interface YoutubeLiveChatMessageResource {
+  readonly snippet: YoutubeLiveChatMessageSnippet
+}
+
+export interface YoutubeLiveChatMessageResponse {
+  readonly items: YoutubeLiveChatMessageResource[]
+  readonly nextPageToken: string
+  readonly pollingIntervalMillis: number
+}
+
+export const validateYoutubeLiveChatMessageResponse = (arg: any): arg is YoutubeLiveChatMessageResponse => typeof arg.nextPageToken === 'string'
+
+export const handleYoutubeLiveChatMessageResponse = (ok: boolean, json: any): YoutubeLiveChatMessageResponse => {
+  if (!ok) {
     if (checkIfQuotaError(json)) {
       throw new Error('Quota error')
     } else {
       throw new YoutubeRequestError('Request failed')
     }
   }
-  const json: LiveBroadcastResponse = await response.json()
-  console.log(json)
-  const liveItems = json.items.filter(e => ['live', 'ready'].includes(e.status.lifeCycleStatus))
-  return liveItems.map(({ snippet: { liveChatId } }) => liveChatId)
+  if (!validateYoutubeLiveChatMessageResponse(json)) throw new Error('Invalid response')
+  return json
 }
 
-export interface LiveChatMessageSnippet {
-  readonly displayMessage?: string
-  readonly publishedAt: string
-}
-
-export interface LiveChatMessageResource {
-  readonly snippet: LiveChatMessageSnippet
-}
-
-export interface LiveChatMessageResponse {
-  readonly nextPageToken: string
-  readonly pollingIntervalMillis: number
-  readonly items: LiveChatMessageResource[]
-}
-
-export const getLiveChatMessages = async (token: string, liveChatId: string, pageToken: string) => {
+export const getLiveChatMessages = async (token: string, liveChatId: string, pageToken: string): Promise<YoutubeLiveChatMessageResponse> => {
   const query = new URLSearchParams({
     liveChatId,
     part: 'id,snippet,authorDetails'
@@ -90,20 +109,11 @@ export const getLiveChatMessages = async (token: string, liveChatId: string, pag
       Authorization: `Bearer ${token}`
     }
   })
-  if (!response.ok) {
-    const json = await response.json()
-    if (checkIfQuotaError(json)) {
-      throw new Error('Quota error')
-    } else {
-      throw new YoutubeRequestError('Request failed')
-    }
-  }
-  const json: LiveChatMessageResponse = await response.json()
-  console.log(json)
-  return json
+  const json = await response.json()
+  return handleYoutubeLiveChatMessageResponse(response.ok, json)
 }
 
-export async function * pollLiveChatMessages (token: string) {
+export async function * pollLiveChatMessages (token: string): AsyncGenerator<YoutubeLiveChatMessageResource[]> {
   let pageTokens: Record<string, string> = {}
   while (true) {
     const liveChatIds = await getActiveLiveChatIds(token)
