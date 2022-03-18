@@ -1,4 +1,4 @@
-import type { Firestore, FirestoreDataConverter } from 'firebase/firestore'
+import type { CollectionReference, Firestore, FirestoreDataConverter } from 'firebase/firestore'
 import { collection, doc, getDoc, setDoc } from 'firebase/firestore'
 
 import type { User } from 'firebase/auth'
@@ -19,7 +19,7 @@ export interface UserData {
   readonly 'voice-und'?: string
 }
 
-export const extractUserData = (data: any) => {
+export const extractUserData = (data: any): UserData => {
   let result: UserData = {}
   if (typeof data.nonce !== 'undefined') result = { ...result, nonce: data.nonce }
   if (typeof data['twitch-access-token'] !== 'undefined') result = { ...result, 'twitch-access-token': data['twitch-access-token'] }
@@ -41,9 +41,9 @@ export const userConverter: FirestoreDataConverter<UserData> = {
   toFirestore: extractUserData
 }
 
-export const getUsersCollection = (db: Firestore) => collection(db, 'users').withConverter(userConverter)
+export const getUsersCollection = (db: Firestore): CollectionReference<UserData> => collection(db, 'users').withConverter(userConverter)
 
-export const getUserData = async (db: Firestore, user: User) => {
+export const getUserData = async (db: Firestore, user: User): Promise<UserData> => {
   const docRef = await getDoc(doc(getUsersCollection(db), user.uid))
   return docRef.data() || {}
 }
