@@ -1,5 +1,5 @@
-import type { YoutubeLiveBroadcastResponse, YoutubeLiveChatMessageResponse, YoutubeRequestError } from './youtube'
-import { handleYoutubeLiveBroadcastResponse, handleYoutubeLiveChatMessageResponse } from './youtube'
+import type { YoutubeLiveBroadcastResponse, YoutubeLiveChatMessageResponse } from './youtube'
+import { YoutubeRequestError, handleYoutubeLiveBroadcastResponse, handleYoutubeLiveChatMessageResponse } from './youtube'
 
 test('handleYoutubeLiveBroadcastResponse processes a valid YoutubeLiveBroadcastResponse', () => {
   const ok = true
