@@ -11,7 +11,7 @@ test('validateYoutubeOauthResponse agrees with valid YoutubeOauthResponse', () =
   expect(validateYoutubeOauthResponse(response)).toBeTruthy()
 })
 
-test('validateYoutubeOauthResponse disagrees with invalid YoutubeOauthResponse', () => {
+test('validateYoutubeOauthResponse disagrees with invalid data', () => {
   const response = {
     error: ''
   }
