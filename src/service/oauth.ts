@@ -24,7 +24,7 @@ export interface YoutubeOauthResponse {
 }
 /* eslint-enable camelcase */
 
-const validateYoutubeOauthResponse = (arg: any): arg is YoutubeOauthResponse =>
+export const validateYoutubeOauthResponse = (arg: any): arg is YoutubeOauthResponse =>
   typeof arg === 'object' && 'token_type' in arg && arg.token_type === 'Bearer'
 
 export interface ExchangeYoutubeTokenParams {
@@ -32,7 +32,7 @@ export interface ExchangeYoutubeTokenParams {
   readonly redirectUri: string
 }
 
-export const exchangeYoutubeToken = async ({ youtubeCallbackEndpoint }: AppContext, user: User, { code, redirectUri }: ExchangeYoutubeTokenParams) => {
+export const exchangeYoutubeToken = async ({ youtubeCallbackEndpoint }: AppContext, user: User, { code, redirectUri }: ExchangeYoutubeTokenParams): Promise<YoutubeOauthResponse> => {
   const query = new URLSearchParams({ code, redirectUri })
   const idToken = await user.getIdToken()
   const response = await fetch(`${youtubeCallbackEndpoint}?${query}`, {
@@ -54,12 +54,12 @@ export const setYoutubeToken = async (user: User, db: Firestore, params: Youtube
   await setUserData(db, user, data)
 }
 
-export const getYoutubeToken = async (db: Firestore, user: User) => {
+export const getYoutubeToken = async (db: Firestore, user: User): Promise<string | undefined> => {
   const data = await getUserData(db, user)
   return data['youtube-access-token']
 }
 
-export const refreshYoutubeToken = async ({ youtubeRefreshEndpoint }: AppContext, db: Firestore, user: User) => {
+export const refreshYoutubeToken = async ({ youtubeRefreshEndpoint }: AppContext, db: Firestore, user: User): Promise<YoutubeOauthResponse> => {
   const data = await getUserData(db, user)
   const refreshToken = data['youtube-refresh-token']
   if (typeof refreshToken === 'undefined') throw new Error('Refresh token not stored')
