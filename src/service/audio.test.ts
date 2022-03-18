@@ -15,19 +15,27 @@ test('handleFetchAudioResponse processes a proper FormData', () => {
 })
 
 test('handleFetchAudioResponse throws against invalid audioContent', () => {
+  const ok = true
   const audioContent = 'invalid'
   const language = 'en'
   const formData = new FormDataNode() as FormData
   formData.append('audioContent', audioContent)
   formData.append('language', language)
-  expect(() => handleFetchAudioResponse(formData)).toThrow(Error)
+  expect(() => handleFetchAudioResponse(ok, formData)).toThrow(Error)
 })
 
 test('handleFetchAudioResponse throws against invalid language', () => {
+  const ok = true
   const audioContent = new FileNode(['file'], 'file.mp3') as unknown as File
   const language = new FileNode(['invalid'], 'invalid') as unknown as File
   const formData = new FormDataNode() as FormData
   formData.append('audioContent', audioContent)
   formData.append('language', language)
-  expect(() => handleFetchAudioResponse(formData)).toThrow(Error)
+  expect(() => handleFetchAudioResponse(ok, formData)).toThrow(Error)
+})
+
+test('handleFetchAudioResponse throws against invalid response', () => {
+  const ok = false
+  const formData = new FormDataNode() as FormData
+  expect(() => handleFetchAudioResponse(ok, formData)).toThrow(Error)
 })

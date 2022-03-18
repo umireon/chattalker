@@ -14,7 +14,8 @@ export interface FetchAutioResponse {
   readonly language: string
 }
 
-export const handleFetchAudioResponse = (formData: FormData): FetchAutioResponse => {
+export const handleFetchAudioResponse = (ok: boolean, formData: FormData): FetchAutioResponse => {
+  if (!ok) throw new Error('Invalid response')
   const audioContent = formData.get('audioContent')
   const language = formData.get('language')
   if (typeof audioContent === 'string' || audioContent === null) throw new Error('Invalid audioContent')
@@ -36,9 +37,8 @@ export const fetchAudio = async ({ textToSpeechEndpoint }: AppContext, user: Use
       Authorization: `Bearer ${idToken}`
     }
   })
-  if (!response.ok) throw new Error('Invalid message')
   const formData = await response.formData()
-  return handleFetchAudioResponse(formData)
+  return handleFetchAudioResponse(response.ok, formData)
 }
 
 export const sendKeepAliveToTextToSpeech = async ({ textToSpeechEndpoint }: AppContext, user: User): Promise<boolean> => {
