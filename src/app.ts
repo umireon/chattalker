@@ -170,6 +170,11 @@ const initializePageWithUser = async (db: Firestore, analytics: Analytics, user:
         Toastify({ text: e.toString() }).showToast()
       })
   }
+
+  const appLoadingElement = document.querySelector('#app-loading')
+  if (appLoadingElement !== null) {
+    appLoadingElement.classList.add('hidden')
+  }
 }
 
 const initializePage = async (db: Firestore, analytics: Analytics, auth: Auth) => {
