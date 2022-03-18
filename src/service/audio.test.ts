@@ -4,12 +4,13 @@ import type { FetchAutioResponse } from './audio'
 import { handleFetchAudioResponse } from './audio'
 
 test('handleFetchAudioResponse processes a proper FormData', () => {
+  const ok = true
   const audioContent = new FileNode(['file'], 'file.mp3') as unknown as File
   const language = 'en'
   const formData = new FormDataNode() as FormData
   formData.append('audioContent', audioContent)
   formData.append('language', language)
-  const actual = handleFetchAudioResponse(formData)
+  const actual = handleFetchAudioResponse(ok, formData)
   const expected: FetchAutioResponse = { audioContent, language }
   expect(actual).toEqual(expected)
 })
