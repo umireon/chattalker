@@ -22,7 +22,7 @@ jobs:
         node-version: 16.x
         cache: 'npm'
     - run: npm ci
-    - run: npm run tsc
+    - run: npm run tsc -- --noEmit
     - run: npm run build
     - run: npm run lint
     - run: npm test
