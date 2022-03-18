@@ -6,11 +6,11 @@ import type { PlayerElements } from './ui'
 import type { User } from 'firebase/auth'
 import { fetchAudio } from './audio'
 
-interface TwitchUsersData {
+export interface TwitchUsersData {
   readonly login: string
 }
 
-interface TwitchUsersResponse {
+export interface TwitchUsersResponse {
   readonly data: TwitchUsersData[]
 }
 
