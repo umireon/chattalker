@@ -9,7 +9,20 @@ export interface Voice {
   readonly 'voice[und]'?: string
 }
 
-export const fetchAudio = async ({ textToSpeechEndpoint }: AppContext, user: User, voice: Voice, text: string) => {
+export interface FetchAutioResponse {
+  readonly audioContent: File
+  readonly language: string
+}
+
+export const handleFetchAudioResponse = (formData: FormData): FetchAutioResponse => {
+  const audioContent = formData.get('audioContent')
+  const language = formData.get('language')
+  if (typeof audioContent === 'string' || audioContent === null) throw new Error('Invalid audioContent')
+  if (typeof language !== 'string') throw new Error('Invalid language')
+  return { audioContent, language }
+}
+
+export const fetchAudio = async ({ textToSpeechEndpoint }: AppContext, user: User, voice: Voice, text: string): Promise<FetchAutioResponse> => {
   const idToken = await user.getIdToken(true)
   const query = new URLSearchParams({ text })
   for (const key of VOICE_KEYS) {
@@ -25,14 +38,10 @@ export const fetchAudio = async ({ textToSpeechEndpoint }: AppContext, user: Use
   })
   if (!response.ok) throw new Error('Invalid message')
   const formData = await response.formData()
-  const audioContent = formData.get('audioContent')
-  const language = formData.get('language')
-  if (typeof audioContent === 'string' || audioContent === null) throw new Error('Invalid audioContent')
-  if (typeof language !== 'string') throw new Error('Invalid language')
-  return { audioContent, language }
+  return handleFetchAudioResponse(formData)
 }
 
-export const sendKeepAliveToTextToSpeech = async ({ textToSpeechEndpoint }: AppContext, user: User) => {
+export const sendKeepAliveToTextToSpeech = async ({ textToSpeechEndpoint }: AppContext, user: User): Promise<boolean> => {
   const idToken = await user.getIdToken(true)
   const query = new URLSearchParams({ keepAlive: 'true' })
   const response = await fetch(`${textToSpeechEndpoint}?${query}`, {

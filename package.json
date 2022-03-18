@@ -52,6 +52,7 @@
     "@google-cloud/translate": "^6.3.1",
     "fetch-blob": "^3.1.4",
     "firebase-admin": "^10.0.2",
+    "formdata-node": "^4.3.2",
     "formdata-polyfill": "^4.0.10",
     "node-fetch": "^3.2.1",
     "qs": "^6.10.3"
