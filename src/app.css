@@ -7,3 +7,7 @@ body {
 .hidden {
   display: none;
 }
+
+h1 {
+  font-family: 'Roboto', sans-serif;;
+}
