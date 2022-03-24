@@ -5,7 +5,7 @@
 	"extensions": [
 		"dbaeumer.vscode-eslint"
 	],
-	"forwardPorts": [1234],
+	"forwardPorts": [3000],
 	"postCreateCommand": "npm install",
 	"remoteUser": "node"
 }
