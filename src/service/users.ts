@@ -12,7 +12,7 @@ export interface UserData {
   readonly 'twitch-access-token'?: string
   readonly 'youtube-access-token'?: string
   readonly 'youtube-refresh-token'?: string
-  readonly token?: string
+  readonly token?: string | null
 
   readonly 'voice-en'?: string
   readonly 'voice-ja'?: string
