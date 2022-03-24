@@ -1,8 +1,8 @@
 <script lang="ts">
   import { getUserData, setUserData } from '../service/users'
 
-  import type { User } from 'firebase/auth'
   import type { Firestore } from 'firebase/firestore'
+  import type { User } from 'firebase/auth'
 
   export let db: Firestore
   export let user: User
