@@ -38,7 +38,9 @@ export interface ConnectTwitchParams {
   token: string
 }
 
-export const connectTwitch = (context: AppContext, analytics: Analytics, user: User, playerElements: PlayerElements, params: ConnectTwitchParams) => {
+type ConnectTwitchCallback = (text: string) => void
+
+export const connectTwitch = (context: AppContext, analytics: Analytics, user: User, params: ConnectTwitchParams, callback: ConnectTwitchCallback) => {
   const { login, token } = params
   const socket = new WebSocket('wss://irc-ws.chat.twitch.tv')
   socket.addEventListener('open', () => {
@@ -51,28 +53,25 @@ export const connectTwitch = (context: AppContext, analytics: Analytics, user: U
   })
   const privmsgRegexp = new RegExp(`PRIVMSG #${login} :(.*)`)
   socket.addEventListener('message', async event => {
-    const m = event.data.match(privmsgRegexp)
-    if (m) {
-      const voice = readVoiceFromPlayer(playerElements)
-      showLoadingElement(playerElements)
-      const { audioContent, language } = await fetchAudio(context, user, voice, m[1])
-      hideLoadingElement(playerElements)
-      playAudio(playerElements, audioContent)
-      showLanguage(playerElements, language)
-      showText(playerElements, m[1])
-      logEvent(analytics, 'chat_played')
+    if (typeof event.data === 'string') {
+      const m = event.data.match(privmsgRegexp)
+      if (m !== null && typeof m[1] !== 'undefined') {
+        callback(m[1])
+      }
     }
   })
   socket.addEventListener('message', async event => {
-    const m = event.data.match(/PING :tmi.twitch.tv/)
-    if (m) {
-      socket.send('PONG :tmi.twitch.tv')
+    if (typeof event.data === 'string') {
+      const m = event.data.match(/PING :tmi.twitch.tv/)
+      if (m !== null) {
+        socket.send('PONG :tmi.twitch.tv')
+      }
     }
   })
   socket.addEventListener('close', event => {
     console.log(event)
     setTimeout(() => {
-      connectTwitch(context, analytics, user, playerElements, params)
+      connectTwitch(context, analytics, user, params, callback)
     }, 1000)
   })
   socket.addEventListener('error', event => {

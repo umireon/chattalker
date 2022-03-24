@@ -1,24 +1,16 @@
 <script lang="ts">
-  import { AppContext, DEFAULT_CONTEXT, firebaseConfig } from '../constants'
+  import { DEFAULT_CONTEXT } from '../constants'
   import type { Auth, User } from 'firebase/auth'
   import { connectTwitch, getTwitchLogin } from './service/twitch'
-  import { generateNonce, getTwitchToken, getYoutubeToken } from './service/oauth'
-  import { getAuth, signInWithCustomToken } from 'firebase/auth'
-  import { getUserData, setUserData, UserData, validateVoiceKeys } from './service/users'
-  import { listenLogout, listenPlay, listenVoiceChange } from './service/ui'
+  import { getTwitchToken } from './service/oauth'
+  import { setUserData, UserData } from './service/users'
 
   import type { Analytics } from 'firebase/analytics'
-  import App from './AppSignedIn.svelte'
   import type { Firestore } from 'firebase/firestore'
-  import type { PlayerElements } from './service/ui'
   import Toastify from 'toastify-js'
   import Voice, { defaultVoiceEn, defaultVoiceJa, defaultVoiceUnd } from './lib/Voice.svelte'
   import Player from './lib/Player.svelte'
-  import { connectYoutube } from './service/youtube'
-  import { getAnalytics } from 'firebase/analytics'
-  import { getFirestore } from 'firebase/firestore'
-  import { initializeApp } from 'firebase/app'
-  import { sendKeepAliveToTextToSpeech } from './service/audio'
+  import { fetchAudio } from './service/audio';
 
   import 'three-dots/dist/three-dots.min.css'
   import 'toastify-js/src/toastify.css'
@@ -34,40 +26,58 @@
   let voiceJa: string = userData['voice-ja'] || defaultVoiceJa
   let voiceUnd: string = userData['voice-und'] || defaultVoiceUnd
 
-  let playerIsLoading: boolean = false
-  let playerLanguage: string = ''
-  let playerSrc: string = './empty.mp3'
-  let playerText: string = ''
-
   $: setUserData(db, user, {
     'voice-en': voiceEn,
     'voice-ja': voiceJa,
     'voice-und': voiceUnd
   })
 
-  const initialize = async () => {
-    const data = await getUserData(db, user)
-    if (data['voice-en']) voiceEn = data['voice-en']
-    if (data['voice-ja']) voiceJa = data['voice-ja']
-    if (data['voice-und']) voiceUnd = data['voice-und']
+  let playerIsLoading: boolean = false
+  let playerLanguage: string = ''
+  let playerSrc: string = './empty.mp3'
+  let playerText: string = ''
+
+  async function playAudio(text: string) {
+    const voice = {
+      'voice[en]': voiceEn,
+      'voice[ja]': voiceJa,
+      'voice[und]': voiceUnd
+    }
+    playerIsLoading = true
+    const { audioContent, language } = await fetchAudio(DEFAULT_CONTEXT, user, voice, text)
+    playerIsLoading = false
+    playerLanguage = language
+    playerSrc = URL.createObjectURL(audioContent)
+    playerText = text
   }
 
-  initialize()
+  function initializeVoice() {
+    if (typeof userData['voice-en'] !== 'undefined') voiceEn = userData['voice-en']
+    if (typeof userData['voice-ja'] !== 'undefined') voiceJa = userData['voice-ja']
+    if (typeof userData['voice-und'] !== 'undefined') voiceUnd = userData['voice-und']
+  }
+
+  async function initializeTwitch() {
+    const token = await getTwitchToken(db, user)
+    if (typeof token === 'undefined') return 
+    const login = await getTwitchLogin(DEFAULT_CONTEXT, token)
+      .catch(e => {
+        Toastify({ text: e.toString() }).showToast()
+      })
+    if (typeof login === 'undefined') return
+    connectTwitch(DEFAULT_CONTEXT, analytics, user, { login, token }, playAudio)
+  }
+
+  initializeVoice()
+  initializeTwitch()
 </script>
 
 <main>
   <Voice
-    context={DEFAULT_CONTEXT}
-    {user}
-  
     bind:voiceEn
     bind:voiceJa
     bind:voiceUnd
-
-    bind:playerIsLoading
-    bind:playerLanguage
-    bind:playerSrc
-    bind:playerText
+    {playAudio}
   />
   <Player
     bind:playerIsLoading

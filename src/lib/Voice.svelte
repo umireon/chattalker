@@ -5,35 +5,11 @@
 </script>
 
 <script lang="ts">
-  import type { AppContext } from '../../constants'
-  import type { User } from 'firebase/auth';
-  import { fetchAudio } from '../service/audio'
-
-  export let context: AppContext
-  export let user: User
-
   export let voiceEn: string
   export let voiceJa: string
   export let voiceUnd: string
 
-  export let playerIsLoading: boolean
-  export let playerLanguage: string
-  export let playerSrc: string
-  export let playerText: string
-
-  async function handleClickPlay(text: string): Promise<void> {
-    const voice = {
-      'voice[en]': voiceEn,
-      'voice[ja]': voiceJa,
-      'voice[und]': voiceUnd
-    }
-    playerIsLoading = true
-    const { audioContent, language } = await fetchAudio(context, user, voice, text)
-    playerIsLoading = false
-    playerLanguage = language
-    playerSrc = URL.createObjectURL(audioContent)
-    playerText = text
-  }
+  export let playAudio: (text: string) => void
 </script>
 
 <main>
@@ -64,7 +40,7 @@
       <option value="en-IN-Wavenet-C">en-IN-Wavenet-C Male</option>
       <option value="en-IN-Wavenet-D">en-IN-Wavenet-D Female</option>
     </select>
-    <button type="button" on:click={() => handleClickPlay("Hello")}>▶️</button>
+    <button type="button" on:click={() => playAudio("Hello")}>▶️</button>
   </p>
   <p>
     <label for="voice-ja">ja</label>
@@ -74,7 +50,7 @@
       <option value="ja-JP-Wavenet-C">ja-JP-Wavenet-C Male</option>
       <option value="ja-JP-Wavenet-D">ja-JP-Wavenet-D Male</option>
     </select>
-    <button type="button" on:click={() => handleClickPlay("こんにちは")}>▶️</button>
+    <button type="button" on:click={() => playAudio("こんにちは")}>▶️</button>
   </p>
   <p>
     <label for="voice-und">und</label>
@@ -107,6 +83,6 @@
       <option value="ja-JP-Wavenet-C">ja-JP-Wavenet-C Male</option>
       <option value="ja-JP-Wavenet-D">ja-JP-Wavenet-D Male</option>
     </select>
-    <button type="button" on:click={() => handleClickPlay("42")}>▶️</button>
+    <button type="button" on:click={() => playAudio("42")}>▶️</button>
   </p>
 </main>
