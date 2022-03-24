@@ -138,59 +138,11 @@ const initializePageWithUser = async (db: Firestore, analytics: Analytics, user:
   if (resetUrlButton === null) throw new Error('Copy URL button not found')
   listenResetUrlButton(db, user, resetUrlButton, urlInput)
 
-  const twitchToken = await getTwitchToken(db, user)
-  if (typeof twitchToken !== 'undefined') {
-    const twitchLogin = await getTwitchLogin(DEFAULT_CONTEXT, twitchToken)
-      .catch(e => {
-        Toastify({ text: e.toString() }).showToast()
-        return undefined
-      })
-    if (typeof twitchLogin !== 'undefined') {
-      connectTwitch(DEFAULT_CONTEXT, analytics, user, playerElements, {
-        login: twitchLogin,
-        token: twitchToken
-      })
-    }
-  }
-
-  const youtubeToken = await getYoutubeToken(db, user)
-  if (typeof youtubeToken !== 'undefined') {
-    connectYoutube(DEFAULT_CONTEXT, db, analytics, user, playerElements, { token: youtubeToken })
-      .catch(e => {
-        Toastify({ text: e.toString() }).showToast()
-      })
-  }
-
   const appLoadingElement = document.querySelector('#app-loading')
   if (appLoadingElement !== null) {
     appLoadingElement.classList.add('hidden')
   }
 }
-
-const initializePage = async (db: Firestore, analytics: Analytics, auth: Auth) => {
-  const logoutElement = document.querySelector('#logout')
-  if (logoutElement === null) throw new Error('Logout element not found')
-  listenLogout(auth, logoutElement)
-
-  const params = new URLSearchParams(location.hash.slice(1))
-  const token = params.get('token')
-  const uid = params.get('uid')
-  if (token && uid) {
-    const credential = await authenticateWithToken(auth, DEFAULT_CONTEXT, { token, uid })
-    initializePageWithUser(db, analytics, credential.user)
-  } else {
-    auth.onAuthStateChanged(async user => {
-      if (user !== null) {
-        await initializePageWithUser(db, analytics, user)
-      }
-    })
-  }
-}
-
-const app = initializeApp(firebaseConfig)
-const auth = getAuth(app)
-const db = getFirestore(app)
-const analytics = getAnalytics(app)
 
 // initializePage(db, analytics, auth)
 
