@@ -12,6 +12,11 @@ export default defineConfig({
         termsofservice: resolve(__dirname, 'termsofservice.html'),
         twitch: resolve(__dirname, 'twitch.html'),
         youtube: resolve(__dirname, 'youtube.html')
+      },
+      output: {
+        manualChunks: {
+          firebasecompat: ['firebase/compat/app']
+        }
       }
     }
   },
