@@ -7,6 +7,7 @@ import { getUserData, setUserData, validateVoiceKeys } from './service/users'
 import { listenLogout, listenPlay, listenVoiceChange } from './service/ui'
 
 import type { Analytics } from 'firebase/analytics'
+import App from './App.svelte'
 import type { Firestore } from 'firebase/firestore'
 import type { PlayerElements } from './service/ui'
 import Toastify from 'toastify-js'
@@ -110,16 +111,16 @@ const initializePageWithUser = async (db: Firestore, analytics: Analytics, user:
     listenPlay(DEFAULT_CONTEXT, user, playerElements, element)
   }
 
-  const data = await getUserData(db, user)
-  for (const element of document.querySelectorAll('select')) {
-    listenVoiceChange(db, user, element)
-    if (typeof data !== 'undefined' && validateVoiceKeys(element.id)) {
-      const value = data[element.id]
-      if (typeof value === 'string') {
-        element.value = value
-      }
-    }
-  }
+  // const data = await getUserData(db, user)
+  // for (const element of document.querySelectorAll('select')) {
+  //   listenVoiceChange(db, user, element)
+  //   if (typeof data !== 'undefined' && validateVoiceKeys(element.id)) {
+  //     const value = data[element.id]
+  //     if (typeof value === 'string') {
+  //       element.value = value
+  //     }
+  //   }
+  // }
 
   const twitchConnectElement = document.querySelector<HTMLButtonElement>('button#connect-twitch')
   if (twitchConnectElement === null) throw new Error('Connect Twitch element not found')
@@ -203,3 +204,8 @@ const db = getFirestore(app)
 const analytics = getAnalytics(app)
 
 initializePage(db, analytics, auth)
+
+const target = document.getElementById('app')
+if (target === null) throw new Error('#app not found')
+const sapp = new App({ target })
+export default sapp
