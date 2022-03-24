@@ -4,26 +4,13 @@
   import { getAuth, signInWithCustomToken } from 'firebase/auth'
 
   import AppSignedIn from './AppSignedIn.svelte'
+  import { authenticateWithToken } from './service/auth';
   import { getAnalytics } from 'firebase/analytics'
   import { getFirestore } from 'firebase/firestore'
   import { getUserData } from './service/users'
   import { initializeApp } from 'firebase/app'
 
   import 'three-dots/dist/three-dots.min.css'
-
-  interface AuthenticateWithTokenOptions {
-    readonly token: string
-    readonly uid: string
-  }
-
-  const authenticateWithToken = async (auth: Auth, { authenticateWithTokenEndpoint }: AppContext, { token, uid }: AuthenticateWithTokenOptions) => {
-    const query = new URLSearchParams({ token, uid })
-    const response = await fetch(`${authenticateWithTokenEndpoint}?${query}`)
-    if (!response.ok) throw new Error('Authentication failed')
-    const customToken = await response.text()
-    const credential = await signInWithCustomToken(auth, customToken)
-    return credential
-  }
 
   const initializeUser = async (auth: Auth) => {
     const params = new URLSearchParams(location.hash.slice(1))
