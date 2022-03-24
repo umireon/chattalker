@@ -1,13 +1,9 @@
-import { hideLoadingElement, playAudio, readVoiceFromPlayer, showLanguage, showLoadingElement, showText } from './ui'
 import { refreshYoutubeToken, setYoutubeToken } from './oauth'
 
 import type { Analytics } from 'firebase/analytics'
 import type { AppContext } from '../../constants'
 import type { Firestore } from 'firebase/firestore'
-import type { PlayerElements } from './ui'
 import type { User } from 'firebase/auth'
-import { fetchAudio } from './audio'
-import { logEvent } from 'firebase/analytics'
 
 export class YoutubeRequestError extends Error {}
 
@@ -129,7 +125,7 @@ interface ConnectYoutubeParams {
   token: string
 }
 
-export const connectYoutube = async (context: AppContext, db: Firestore, analytics: Analytics, user: User, playerElements: PlayerElements, params: ConnectYoutubeParams) => {
+export const connectYoutube = async (context: AppContext, db: Firestore, analytics: Analytics, user: User, params: ConnectYoutubeParams, callback: (text: string) => void) => {
   const { token } = params
   try {
     for await (const items of pollLiveChatMessages(token)) {
@@ -138,14 +134,7 @@ export const connectYoutube = async (context: AppContext, db: Firestore, analyti
         const chatTime = new Date(item.snippet.publishedAt).getTime()
         const freshTime = new Date().getTime() - 10 * 1000
         if (chatTime > freshTime && typeof displayMessage !== 'undefined') {
-          const voice = readVoiceFromPlayer(playerElements)
-          showLoadingElement(playerElements)
-          const { audioContent, language } = await fetchAudio(context, user, voice, displayMessage)
-          hideLoadingElement(playerElements)
-          playAudio(playerElements, new Blob([audioContent]))
-          showLanguage(playerElements, language)
-          showText(playerElements, displayMessage)
-          logEvent(analytics, 'chat_played')
+          callback(displayMessage)
         }
       }
     }
@@ -153,7 +142,7 @@ export const connectYoutube = async (context: AppContext, db: Firestore, analyti
     if (e instanceof YoutubeRequestError) {
       const oauthResponse = await refreshYoutubeToken(context, db, user)
       await setYoutubeToken(user, db, oauthResponse)
-      connectYoutube(context, db, analytics, user, playerElements, { ...params, token: oauthResponse.access_token })
+      connectYoutube(context, db, analytics, user, { ...params, token: oauthResponse.access_token }, callback)
     } else {
       throw e
     }

@@ -2,7 +2,7 @@
   import { DEFAULT_CONTEXT } from '../constants'
   import type { Auth, User } from 'firebase/auth'
   import { connectTwitch, getTwitchLogin } from './service/twitch'
-  import { getTwitchToken } from './service/oauth'
+  import { generateNonce, getTwitchToken, getYoutubeToken } from './service/oauth'
   import { setUserData, UserData } from './service/users'
 
   import type { Analytics } from 'firebase/analytics'
@@ -10,7 +10,9 @@
   import Toastify from 'toastify-js'
   import Voice, { defaultVoiceEn, defaultVoiceJa, defaultVoiceUnd } from './lib/Voice.svelte'
   import Player from './lib/Player.svelte'
-  import { fetchAudio } from './service/audio';
+  import { connectYoutube } from './service/youtube'
+  import { fetchAudio } from './service/audio'
+  import { logEvent } from 'firebase/analytics'
 
   import 'three-dots/dist/three-dots.min.css'
   import 'toastify-js/src/toastify.css'
@@ -49,6 +51,7 @@
     playerLanguage = language
     playerSrc = URL.createObjectURL(audioContent)
     playerText = text
+    logEvent(analytics, 'chat_played')
   }
 
   function initializeVoice() {
@@ -68,8 +71,18 @@
     connectTwitch(DEFAULT_CONTEXT, analytics, user, { login, token }, playAudio)
   }
 
+  async function initializeYoutube() {
+    const token = await getYoutubeToken(db, user)
+    if (typeof token === 'undefined') return
+    connectYoutube(DEFAULT_CONTEXT, db, analytics, user, { token }, playAudio)
+      .catch(e => {
+        Toastify({ text: e.toString() }).showToast()
+      })
+  }
+
   initializeVoice()
   initializeTwitch()
+  initializeYoutube()
 </script>
 
 <main>
