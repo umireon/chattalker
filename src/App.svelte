@@ -2,11 +2,11 @@
   import { AppContext, DEFAULT_CONTEXT, firebaseConfig } from '../constants'
   import type { Auth, User } from 'firebase/auth'
   import { getAuth, signInWithCustomToken } from 'firebase/auth'
-  import { getUserData } from './service/users'
 
   import AppSignedIn from './AppSignedIn.svelte'
   import { getAnalytics } from 'firebase/analytics'
   import { getFirestore } from 'firebase/firestore'
+  import { getUserData } from './service/users'
   import { initializeApp } from 'firebase/app'
 
   import 'three-dots/dist/three-dots.min.css'

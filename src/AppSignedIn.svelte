@@ -1,18 +1,19 @@
 <script lang="ts">
-  import { DEFAULT_CONTEXT } from '../constants'
   import type { Auth, User } from 'firebase/auth'
+  import Voice, { defaultVoiceEn, defaultVoiceJa, defaultVoiceUnd } from './lib/Voice.svelte'
   import { connectTwitch, getTwitchLogin } from './service/twitch'
-  import { generateNonce, getTwitchToken, getYoutubeToken } from './service/oauth'
-  import { setUserData, UserData } from './service/users'
+  import { getTwitchToken, getYoutubeToken } from './service/oauth'
 
   import type { Analytics } from 'firebase/analytics'
+  import { DEFAULT_CONTEXT } from '../constants'
   import type { Firestore } from 'firebase/firestore'
-  import Toastify from 'toastify-js'
-  import Voice, { defaultVoiceEn, defaultVoiceJa, defaultVoiceUnd } from './lib/Voice.svelte'
   import Player from './lib/Player.svelte'
+  import Toastify from 'toastify-js'
+  import type { UserData } from './service/users'
   import { connectYoutube } from './service/youtube'
   import { fetchAudio } from './service/audio'
   import { logEvent } from 'firebase/analytics'
+  import { setUserData } from './service/users'
 
   import 'three-dots/dist/three-dots.min.css'
   import 'toastify-js/src/toastify.css'
@@ -39,7 +40,7 @@
   let playerSrc: string = './empty.mp3'
   let playerText: string = ''
 
-  async function playAudio(text: string) {
+  async function playAudio (text: string) {
     const voice = {
       'voice[en]': voiceEn,
       'voice[ja]': voiceJa,
@@ -54,27 +55,27 @@
     logEvent(analytics, 'chat_played')
   }
 
-  function initializeVoice() {
+  function initializeVoice () {
     if (typeof userData['voice-en'] !== 'undefined') voiceEn = userData['voice-en']
     if (typeof userData['voice-ja'] !== 'undefined') voiceJa = userData['voice-ja']
     if (typeof userData['voice-und'] !== 'undefined') voiceUnd = userData['voice-und']
   }
 
-  async function initializeTwitch() {
+  async function initializeTwitch () {
     const token = await getTwitchToken(db, user)
-    if (typeof token === 'undefined') return 
+    if (typeof token === 'undefined') return
     const login = await getTwitchLogin(DEFAULT_CONTEXT, token)
       .catch(e => {
         Toastify({ text: e.toString() }).showToast()
       })
     if (typeof login === 'undefined') return
-    connectTwitch(DEFAULT_CONTEXT, analytics, user, { login, token }, playAudio)
+    connectTwitch({ login, token }, playAudio)
   }
 
-  async function initializeYoutube() {
+  async function initializeYoutube () {
     const token = await getYoutubeToken(db, user)
     if (typeof token === 'undefined') return
-    connectYoutube(DEFAULT_CONTEXT, db, analytics, user, { token }, playAudio)
+    connectYoutube(DEFAULT_CONTEXT, db, user, { token }, playAudio)
       .catch(e => {
         Toastify({ text: e.toString() }).showToast()
       })
@@ -98,5 +99,5 @@
     bind:playerSrc
     bind:playerText
   />
-  <p><button type="button" on:click={async () => {await auth.signOut(); location.href = '/'}}>Logout</button></p>
+  <p><button type="button" on:click={async () => { await auth.signOut(); location.href = '/' }}>Logout</button></p>
 </main>

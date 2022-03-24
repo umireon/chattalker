@@ -1,10 +1,4 @@
-import { Analytics, logEvent } from 'firebase/analytics'
-import { hideLoadingElement, playAudio, readVoiceFromPlayer, showLanguage, showLoadingElement, showText } from './ui'
-
 import type { AppContext } from '../../constants'
-import type { PlayerElements } from './ui'
-import type { User } from 'firebase/auth'
-import { fetchAudio } from './audio'
 
 export interface TwitchUsersData {
   readonly login: string
@@ -40,7 +34,7 @@ export interface ConnectTwitchParams {
 
 type ConnectTwitchCallback = (text: string) => void
 
-export const connectTwitch = (context: AppContext, analytics: Analytics, user: User, params: ConnectTwitchParams, callback: ConnectTwitchCallback) => {
+export const connectTwitch = (params: ConnectTwitchParams, callback: ConnectTwitchCallback) => {
   const { login, token } = params
   const socket = new WebSocket('wss://irc-ws.chat.twitch.tv')
   socket.addEventListener('open', () => {
@@ -71,7 +65,7 @@ export const connectTwitch = (context: AppContext, analytics: Analytics, user: U
   socket.addEventListener('close', event => {
     console.log(event)
     setTimeout(() => {
-      connectTwitch(context, analytics, user, params, callback)
+      connectTwitch(params, callback)
     }, 1000)
   })
   socket.addEventListener('error', event => {

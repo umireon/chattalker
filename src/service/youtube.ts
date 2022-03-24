@@ -1,6 +1,5 @@
 import { refreshYoutubeToken, setYoutubeToken } from './oauth'
 
-import type { Analytics } from 'firebase/analytics'
 import type { AppContext } from '../../constants'
 import type { Firestore } from 'firebase/firestore'
 import type { User } from 'firebase/auth'
@@ -125,7 +124,7 @@ interface ConnectYoutubeParams {
   token: string
 }
 
-export const connectYoutube = async (context: AppContext, db: Firestore, analytics: Analytics, user: User, params: ConnectYoutubeParams, callback: (text: string) => void) => {
+export const connectYoutube = async (context: AppContext, db: Firestore, user: User, params: ConnectYoutubeParams, callback: (text: string) => void) => {
   const { token } = params
   try {
     for await (const items of pollLiveChatMessages(token)) {
@@ -142,7 +141,7 @@ export const connectYoutube = async (context: AppContext, db: Firestore, analyti
     if (e instanceof YoutubeRequestError) {
       const oauthResponse = await refreshYoutubeToken(context, db, user)
       await setYoutubeToken(user, db, oauthResponse)
-      connectYoutube(context, db, analytics, user, { ...params, token: oauthResponse.access_token }, callback)
+      connectYoutube(context, db, user, { ...params, token: oauthResponse.access_token }, callback)
     } else {
       throw e
     }

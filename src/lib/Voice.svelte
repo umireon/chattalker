@@ -40,7 +40,7 @@
       <option value="en-IN-Wavenet-C">en-IN-Wavenet-C Male</option>
       <option value="en-IN-Wavenet-D">en-IN-Wavenet-D Female</option>
     </select>
-    <button type="button" on:click={() => playAudio("Hello")}>▶️</button>
+    <button type="button" on:click={() => playAudio('Hello')}>▶️</button>
   </p>
   <p>
     <label for="voice-ja">ja</label>
@@ -50,7 +50,7 @@
       <option value="ja-JP-Wavenet-C">ja-JP-Wavenet-C Male</option>
       <option value="ja-JP-Wavenet-D">ja-JP-Wavenet-D Male</option>
     </select>
-    <button type="button" on:click={() => playAudio("こんにちは")}>▶️</button>
+    <button type="button" on:click={() => playAudio('こんにちは')}>▶️</button>
   </p>
   <p>
     <label for="voice-und">und</label>
@@ -83,6 +83,6 @@
       <option value="ja-JP-Wavenet-C">ja-JP-Wavenet-C Male</option>
       <option value="ja-JP-Wavenet-D">ja-JP-Wavenet-D Male</option>
     </select>
-    <button type="button" on:click={() => playAudio("42")}>▶️</button>
+    <button type="button" on:click={() => playAudio('42')}>▶️</button>
   </p>
 </main>
