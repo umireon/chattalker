@@ -2,16 +2,19 @@
   import type { Auth, User } from 'firebase/auth'
   import Voice, { defaultVoiceEn, defaultVoiceJa, defaultVoiceUnd } from './lib/Voice.svelte'
   import { connectTwitch, getTwitchLogin } from './service/twitch'
+  import { fetchAudio, sendKeepAliveToTextToSpeech } from './service/audio'
   import { getTwitchToken, getYoutubeToken } from './service/oauth'
 
   import type { Analytics } from 'firebase/analytics'
+  import Connect from './lib/Connect.svelte'
   import { DEFAULT_CONTEXT } from '../constants'
   import type { Firestore } from 'firebase/firestore'
+  import GenerateUrl from './lib/GenerateUrl.svelte'
+  import Logout from './lib/Logout.svelte'
   import Player from './lib/Player.svelte'
   import Toastify from 'toastify-js'
   import type { UserData } from './service/users'
   import { connectYoutube } from './service/youtube'
-  import { fetchAudio } from './service/audio'
   import { logEvent } from 'firebase/analytics'
   import { setUserData } from './service/users'
 
@@ -24,6 +27,8 @@
 
   export let user: User
   export let userData: UserData
+
+  const context = DEFAULT_CONTEXT
 
   let voiceEn: string = userData['voice-en'] || defaultVoiceEn
   let voiceJa: string = userData['voice-ja'] || defaultVoiceJa
@@ -84,6 +89,12 @@
   initializeVoice()
   initializeTwitch()
   initializeYoutube()
+
+
+  setInterval(() => {
+    sendKeepAliveToTextToSpeech(DEFAULT_CONTEXT, user)
+  }, 60000)
+  sendKeepAliveToTextToSpeech(DEFAULT_CONTEXT, user)
 </script>
 
 <main>
@@ -99,5 +110,7 @@
     bind:playerSrc
     bind:playerText
   />
-  <p><button type="button" on:click={async () => { await auth.signOut(); location.href = '/' }}>Logout</button></p>
+  <Connect {context} {db} {user} />
+  <GenerateUrl {db} {user} />
+  <Logout {auth} />
 </main>

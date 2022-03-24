@@ -1,10 +1,11 @@
 <script lang="ts">
-  import { AppContext, DEFAULT_CONTEXT, firebaseConfig } from '../constants'
+  import { DEFAULT_CONTEXT, firebaseConfig } from '../constants'
   import type { Auth, User } from 'firebase/auth'
-  import { getAuth, signInWithCustomToken } from 'firebase/auth'
+  import { getAuth } from 'firebase/auth'
 
   import AppSignedIn from './AppSignedIn.svelte'
-  import { authenticateWithToken } from './service/auth';
+  import Logout from './lib/Logout.svelte'
+  import { authenticateWithToken } from './service/auth'
   import { getAnalytics } from 'firebase/analytics'
   import { getFirestore } from 'firebase/firestore'
   import { getUserData } from './service/users'
@@ -47,6 +48,6 @@
   {:then { user, userData } }
     <AppSignedIn {analytics} {auth} {db} {user} {userData} />
   {:catch}
-    <p>Error occurred during signing in!</p>
+    <Logout {auth} />
   {/await}
 </main>
