@@ -111,17 +111,6 @@ const initializePageWithUser = async (db: Firestore, analytics: Analytics, user:
     listenPlay(DEFAULT_CONTEXT, user, playerElements, element)
   }
 
-  // const data = await getUserData(db, user)
-  // for (const element of document.querySelectorAll('select')) {
-  //   listenVoiceChange(db, user, element)
-  //   if (typeof data !== 'undefined' && validateVoiceKeys(element.id)) {
-  //     const value = data[element.id]
-  //     if (typeof value === 'string') {
-  //       element.value = value
-  //     }
-  //   }
-  // }
-
   const twitchConnectElement = document.querySelector<HTMLButtonElement>('button#connect-twitch')
   if (twitchConnectElement === null) throw new Error('Connect Twitch element not found')
   listenTwitchConnectButton(db, user, twitchConnectElement)
@@ -203,7 +192,7 @@ const auth = getAuth(app)
 const db = getFirestore(app)
 const analytics = getAnalytics(app)
 
-initializePage(db, analytics, auth)
+// initializePage(db, analytics, auth)
 
 const target = document.getElementById('app')
 if (target === null) throw new Error('#app not found')

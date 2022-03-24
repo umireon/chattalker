@@ -13,6 +13,7 @@
   import type { PlayerElements } from './service/ui'
   import Toastify from 'toastify-js'
   import Voice, { defaultVoiceEn, defaultVoiceJa, defaultVoiceUnd } from './lib/Voice.svelte'
+  import Player from './lib/Player.svelte'
   import { connectYoutube } from './service/youtube'
   import { getAnalytics } from 'firebase/analytics'
   import { getFirestore } from 'firebase/firestore'
@@ -33,6 +34,11 @@
   let voiceJa: string = userData['voice-ja'] || defaultVoiceJa
   let voiceUnd: string = userData['voice-und'] || defaultVoiceUnd
 
+  let playerIsLoading: boolean = false
+  let playerLanguage: string = ''
+  let playerSrc: string = './empty.mp3'
+  let playerText: string = ''
+
   $: setUserData(db, user, {
     'voice-en': voiceEn,
     'voice-ja': voiceJa,
@@ -51,9 +57,23 @@
 
 <main>
   <Voice
-    bind:voiceEn={voiceEn}
-    bind:voiceJa={voiceJa}
-    bind:voiceUnd={voiceUnd}
+    context={DEFAULT_CONTEXT}
+    {user}
+  
+    bind:voiceEn
+    bind:voiceJa
+    bind:voiceUnd
+
+    bind:playerIsLoading
+    bind:playerLanguage
+    bind:playerSrc
+    bind:playerText
+  />
+  <Player
+    bind:playerIsLoading
+    bind:playerLanguage
+    bind:playerSrc
+    bind:playerText
   />
   <p><button type="button" on:click={async () => {await auth.signOut(); location.href = '/'}}>Logout</button></p>
 </main>

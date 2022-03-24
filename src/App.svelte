@@ -9,6 +9,8 @@
   import { getFirestore } from 'firebase/firestore'
   import { initializeApp } from 'firebase/app'
 
+  import 'three-dots/dist/three-dots.min.css'
+
   interface AuthenticateWithTokenOptions {
     readonly token: string
     readonly uid: string
@@ -54,8 +56,10 @@
 
 <main>
   {#await promise}
-    <p>Signing in...</p>
+    <div id="app-loading" class="dot-bricks" style="margin: 10px;"></div>
   {:then { user, userData } }
     <AppSignedIn {analytics} {auth} {db} {user} {userData} />
+  {:catch}
+    <p>Error occurred during signing in!</p>
   {/await}
 </main>
