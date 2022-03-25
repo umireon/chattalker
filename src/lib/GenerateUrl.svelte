@@ -15,7 +15,7 @@
 
   async function handleClickGenerateUrl () {
     const { token } = await getUserData(db, user)
-    if (token) {
+    if (typeof token !== 'undefined' && token !== null) {
       const query = new URLSearchParams({ token: token, uid: user.uid })
       value = `${location.origin}${location.pathname}#${query}`
     } else {
@@ -34,7 +34,7 @@
 
 
   async function handleClickResetUrl () {
-    await setUserData(db, user, { token: '' })
+    await setUserData(db, user, { token: null })
     value = ''
   }
 </script>
