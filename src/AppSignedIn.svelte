@@ -26,13 +26,13 @@
   export let db: Firestore
 
   export let user: User
-  export let userData: UserData
+  export let initialUserData: UserData
 
   const context = DEFAULT_CONTEXT
 
-  let voiceEn: string = userData['voice-en'] || defaultVoiceEn
-  let voiceJa: string = userData['voice-ja'] || defaultVoiceJa
-  let voiceUnd: string = userData['voice-und'] || defaultVoiceUnd
+  let voiceEn: string = initialUserData['voice-en'] || defaultVoiceEn
+  let voiceJa: string = initialUserData['voice-ja'] || defaultVoiceJa
+  let voiceUnd: string = initialUserData['voice-und'] || defaultVoiceUnd
 
   $: setUserData(db, user, {
     'voice-en': voiceEn,
@@ -61,9 +61,9 @@
   }
 
   function initializeVoice () {
-    if (typeof userData['voice-en'] !== 'undefined') voiceEn = userData['voice-en']
-    if (typeof userData['voice-ja'] !== 'undefined') voiceJa = userData['voice-ja']
-    if (typeof userData['voice-und'] !== 'undefined') voiceUnd = userData['voice-und']
+    if (typeof initialUserData['voice-en'] !== 'undefined') voiceEn = initialUserData['voice-en']
+    if (typeof initialUserData['voice-ja'] !== 'undefined') voiceJa = initialUserData['voice-ja']
+    if (typeof initialUserData['voice-und'] !== 'undefined') voiceUnd = initialUserData['voice-und']
   }
 
   async function initializeTwitch () {
@@ -89,7 +89,6 @@
   initializeVoice()
   initializeTwitch()
   initializeYoutube()
-
 
   setInterval(() => {
     sendKeepAliveToTextToSpeech(DEFAULT_CONTEXT, user)
