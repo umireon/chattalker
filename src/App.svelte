@@ -38,15 +38,15 @@
   const db = getFirestore(app)
   const promise = initializeUser(auth).then(async user => {
     const initialUserData = await getUserData(db, user)
-    return { user, initialUserData }
+    return { initialUserData, user }
   })
 </script>
 
 <main>
   {#await promise}
     <div id="app-loading" class="dot-bricks" style="margin: 10px;"></div>
-  {:then { user, initialUserData } }
-    <AppSignedIn {analytics} {auth} {db} {user} {initialUserData} />
+  {:then { initialUserData, user } }
+    <AppSignedIn {analytics} {auth} {db} {initialUserData} {user} />
   {:catch}
     <Logout {auth} />
   {/await}

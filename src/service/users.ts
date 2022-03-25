@@ -5,7 +5,6 @@ import type { User } from 'firebase/auth'
 
 export const VOICE_KEYS = ['voice-en', 'voice-ja', 'voice-und'] as const
 export type VoiceKeys = typeof VOICE_KEYS[number]
-export const validateVoiceKeys = (arg: string): arg is VoiceKeys => VOICE_KEYS.some(e => e === arg)
 
 export interface UserData {
   readonly nonce?: string
