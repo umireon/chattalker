@@ -4,40 +4,24 @@
     "es2021": true,
     "jest/globals": true
   },
-  "extends": [
-    "standard"
-  ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "ecmaVersion": "latest",
     "sourceType": "module"
   },
-  "plugins": [
-    "svelte3",
-    "@typescript-eslint",
-    "jest"
-  ],
+  "plugins": ["svelte3", "@typescript-eslint", "jest"],
   "overrides": [
     {
-      "files": [
-        "*.svelte"
-      ],
+      "files": ["*.svelte"],
       "processor": "svelte3/svelte3"
     }
   ],
   "rules": {
-    "no-multiple-empty-lines": "off",
-    "no-use-before-define": "off",
     "sort-keys": "error",
     "sort-imports": [
       "error",
       {
-        "memberSyntaxSortOrder": [
-          "all",
-          "multiple",
-          "single",
-          "none"
-        ]
+        "memberSyntaxSortOrder": ["all", "multiple", "single", "none"]
       }
     ]
   },

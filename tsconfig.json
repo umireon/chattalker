@@ -15,8 +15,6 @@
     "noEmit": true
   },
   "typeAcquisition": {
-    "include": [
-      "jest"
-    ]
+    "include": ["jest"]
   }
 }
