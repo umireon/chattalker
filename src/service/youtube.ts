@@ -1,39 +1,39 @@
-import { refreshYoutubeToken, setYoutubeToken } from "./oauth";
+import { refreshYoutubeToken, setYoutubeToken } from './oauth'
 
-import type { AppContext } from "../../constants";
-import type { Firestore } from "firebase/firestore";
-import type { User } from "firebase/auth";
+import type { AppContext } from '../../constants'
+import type { Firestore } from 'firebase/firestore'
+import type { User } from 'firebase/auth'
 
 export class YoutubeRequestError extends Error {}
 
 export interface YoutubeLiveBroadcastSnippet {
-  readonly liveChatId: string;
+  readonly liveChatId: string
 }
 
 export interface YoutubeLiveBroadcastStatus {
-  readonly lifeCycleStatus: string;
+  readonly lifeCycleStatus: string
 }
 
 export interface YoutubeLiveBroadcastResource {
-  readonly snippet: YoutubeLiveBroadcastSnippet;
-  readonly status: YoutubeLiveBroadcastStatus;
+  readonly snippet: YoutubeLiveBroadcastSnippet
+  readonly status: YoutubeLiveBroadcastStatus
 }
 
 export interface YoutubeLiveBroadcastResponse {
-  readonly items: YoutubeLiveBroadcastResource[];
+  readonly items: YoutubeLiveBroadcastResource[]
 }
 
 const checkIfQuotaError = (json: any) => {
-  if (!json.error) return false;
-  if (!Array.isArray(json.error.errors)) return false;
-  if (!json.error.errors[0]) return false;
-  if (json.error.errors[0].domain !== "youtube.quota") return false;
-  return true;
-};
+  if (!json.error) return false
+  if (!Array.isArray(json.error.errors)) return false
+  if (!json.error.errors[0]) return false
+  if (json.error.errors[0].domain !== 'youtube.quota') return false
+  return true
+}
 
 export const validateYoutubeLiveBroadcastResponse = (
   arg: any
-): arg is YoutubeLiveBroadcastResponse => Array.isArray(arg.items);
+): arg is YoutubeLiveBroadcastResponse => Array.isArray(arg.items)
 
 export const handleYoutubeLiveBroadcastResponse = (
   ok: boolean,
@@ -41,28 +41,28 @@ export const handleYoutubeLiveBroadcastResponse = (
 ): string[] => {
   if (!ok) {
     if (checkIfQuotaError(json)) {
-      throw new Error("Quota error");
+      throw new Error('Quota error')
     } else {
-      throw new YoutubeRequestError("Request failed");
+      throw new YoutubeRequestError('Request failed')
     }
   }
   if (!validateYoutubeLiveBroadcastResponse(json))
-    throw new Error("Invalid response");
+    throw new Error('Invalid response')
   const liveItems = json.items.filter((e) =>
-    ["live", "ready"].includes(e.status.lifeCycleStatus)
-  );
-  return liveItems.map(({ snippet: { liveChatId } }) => liveChatId);
-};
+    ['live', 'ready'].includes(e.status.lifeCycleStatus)
+  )
+  return liveItems.map(({ snippet: { liveChatId } }) => liveChatId)
+}
 
 export const getActiveLiveChatIds = async (
   token: string
 ): Promise<string[]> => {
   const query = new URLSearchParams({
-    broadcastType: "all",
-    maxResults: "10",
-    mine: "true",
-    part: "snippet,contentDetails,status",
-  });
+    broadcastType: 'all',
+    maxResults: '10',
+    mine: 'true',
+    part: 'snippet,contentDetails,status',
+  })
   const response = await fetch(
     `https://www.googleapis.com/youtube/v3/liveBroadcasts?${query}`,
     {
@@ -70,30 +70,30 @@ export const getActiveLiveChatIds = async (
         Authorization: `Bearer ${token}`,
       },
     }
-  );
-  const json = await response.json();
-  return handleYoutubeLiveBroadcastResponse(response.ok, json);
-};
+  )
+  const json = await response.json()
+  return handleYoutubeLiveBroadcastResponse(response.ok, json)
+}
 
 export interface YoutubeLiveChatMessageSnippet {
-  readonly displayMessage?: string;
-  readonly publishedAt: string;
+  readonly displayMessage?: string
+  readonly publishedAt: string
 }
 
 export interface YoutubeLiveChatMessageResource {
-  readonly snippet: YoutubeLiveChatMessageSnippet;
+  readonly snippet: YoutubeLiveChatMessageSnippet
 }
 
 export interface YoutubeLiveChatMessageResponse {
-  readonly items: YoutubeLiveChatMessageResource[];
-  readonly nextPageToken: string;
-  readonly pollingIntervalMillis: number;
+  readonly items: YoutubeLiveChatMessageResource[]
+  readonly nextPageToken: string
+  readonly pollingIntervalMillis: number
 }
 
 export const validateYoutubeLiveChatMessageResponse = (
   arg: any
 ): arg is YoutubeLiveChatMessageResponse =>
-  typeof arg.nextPageToken === "string";
+  typeof arg.nextPageToken === 'string'
 
 export const handleYoutubeLiveChatMessageResponse = (
   ok: boolean,
@@ -101,15 +101,15 @@ export const handleYoutubeLiveChatMessageResponse = (
 ): YoutubeLiveChatMessageResponse => {
   if (!ok) {
     if (checkIfQuotaError(json)) {
-      throw new Error("Quota error");
+      throw new Error('Quota error')
     } else {
-      throw new YoutubeRequestError("Request failed");
+      throw new YoutubeRequestError('Request failed')
     }
   }
   if (!validateYoutubeLiveChatMessageResponse(json))
-    throw new Error("Invalid response");
-  return json;
-};
+    throw new Error('Invalid response')
+  return json
+}
 
 export const getLiveChatMessages = async (
   token: string,
@@ -118,10 +118,10 @@ export const getLiveChatMessages = async (
 ): Promise<YoutubeLiveChatMessageResponse> => {
   const query = new URLSearchParams({
     liveChatId,
-    part: "id,snippet,authorDetails",
-  });
+    part: 'id,snippet,authorDetails',
+  })
   if (pageToken) {
-    query.set("pageToken", pageToken);
+    query.set('pageToken', pageToken)
   }
   const response = await fetch(
     `https://www.googleapis.com/youtube/v3/liveChat/messages?${query}`,
@@ -130,35 +130,35 @@ export const getLiveChatMessages = async (
         Authorization: `Bearer ${token}`,
       },
     }
-  );
-  const json = await response.json();
-  return handleYoutubeLiveChatMessageResponse(response.ok, json);
-};
+  )
+  const json = await response.json()
+  return handleYoutubeLiveChatMessageResponse(response.ok, json)
+}
 
 export async function* pollLiveChatMessages(
   token: string
 ): AsyncGenerator<YoutubeLiveChatMessageResource[]> {
-  let pageTokens: Record<string, string> = {};
+  let pageTokens: Record<string, string> = {}
   while (true) {
-    const liveChatIds = await getActiveLiveChatIds(token);
+    const liveChatIds = await getActiveLiveChatIds(token)
     const result = await Promise.all(
       liveChatIds.map((liveChatId) =>
         getLiveChatMessages(token, liveChatId, pageTokens[liveChatId])
       )
-    );
-    const interval = Math.max(...result.map((e) => e.pollingIntervalMillis));
+    )
+    const interval = Math.max(...result.map((e) => e.pollingIntervalMillis))
     pageTokens = Object.fromEntries(
       result.map((e, i) => [liveChatIds[i], e.nextPageToken])
-    );
-    yield result.flatMap((e) => e.items);
+    )
+    yield result.flatMap((e) => e.items)
     await new Promise((resolve) => {
-      setTimeout(resolve, interval);
-    });
+      setTimeout(resolve, interval)
+    })
   }
 }
 
 interface ConnectYoutubeParams {
-  token: string;
+  token: string
 }
 
 export const connectYoutube = async (
@@ -168,31 +168,31 @@ export const connectYoutube = async (
   params: ConnectYoutubeParams,
   callback: (text: string) => void
 ) => {
-  const { token } = params;
+  const { token } = params
   try {
     for await (const items of pollLiveChatMessages(token)) {
       for (const item of items) {
-        const displayMessage = item.snippet.displayMessage;
-        const chatTime = new Date(item.snippet.publishedAt).getTime();
-        const freshTime = new Date().getTime() - 10 * 1000;
-        if (chatTime > freshTime && typeof displayMessage !== "undefined") {
-          callback(displayMessage);
+        const displayMessage = item.snippet.displayMessage
+        const chatTime = new Date(item.snippet.publishedAt).getTime()
+        const freshTime = new Date().getTime() - 10 * 1000
+        if (chatTime > freshTime && typeof displayMessage !== 'undefined') {
+          callback(displayMessage)
         }
       }
     }
   } catch (e) {
     if (e instanceof YoutubeRequestError) {
-      const oauthResponse = await refreshYoutubeToken(context, db, user);
-      await setYoutubeToken(user, db, oauthResponse);
+      const oauthResponse = await refreshYoutubeToken(context, db, user)
+      await setYoutubeToken(user, db, oauthResponse)
       connectYoutube(
         context,
         db,
         user,
         { ...params, token: oauthResponse.access_token },
         callback
-      );
+      )
     } else {
-      throw e;
+      throw e
     }
   }
-};
+}

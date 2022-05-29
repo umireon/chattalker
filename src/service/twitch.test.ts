@@ -1,20 +1,20 @@
-import type { TwitchUsersResponse } from "./twitch";
-import { validateTwitchUsersResponse } from "./twitch";
+import type { TwitchUsersResponse } from './twitch'
+import { validateTwitchUsersResponse } from './twitch'
 
-test("validateTwitchUsersResponse agrees with valid TwitchUsersResponse", () => {
+test('validateTwitchUsersResponse agrees with valid TwitchUsersResponse', () => {
   const response: TwitchUsersResponse = {
     data: [
       {
-        login: "",
+        login: '',
       },
     ],
-  };
-  expect(validateTwitchUsersResponse(response)).toBeTruthy();
-});
+  }
+  expect(validateTwitchUsersResponse(response)).toBeTruthy()
+})
 
-test("validateTwitchUsersResponse disagrees with invalid data", () => {
+test('validateTwitchUsersResponse disagrees with invalid data', () => {
   const response = {
-    error: "",
-  };
-  expect(validateTwitchUsersResponse(response)).toBeFalsy();
-});
+    error: '',
+  }
+  expect(validateTwitchUsersResponse(response)).toBeFalsy()
+})

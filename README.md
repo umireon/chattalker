@@ -2,7 +2,7 @@
 
 Chat message talker on Twitch and YouTube for OBS and so on.
 
-[![ChatTalker Logo](/src/icon.png "ChatTaler Logo")](https://chattalker.web.app/)
+[![ChatTalker Logo](/src/icon.png 'ChatTaler Logo')](https://chattalker.web.app/)
 
 App URL: <https://chattalker.web.app/>
 

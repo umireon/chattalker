@@ -1,83 +1,83 @@
 steps:
-  - name: "node:16-bullseye-slim"
+  - name: 'node:16-bullseye-slim'
     args:
-      - npm
-      - ci
-    id: "npm ci"
+      - 'npm'
+      - 'ci'
+    id: 'npm ci'
 
-  - name: "node:16-bullseye-slim"
+  - name: 'node:16-bullseye-slim'
     args:
-      - npm
-      - run
-      - build-functions
-    id: "npm run build-functions"
-    waitFor: ["npm ci"]
-  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk:slim"
+      - 'npm'
+      - 'run'
+      - 'build-functions'
+    id: 'npm run build-functions'
+    waitFor: ['npm ci']
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:slim'
     args:
-      - gcloud
-      - beta
-      - functions
-      - deploy
-      - text-to-speech
-      - --gen2
-      - --region=us-central1
-      - --runtime=nodejs16
-      - --service-account=cloudfunctions@chattalker.iam.gserviceaccount.com
-      - --set-env-vars=PROJECT_ID=$PROJECT_ID
-      - --trigger-http
-    waitFor: ["npm run build-functions"]
-  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk:slim"
+      - 'gcloud'
+      - 'beta'
+      - 'functions'
+      - 'deploy'
+      - 'text-to-speech'
+      - '--gen2'
+      - '--region=us-central1'
+      - '--runtime=nodejs16'
+      - '--service-account=cloudfunctions@chattalker.iam.gserviceaccount.com'
+      - '--set-env-vars=PROJECT_ID=$PROJECT_ID'
+      - '--trigger-http'
+    waitFor: ['npm run build-functions']
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:slim'
     args:
-      - gcloud
-      - beta
-      - functions
-      - deploy
-      - youtube-oauth2callback
-      - --gen2
-      - --region=us-central1
-      - --runtime=nodejs16
-      - --service-account=cloudfunctions@chattalker.iam.gserviceaccount.com
-      - --set-env-vars=PROJECT_ID=$PROJECT_ID
-      - --trigger-http
-    waitFor: ["npm run build-functions"]
-  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk:slim"
+      - 'gcloud'
+      - 'beta'
+      - 'functions'
+      - 'deploy'
+      - 'youtube-oauth2callback'
+      - '--gen2'
+      - '--region=us-central1'
+      - '--runtime=nodejs16'
+      - '--service-account=cloudfunctions@chattalker.iam.gserviceaccount.com'
+      - '--set-env-vars=PROJECT_ID=$PROJECT_ID'
+      - '--trigger-http'
+    waitFor: ['npm run build-functions']
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:slim'
     args:
-      - gcloud
-      - beta
-      - functions
-      - deploy
-      - youtube-oauth2refresh
-      - --gen2
-      - --region=us-central1
-      - --runtime=nodejs16
-      - --service-account=cloudfunctions@chattalker.iam.gserviceaccount.com
-      - --set-env-vars=PROJECT_ID=$PROJECT_ID
-      - --trigger-http
-    waitFor: ["npm run build-functions"]
-  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk:slim"
+      - 'gcloud'
+      - 'beta'
+      - 'functions'
+      - 'deploy'
+      - 'youtube-oauth2refresh'
+      - '--gen2'
+      - '--region=us-central1'
+      - '--runtime=nodejs16'
+      - '--service-account=cloudfunctions@chattalker.iam.gserviceaccount.com'
+      - '--set-env-vars=PROJECT_ID=$PROJECT_ID'
+      - '--trigger-http'
+    waitFor: ['npm run build-functions']
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:slim'
     args:
-      - gcloud
-      - beta
-      - functions
-      - deploy
-      - authenticate-with-token
-      - --gen2
-      - --region=us-central1
-      - --runtime=nodejs16
-      - --service-account=cloudfunctions@chattalker.iam.gserviceaccount.com
-      - --set-env-vars=PROJECT_ID=$PROJECT_ID
-      - --trigger-http
-    waitFor: ["npm run build-functions"]
+      - 'gcloud'
+      - 'beta'
+      - 'functions'
+      - 'deploy'
+      - 'authenticate-with-token'
+      - '--gen2'
+      - '--region=us-central1'
+      - '--runtime=nodejs16'
+      - '--service-account=cloudfunctions@chattalker.iam.gserviceaccount.com'
+      - '--set-env-vars=PROJECT_ID=$PROJECT_ID'
+      - '--trigger-http'
+    waitFor: ['npm run build-functions']
 
-  - name: "node:16-bullseye-slim"
+  - name: 'node:16-bullseye-slim'
     args:
-      - npm
-      - run
-      - build
-    waitFor: ["npm ci"]
-    id: "npm run build"
-  - name: "gcr.io/$PROJECT_ID/firebase"
+      - 'npm'
+      - 'run'
+      - 'build'
+    waitFor: ['npm ci']
+    id: 'npm run build'
+  - name: 'gcr.io/$PROJECT_ID/firebase'
     args:
-      - deploy
-      - --only=hosting
-    waitFor: ["npm run build"]
+      - 'deploy'
+      - '--only=hosting'
+    waitFor: ['npm run build']

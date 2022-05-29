@@ -1,19 +1,19 @@
-import type { YoutubeOauthResponse } from "./oauth";
-import { validateYoutubeOauthResponse } from "./oauth";
+import type { YoutubeOauthResponse } from './oauth'
+import { validateYoutubeOauthResponse } from './oauth'
 
-test("validateYoutubeOauthResponse agrees with valid YoutubeOauthResponse", () => {
+test('validateYoutubeOauthResponse agrees with valid YoutubeOauthResponse', () => {
   const response: YoutubeOauthResponse = {
-    access_token: "",
+    access_token: '',
     expires_in: 0,
-    scope: "",
-    token_type: "Bearer",
-  };
-  expect(validateYoutubeOauthResponse(response)).toBeTruthy();
-});
+    scope: '',
+    token_type: 'Bearer',
+  }
+  expect(validateYoutubeOauthResponse(response)).toBeTruthy()
+})
 
-test("validateYoutubeOauthResponse disagrees with invalid data", () => {
+test('validateYoutubeOauthResponse disagrees with invalid data', () => {
   const response = {
-    error: "",
-  };
-  expect(validateYoutubeOauthResponse(response)).toBeFalsy();
-});
+    error: '',
+  }
+  expect(validateYoutubeOauthResponse(response)).toBeFalsy()
+})

@@ -1,4 +1,4 @@
-@import url("variables.css");
+@import url('variables.css');
 
 body {
   margin: 0;
@@ -12,7 +12,7 @@ header {
 
 header h1 {
   color: var(--main-fg-color);
-  font-family: "Roboto", sans-serif;
+  font-family: 'Roboto', sans-serif;
   font-size: 17vw;
   margin: 0;
   padding: 100px 0;
