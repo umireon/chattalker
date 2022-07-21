@@ -1,0 +1,33 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`GenerateUrl snapshot 1`] = `
+<body>
+  <div>
+    <main>
+      <p>
+        <button
+          type="button"
+        >
+          Generate URL for OBS browser
+        </button>
+         
+        <input
+          placeholder="OBS URL"
+        />
+         
+        <button
+          type="button"
+        >
+          Copy URL
+        </button>
+         
+        <button
+          type="button"
+        >
+          Reset URL
+        </button>
+      </p>
+    </main>
+  </div>
+</body>
+`;
