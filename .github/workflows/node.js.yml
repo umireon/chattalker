@@ -1,58 +1,58 @@
-name: 'Node.js CI'
+name: "Node.js CI"
 
 on:
   push:
     branches:
-      - 'main'
+      - "main"
   pull_request:
     branches:
-      - 'main'
+      - "main"
 
 jobs:
   build:
-    runs-on: 'ubuntu-latest'
+    runs-on: "ubuntu-latest"
     steps:
-      - uses: 'actions/checkout@v3'
-      - name: 'Use Node.js 16.x'
-        uses: 'actions/setup-node@v3'
+      - uses: "actions/checkout@v3"
+      - name: "Use Node.js 16.x"
+        uses: "actions/setup-node@v3"
         with:
-          node-version: '16'
-          cache: 'npm'
-      - run: 'npm ci'
-      - run: 'npm run build'
+          node-version: "16"
+          cache: "npm"
+      - run: "npm ci"
+      - run: "npm run build"
 
   lint:
-    runs-on: 'ubuntu-latest'
+    runs-on: "ubuntu-latest"
     steps:
-      - uses: 'actions/checkout@v3'
-      - name: 'Use Node.js 16.x'
-        uses: 'actions/setup-node@v3'
+      - uses: "actions/checkout@v3"
+      - name: "Use Node.js 16.x"
+        uses: "actions/setup-node@v3"
         with:
-          node-version: '16'
-          cache: 'npm'
-      - run: 'npm ci'
-      - run: 'npm run lint'
+          node-version: "16"
+          cache: "npm"
+      - run: "npm ci"
+      - run: "npm run lint"
 
   test:
-    runs-on: 'ubuntu-latest'
+    runs-on: "ubuntu-latest"
     steps:
-      - uses: 'actions/checkout@v3'
-      - name: 'Use Node.js 16.x'
-        uses: 'actions/setup-node@v3'
+      - uses: "actions/checkout@v3"
+      - name: "Use Node.js 16.x"
+        uses: "actions/setup-node@v3"
         with:
-          node-version: '16'
-          cache: 'npm'
-      - run: 'npm ci'
-      - run: 'npm test'
+          node-version: "16"
+          cache: "npm"
+      - run: "npm ci"
+      - run: "npm test"
 
   tsc:
-    runs-on: 'ubuntu-latest'
+    runs-on: "ubuntu-latest"
     steps:
-      - uses: 'actions/checkout@v3'
-      - name: 'Use Node.js 16.x'
-        uses: 'actions/setup-node@v3'
+      - uses: "actions/checkout@v3"
+      - name: "Use Node.js 16.x"
+        uses: "actions/setup-node@v3"
         with:
-          node-version: '16'
-          cache: 'npm'
-      - run: 'npm ci'
-      - run: 'npm run tsc'
+          node-version: "16"
+          cache: "npm"
+      - run: "npm ci"
+      - run: "npm run tsc"

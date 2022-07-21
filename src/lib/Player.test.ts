@@ -1,13 +1,13 @@
-import Player from './Player.svelte'
-import { render } from '@testing-library/svelte'
+import Player from "./Player.svelte";
+import { render } from "@testing-library/svelte";
 
-test('Player snapshot', () => {
+test("Player snapshot", () => {
   const props = {
     playerIsLoading: false,
-    playerLanguage: '',
-    playerSrc: '',
-    playerText: '',
-  }
-  const component = render(Player, { props })
-  expect(component.container).toMatchSnapshot()
-})
+    playerLanguage: "",
+    playerSrc: "",
+    playerText: "",
+  };
+  const component = render(Player, { props });
+  expect(component.container).toMatchSnapshot();
+});

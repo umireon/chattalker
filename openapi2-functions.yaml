@@ -1,4 +1,4 @@
-swagger: '2.0'
+swagger: "2.0"
 info:
   title: chattalker backend
   description: API of chat message talker on Twitch for OBS and so on
@@ -9,12 +9,12 @@ produces:
   - application/json
 securityDefinitions:
   firebase:
-    authorizationUrl: ''
-    flow: 'implicit'
-    type: 'oauth2'
-    x-google-issuer: 'https://securetoken.google.com/chattalker'
-    x-google-jwks_uri: 'https://www.googleapis.com/service_accounts/v1/metadata/x509/securetoken@system.gserviceaccount.com'
-    x-google-audiences: 'chattalker'
+    authorizationUrl: ""
+    flow: "implicit"
+    type: "oauth2"
+    x-google-issuer: "https://securetoken.google.com/chattalker"
+    x-google-jwks_uri: "https://www.googleapis.com/service_accounts/v1/metadata/x509/securetoken@system.gserviceaccount.com"
+    x-google-audiences: "chattalker"
 paths:
   /text-to-speech:
     get:
@@ -31,16 +31,16 @@ paths:
           name: text
           type: string
         - in: query
-          name: 'voice[en]'
+          name: "voice[en]"
           type: string
         - in: query
-          name: 'voice[ja]'
+          name: "voice[ja]"
           type: string
         - in: query
-          name: 'voice[und]'
+          name: "voice[und]"
           type: string
       responses:
-        '200':
+        "200":
           description: A successful response
           schema:
             type: object
@@ -49,7 +49,7 @@ paths:
                 type: string
               language:
                 type: string
-        '204':
+        "204":
           description: Keep Alive
     options:
       summary: Text-to-speech Preflight
@@ -57,7 +57,7 @@ paths:
       x-google-backend:
         address: https://text-to-speech-bf7bhumxka-uc.a.run.app
       responses:
-        '204':
+        "204":
           description: A successful response
 
   /youtube-oauth2callback:
@@ -76,7 +76,7 @@ paths:
           name: redirectUri
           type: string
       responses:
-        '200':
+        "200":
           description: A successful response
           schema:
             type: object
@@ -98,7 +98,7 @@ paths:
       x-google-backend:
         address: https://youtube-oauth2callback-bf7bhumxka-uc.a.run.app
       responses:
-        '204':
+        "204":
           description: A successful response
 
   /youtube-oauth2refresh:
@@ -114,7 +114,7 @@ paths:
           name: refreshToken
           type: string
       responses:
-        '200':
+        "200":
           description: A successful response
           schema:
             type: object
@@ -133,7 +133,7 @@ paths:
       x-google-backend:
         address: https://youtube-oauth2refresh-bf7bhumxka-uc.a.run.app
       responses:
-        '204':
+        "204":
           description: A successful response
 
   /authenticate-with-token:
@@ -150,7 +150,7 @@ paths:
           name: uid
           type: string
       responses:
-        '200':
+        "200":
           description: A successful response
           schema:
             type: string

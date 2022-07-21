@@ -1,9 +1,9 @@
-@import url('variables.css');
+@import url("variables.css");
 
 body {
   background: rgb(201, 226, 225);
 }
 
 h1 {
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
 }
