@@ -3,7 +3,7 @@ import { render } from "@testing-library/svelte";
 
 test("Player snapshot", () => {
   const props = {
-    playAudio: (test: string) => {},
+    playAudio: (_: string) => {},
     voiceEn: "",
     voiceJa: "",
     voiceUnd: "",

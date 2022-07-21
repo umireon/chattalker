@@ -9,7 +9,6 @@
     "preview": "vite preview",
     "build-functions": "esbuild --outdir=. constants.ts index.ts",
     "lint": "prettier --check . && eslint --ext .ts,.svelte src *.ts",
-    "start": "parcel src/*.html",
     "functions-framework": "functions-framework",
     "test": "jest",
     "tsc": "tsc"
