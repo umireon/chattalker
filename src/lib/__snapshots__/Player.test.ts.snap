@@ -1,0 +1,42 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Player snapshot 1`] = `
+<body>
+  <div>
+    <main>
+      <p>
+        <audio
+          autoplay=""
+          src=""
+          type="audio/mpeg"
+        />
+      </p>
+       
+      <div
+        style="display: flex; align-items: flex-start;"
+      >
+        <p
+          style="margin: 0px;"
+        >
+          <span
+            id="language"
+          >
+            
+          </span>
+           
+          <span
+            id="text"
+          >
+            
+          </span>
+        </p>
+         
+        <div
+          class="dot-bricks svelte-vdl2sx"
+          style="visibility: hidden;"
+        />
+      </div>
+    </main>
+  </div>
+</body>
+`;

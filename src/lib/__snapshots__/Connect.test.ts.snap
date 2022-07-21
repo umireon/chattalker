@@ -1,0 +1,23 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Connect snapshot 1`] = `
+<body>
+  <div>
+    <main>
+      <p>
+        <button
+          type="button"
+        >
+          Connect to Twitch
+        </button>
+         
+        <button
+          type="button"
+        >
+          Connect to YouTube
+        </button>
+      </p>
+    </main>
+  </div>
+</body>
+`;
