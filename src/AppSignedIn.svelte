@@ -12,14 +12,12 @@
   import GenerateUrl from './lib/GenerateUrl.svelte'
   import Logout from './lib/Logout.svelte'
   import Player from './lib/Player.svelte'
-  import Toastify from 'toastify-js'
   import type { UserData } from './service/users'
   import { connectYoutube } from './service/youtube'
   import { logEvent } from 'firebase/analytics'
   import { setUserData } from './service/users'
 
   import 'three-dots/dist/three-dots.min.css'
-  import 'toastify-js/src/toastify.css'
 
   export let analytics: Analytics
   export let auth: Auth
@@ -45,6 +43,8 @@
   let playerSrc: string = './empty.mp3'
   let playerText: string = ''
 
+  let error: Error | undefined;
+
   async function playAudio (text: string) {
     const voice = {
       'voice[en]': voiceEn,
@@ -67,13 +67,20 @@
   }
 
   async function initializeTwitch () {
-    const token = await getTwitchToken(db, user)
-    if (typeof token === 'undefined') return
-    const login = await getTwitchLogin(DEFAULT_CONTEXT, token)
-      .catch(e => {
-        Toastify({ text: e.toString() }).showToast()
-      })
-    if (typeof login === 'undefined') return
+    const token = initialUserData["twitch-access-token"];
+    if (typeof token === "undefined") {
+      error = new Error("Token was undefined!");
+      return;
+    }
+    const login = await getTwitchLogin(DEFAULT_CONTEXT, token).catch((e) => {
+      if (e instanceof Error) {
+        error = e;
+      }
+    });
+    if (typeof login === "undefined") {
+      error = new Error("Login was undefined!");
+      return;
+    }
     connectTwitch({ login, token }, playAudio)
   }
 
@@ -82,7 +89,9 @@
     if (typeof token === 'undefined') return
     connectYoutube(DEFAULT_CONTEXT, db, user, { token }, playAudio)
       .catch(e => {
-        Toastify({ text: e.toString() }).showToast()
+        if (e instanceof Error) {
+          error = e;
+        }
       })
   }
 
@@ -97,6 +106,9 @@
 </script>
 
 <main>
+  {#if typeof error !== "undefined"}
+    <h2>{error.message}</h2>
+  {/if}
   <Voice
     bind:voiceEn
     bind:voiceJa
