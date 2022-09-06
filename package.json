@@ -64,7 +64,7 @@
     "firebase-admin": "^11.0.0",
     "formdata-node": "^4.3.3",
     "formdata-polyfill": "^4.0.10",
-    "node-fetch": "^3.2.9",
+    "node-fetch": "^3.2.10",
     "qs": "^6.11.0"
   },
   "type": "module"
