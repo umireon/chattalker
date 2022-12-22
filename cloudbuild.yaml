@@ -1,5 +1,5 @@
 steps:
-  - name: "node:16-bullseye-slim"
+  - name: "node:18-bullseye-slim"
     args:
       - "npm"
       - "ci"
@@ -15,13 +15,12 @@ steps:
   - name: "gcr.io/google.com/cloudsdktool/cloud-sdk:slim"
     args:
       - "gcloud"
-      - "beta"
       - "functions"
       - "deploy"
       - "text-to-speech"
       - "--gen2"
       - "--region=us-central1"
-      - "--runtime=nodejs16"
+      - "--runtime=nodejs18"
       - "--service-account=cloudfunctions@chattalker.iam.gserviceaccount.com"
       - "--set-env-vars=PROJECT_ID=$PROJECT_ID"
       - "--trigger-http"
@@ -29,13 +28,12 @@ steps:
   - name: "gcr.io/google.com/cloudsdktool/cloud-sdk:slim"
     args:
       - "gcloud"
-      - "beta"
       - "functions"
       - "deploy"
       - "youtube-oauth2callback"
       - "--gen2"
       - "--region=us-central1"
-      - "--runtime=nodejs16"
+      - "--runtime=nodejs18"
       - "--service-account=cloudfunctions@chattalker.iam.gserviceaccount.com"
       - "--set-env-vars=PROJECT_ID=$PROJECT_ID"
       - "--trigger-http"
@@ -43,13 +41,12 @@ steps:
   - name: "gcr.io/google.com/cloudsdktool/cloud-sdk:slim"
     args:
       - "gcloud"
-      - "beta"
       - "functions"
       - "deploy"
       - "youtube-oauth2refresh"
       - "--gen2"
       - "--region=us-central1"
-      - "--runtime=nodejs16"
+      - "--runtime=nodejs18"
       - "--service-account=cloudfunctions@chattalker.iam.gserviceaccount.com"
       - "--set-env-vars=PROJECT_ID=$PROJECT_ID"
       - "--trigger-http"
@@ -57,19 +54,18 @@ steps:
   - name: "gcr.io/google.com/cloudsdktool/cloud-sdk:slim"
     args:
       - "gcloud"
-      - "beta"
       - "functions"
       - "deploy"
       - "authenticate-with-token"
       - "--gen2"
       - "--region=us-central1"
-      - "--runtime=nodejs16"
+      - "--runtime=nodejs18"
       - "--service-account=cloudfunctions@chattalker.iam.gserviceaccount.com"
       - "--set-env-vars=PROJECT_ID=$PROJECT_ID"
       - "--trigger-http"
     waitFor: ["npm run build-functions"]
 
-  - name: "node:16-bullseye-slim"
+  - name: "node:18-bullseye-slim"
     args:
       - "npm"
       - "run"
