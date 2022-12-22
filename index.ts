@@ -1,13 +1,11 @@
-import { FormData, formDataToBlob } from "formdata-polyfill/esm.min.js";
+import { formDataToBlob } from "formdata-polyfill/esm.min.js";
 
-import { Blob } from "fetch-blob";
 import { DEFAULT_CONTEXT } from "./constants.js";
 import type { HttpFunction } from "@google-cloud/functions-framework";
 import type { ParsedQs } from "qs";
 import { SecretManagerServiceClient } from "@google-cloud/secret-manager";
 import { TextToSpeechClient } from "@google-cloud/text-to-speech";
 import { TranslationServiceClient } from "@google-cloud/translate";
-import fetch from "node-fetch";
 import { getAuth } from "firebase-admin/auth";
 import { getFirestore } from "firebase-admin/firestore";
 import { http } from "@google-cloud/functions-framework";
