@@ -59,7 +59,7 @@
     "@google-cloud/secret-manager": "^4.1.4",
     "@google-cloud/text-to-speech": "^4.1.0",
     "@google-cloud/translate": "^7.0.5",
-    "firebase-admin": "^11.4.0",
+    "firebase-admin": "^11.4.1",
     "formdata-polyfill": "^4.0.10"
   }
 }
