@@ -3,7 +3,7 @@ import {
   textToSpeech,
   youtubeOauth2callback,
   youtubeOauth2refresh,
-} from "./handlers";
+} from "./handlers.js";
 
 import { http } from "@google-cloud/functions-framework";
 import { initializeApp } from "firebase-admin/app";

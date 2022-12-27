@@ -1,5 +1,5 @@
 import { SecretManagerServiceClient } from "@google-cloud/secret-manager";
-import { coarseIntoString } from "./coarse";
+import { coarseIntoString } from "./coarse.js";
 
 export const DEFAULT_YOUTUBE_CLIENT_SECRET_VERSION = "1";
 

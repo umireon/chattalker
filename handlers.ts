@@ -1,18 +1,18 @@
 import { type Request, type Response } from "@google-cloud/functions-framework";
 
 import { type App } from "firebase-admin/app";
-import { DEFAULT_CONTEXT } from "./constants";
+import { DEFAULT_CONTEXT } from "./constants.js";
 import { type ParsedQs } from "qs";
 import { SecretManagerServiceClient } from "@google-cloud/secret-manager";
 import { TextToSpeechClient } from "@google-cloud/text-to-speech";
 import { TranslationServiceClient } from "@google-cloud/translate";
-import { coarseIntoUint8Array } from "./service/coarse";
-import { detectLanguage } from "./service/translate";
+import { coarseIntoUint8Array } from "./service/coarse.js";
+import { detectLanguage } from "./service/translate.js";
 import { formDataToBlob } from "formdata-polyfill/esm.min.js";
 import { getAuth } from "firebase-admin/auth";
 import { getFirestore } from "firebase-admin/firestore";
-import { getYoutubeClientSecret } from "./service/secret";
-import { handleCors } from "./service/cors";
+import { getYoutubeClientSecret } from "./service/secret.js";
+import { handleCors } from "./service/cors.js";
 
 const validateVoice = (
   arg: string | ParsedQs | string[] | ParsedQs[] | undefined
