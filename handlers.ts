@@ -14,9 +14,9 @@ import { getFirestore } from "firebase-admin/firestore";
 import { getYoutubeClientSecret } from "./service/secret.js";
 import { handleCors } from "./service/cors.js";
 
-const validateVoice = (
+export function validateVoice(
   arg: string | ParsedQs | string[] | ParsedQs[] | undefined
-): arg is Record<string, string> => {
+): arg is Record<string, string> {
   if (
     typeof arg === "undefined" ||
     typeof arg === "string" ||
@@ -27,14 +27,14 @@ const validateVoice = (
     if (typeof arg[name] !== "string") return false;
   }
   return true;
-};
+}
 
 interface GetVoiceResult {
   readonly languageCode: string;
   readonly name?: string;
 }
 
-function getVoice(
+export function getVoice(
   voiceTable: Record<string, string>,
   languageCode: string
 ): GetVoiceResult {
