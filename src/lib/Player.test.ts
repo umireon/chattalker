@@ -1,4 +1,4 @@
-import { expect, test } from 'vitest'
+import { expect, test } from "vitest";
 
 import Player from "./Player.svelte";
 import { render } from "@testing-library/svelte";

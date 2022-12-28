@@ -20,8 +20,8 @@ export default defineConfig({
       },
     },
   },
-  plugins: [svelte({ hot: !process.env.VITEST})],
+  plugins: [svelte({ hot: !process.env.VITEST })],
   test: {
-    environment: 'jsdom'
-  }
+    environment: "jsdom",
+  },
 });

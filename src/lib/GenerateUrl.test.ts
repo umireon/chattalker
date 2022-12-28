@@ -1,4 +1,4 @@
-import { expect, test } from 'vitest'
+import { expect, test } from "vitest";
 
 import { type Firestore } from "firebase/firestore";
 import GenerateUrl from "./GenerateUrl.svelte";

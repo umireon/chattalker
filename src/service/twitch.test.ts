@@ -1,4 +1,4 @@
-import { expect, test } from 'vitest'
+import { expect, test } from "vitest";
 
 import type { TwitchUsersResponse } from "./twitch";
 import { validateTwitchUsersResponse } from "./twitch";

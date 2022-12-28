@@ -7,7 +7,7 @@ import {
   handleYoutubeLiveBroadcastResponse,
   handleYoutubeLiveChatMessageResponse,
 } from "./youtube";
-import { expect, test } from 'vitest'
+import { expect, test } from "vitest";
 
 test("handleYoutubeLiveBroadcastResponse processes a valid YoutubeLiveBroadcastResponse", () => {
   const ok = true;

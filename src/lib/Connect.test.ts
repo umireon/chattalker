@@ -1,4 +1,4 @@
-import { expect, test } from 'vitest'
+import { expect, test } from "vitest";
 
 import { type AppContext } from "../../constants";
 import Connect from "./Connect.svelte";

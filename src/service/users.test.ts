@@ -1,4 +1,4 @@
-import { expect, test } from 'vitest'
+import { expect, test } from "vitest";
 
 import type { UserData } from "./users";
 import { extractUserData } from "./users";
