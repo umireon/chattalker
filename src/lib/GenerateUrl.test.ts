@@ -1,3 +1,5 @@
+import { expect, test } from 'vitest'
+
 import { type Firestore } from "firebase/firestore";
 import GenerateUrl from "./GenerateUrl.svelte";
 import { type User } from "firebase/auth";

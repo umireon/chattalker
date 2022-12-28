@@ -1,3 +1,5 @@
+import { expect, test } from 'vitest'
+
 import { type Auth } from "firebase/auth";
 import Logout from "./Logout.svelte";
 import { render } from "@testing-library/svelte";
