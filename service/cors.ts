@@ -1,7 +1,7 @@
 import { type Request, type Response } from "@google-cloud/functions-framework";
 
 export function handleCors(req: Request, res: Response): boolean {
-  const { origin } = req.headers;
+  const origin = req.get("Origin");
   if (typeof origin !== "undefined") {
     const { hostname } = new URL(origin);
     if (hostname === "localhost") {

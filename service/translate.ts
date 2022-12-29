@@ -1,13 +1,13 @@
 import { TranslationServiceClient } from "@google-cloud/translate";
 
 export interface DetectLanguageOption {
-  projectId: string;
   content: string;
+  projectId: string;
 }
 
 export async function detectLanguage(
   client: TranslationServiceClient,
-  { projectId, content }: DetectLanguageOption
+  { content, projectId }: DetectLanguageOption
 ): Promise<string> {
   const [response] = await client.detectLanguage({
     content,
