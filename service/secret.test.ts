@@ -7,7 +7,7 @@ import { describe, expect, it, vi } from "vitest";
 
 import { SecretManagerServiceClient } from "@google-cloud/secret-manager";
 
-describe("getYoutubeClientSecret", () => {
+describe.concurrent("getYoutubeClientSecret", () => {
   it("accesses Secret Manager", async () => {
     const accessSecretVersion = vi
       .fn()

@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from "vitest";
 import { TranslationServiceClient } from "@google-cloud/translate";
 import { detectLanguage } from "./translate";
 
-describe("detectLanguage", () => {
+describe.concurrent("detectLanguage", () => {
   it("returns und if no languages were found", async () => {
     const content = "content";
     const projectId = "projectId";
