@@ -2,7 +2,11 @@
   "name": "Node.js & TypeScript",
   "image": "mcr.microsoft.com/vscode/devcontainers/typescript-node:0-18-bullseye",
   "settings": {},
-  "extensions": ["dbaeumer.vscode-eslint"],
+  "extensions": [
+	"dbaeumer.vscode-eslint",
+	"ZixuanChen.vitest-explorer",
+	"esbenp.prettier-vscode"
+],
   "forwardPorts": [3000],
   "postCreateCommand": "npm install",
   "remoteUser": "node"
