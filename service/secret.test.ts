@@ -15,10 +15,9 @@ describe.concurrent("getYoutubeClientSecret", () => {
     const client = {
       accessSecretVersion,
     } as unknown as InstanceType<typeof SecretManagerServiceClient>;
-    const actual = await getYoutubeClientSecret(
-      client,
-      { projectId: "projectId" }
-    );
+    const actual = await getYoutubeClientSecret(client, {
+      projectId: "projectId",
+    });
     expect(actual).toBe("data");
     expect(accessSecretVersion.mock.calls[0][0]).toEqual({
       name: `projects/projectId/secrets/${YOUTUBE_CLIENT_SECRET_FIELD_NAME}/versions/${DEFAULT_YOUTUBE_CLIENT_SECRET_VERSION}`,
