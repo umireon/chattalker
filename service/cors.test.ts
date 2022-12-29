@@ -3,8 +3,8 @@ import { describe, expect, it, vi } from "vitest";
 
 import { handleCors } from "./cors";
 
-describe.concurrent("cors", () => {
-  it("handleCors sends allowance for localhost", () => {
+describe.concurrent("handleCors", () => {
+  it("sends allowance for localhost", () => {
     const req = {
       get(name: string) {
         if (name.toLowerCase() === "origin") {
@@ -22,7 +22,7 @@ describe.concurrent("cors", () => {
     expect(set.mock.calls[0][1]).toBe("*");
   });
 
-  it("handleCors sends allowance for chattranslatorbot.web.app", () => {
+  it("sends allowance for chattranslatorbot.web.app", () => {
     const req = {
       get(name: string) {
         if (name.toLowerCase() === "origin") {
@@ -40,7 +40,7 @@ describe.concurrent("cors", () => {
     expect(set.mock.calls[0][1]).toBe("https://chattalker.web.app");
   });
 
-  it("handleCors sends preflight response and terminates request", () => {
+  it("sends preflight response and terminates request", () => {
     const req = {
       get(name: string) {
         if (name.toLowerCase() === "origin") {
