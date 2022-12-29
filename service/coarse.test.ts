@@ -1,7 +1,7 @@
 import { coarseIntoString, coarseIntoUint8Array } from "./coarse";
 import { describe, expect, it } from "vitest";
 
-describe("coarseIntoUint8Array", () => {
+describe.concurrent("coarseIntoUint8Array", () => {
   it("converts string into Uint8Array", () => {
     const str = "A";
     const actual = coarseIntoUint8Array(str);
@@ -15,7 +15,7 @@ describe("coarseIntoUint8Array", () => {
   });
 });
 
-describe("coarseIntoString", () => {
+describe.concurrent("coarseIntoString", () => {
   it("converts Uint8Array into string", () => {
     const array = new Uint8Array([65]);
     const actual = coarseIntoString(array);
