@@ -1,6 +1,6 @@
 // Vitest Snapshot v1
 
-exports[`Logout snapshot 1`] = `
+exports[`Logout > matches snapshot 1`] = `
 <body>
   <div>
     <main>
