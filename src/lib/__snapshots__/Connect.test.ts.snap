@@ -1,6 +1,6 @@
 // Vitest Snapshot v1
 
-exports[`Connect snapshot 1`] = `
+exports[`Connect > matches snapshot 1`] = `
 <body>
   <div>
     <main>
