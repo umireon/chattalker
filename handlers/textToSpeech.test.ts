@@ -12,12 +12,12 @@ const app = {} as App;
 describe("textToSpeech", () => {
   it("returns audioContent", async () => {
     const languageCode = "languageCode";
-    const voiceName = "voiceName"
+    const voiceName = "voiceName";
 
     const text = "text";
     const voice = {
-      [languageCode]: voiceName
-    }
+      [languageCode]: voiceName,
+    };
 
     const req = {
       get: corsGet,
@@ -28,14 +28,14 @@ describe("textToSpeech", () => {
     } as unknown as Request;
 
     const resSend = vi.fn();
-    const resSet = vi.fn()
+    const resSet = vi.fn();
     const res = {
       send: resSend,
       set: resSet,
     } as unknown as Response;
 
-    const PROJECT_ID = "projectId"
-    const env = { PROJECT_ID }
+    const PROJECT_ID = "projectId";
+    const env = { PROJECT_ID };
 
     const translationClientDetectLanguage = vi.fn().mockResolvedValue([
       {
@@ -46,7 +46,7 @@ describe("textToSpeech", () => {
       detectLanguage: translationClientDetectLanguage,
     } as unknown as InstanceType<typeof TranslationServiceClient>;
 
-    const audioContent = "audioContent"
+    const audioContent = "audioContent";
     const textToSpeechClientSynthesizeSpeech = vi.fn().mockResolvedValue([
       {
         audioContent,
@@ -55,7 +55,7 @@ describe("textToSpeech", () => {
     const textToSpeechClient = {
       synthesizeSpeech: textToSpeechClientSynthesizeSpeech,
     } as unknown as InstanceType<typeof TextToSpeechClient>;
-  
+
     await textToSpeech(req, res, env, translationClient, textToSpeechClient);
     expect(translationClientDetectLanguage.mock.calls[0][0]).toEqual({
       content: text,
@@ -68,7 +68,7 @@ describe("textToSpeech", () => {
         languageCode,
         name: voiceName,
       },
-    })
+    });
     expect(resSet.mock.calls[1][0]).toBe("Content-Type");
     expect(resSet.mock.calls[1][1]).toContain("multipart/form-data");
     const decoder = new TextDecoder();
@@ -78,7 +78,7 @@ describe("textToSpeech", () => {
 
   it("accepts keep alive requests", async () => {
     const keepAlive = "true";
- 
+
     const req = {
       get: corsGet,
       query: {
@@ -94,8 +94,8 @@ describe("textToSpeech", () => {
       status: resStatus,
     } as unknown as Response;
 
-    const PROJECT_ID = "projectId"
-    const env = { PROJECT_ID }
+    const PROJECT_ID = "projectId";
+    const env = { PROJECT_ID };
 
     await textToSpeech(req, res, env);
     expect(resStatus.mock.calls[0][0]).toBe(204);

@@ -8,7 +8,6 @@ import { type Firestore } from "firebase-admin/firestore";
 import { authenticateWithToken } from "./authenticateWithToken";
 import crypto from "crypto";
 
-
 const app = {} as App;
 
 describe("authenticateWithToken", () => {
