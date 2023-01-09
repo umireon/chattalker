@@ -39,11 +39,17 @@ export function getVoice(
   }
 }
 
-export async function textToSpeech(req: Request, res: Response) {
+export async function textToSpeech(
+  req: Request,
+  res: Response,
+  env = process.env,
+  translationClient = new TranslationServiceClient(),
+  textToSpeechClient = new TextToSpeechClient()
+) {
   if (!handleCors(req, res)) return;
 
   // Validate environment
-  const { PROJECT_ID } = process.env;
+  const { PROJECT_ID } = env;
   if (typeof PROJECT_ID === "undefined")
     throw new Error("PROJECT_ID not provided");
 
@@ -63,14 +69,12 @@ export async function textToSpeech(req: Request, res: Response) {
   const { text, voice } = req.query;
 
   // Detect language
-  const translationClient = new TranslationServiceClient();
   const language = await detectLanguage(translationClient, {
     content: text,
     projectId: PROJECT_ID,
   });
 
   // Synthesize speech
-  const textToSpeechClient = new TextToSpeechClient();
   const [response] = await textToSpeechClient.synthesizeSpeech({
     audioConfig: { audioEncoding: "MP3" },
     input: { text },
