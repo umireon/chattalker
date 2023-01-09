@@ -7,118 +7,128 @@ import {
   handleYoutubeLiveBroadcastResponse,
   handleYoutubeLiveChatMessageResponse,
 } from "./youtube";
-import { expect, test } from "vitest";
+import { describe, expect, it, test } from "vitest";
 
-test("handleYoutubeLiveBroadcastResponse processes a valid YoutubeLiveBroadcastResponse", () => {
-  const ok = true;
-  const liveChatId = "id";
-  const response: YoutubeLiveBroadcastResponse = {
-    items: [
-      {
-        snippet: { liveChatId },
-        status: {
-          lifeCycleStatus: "live",
+describe.concurrent("handleYoutubeLiveBroadcastResponse", () => {
+  it("processes a valid YoutubeLiveBroadcastResponse", () => {
+    const ok = true;
+    const liveChatId = "id";
+    const response: YoutubeLiveBroadcastResponse = {
+      items: [
+        {
+          snippet: { liveChatId },
+          status: {
+            lifeCycleStatus: "live",
+          },
         },
+      ],
+    };
+    expect(handleYoutubeLiveBroadcastResponse(ok, response)).toEqual([
+      liveChatId,
+    ]);
+  });
+
+  it("throws against an invalid data", () => {
+    const ok = true;
+    const response = {
+      items: "invalid",
+    };
+    expect(() => handleYoutubeLiveBroadcastResponse(ok, response)).toThrow(
+      Error
+    );
+  });
+
+  it("throws against a quota error", () => {
+    const ok = false;
+    const response = {
+      error: {
+        errors: [
+          {
+            domain: "youtube.quota",
+          },
+        ],
       },
-    ],
-  };
-  expect(handleYoutubeLiveBroadcastResponse(ok, response)).toEqual([
-    liveChatId,
-  ]);
-});
+    };
+    expect(() => handleYoutubeLiveBroadcastResponse(ok, response)).toThrow(
+      Error
+    );
+  });
 
-test("handleYoutubeLiveBroadcastResponse throws against an invalid data", () => {
-  const ok = true;
-  const response = {
-    items: "invalid",
-  };
-  expect(() => handleYoutubeLiveBroadcastResponse(ok, response)).toThrow(Error);
-});
-
-test("handleYoutubeLiveBroadcastResponse throws against a quota error", () => {
-  const ok = false;
-  const response = {
-    error: {
-      errors: [
-        {
-          domain: "youtube.quota",
-        },
-      ],
-    },
-  };
-  expect(() => handleYoutubeLiveBroadcastResponse(ok, response)).toThrow(Error);
-});
-
-test("handleYoutubeLiveBroadcastResponse throws against the token expired error", () => {
-  const ok = false;
-  const response = {
-    error: {
-      errors: [
-        {
-          domain: "youtube.token_expired",
-        },
-      ],
-    },
-  };
-  expect(() => handleYoutubeLiveBroadcastResponse(ok, response)).toThrow(
-    YoutubeRequestError
-  );
-});
-
-test("handleYoutubeLiveChatMessageResponse processes a valid YoutubeLiveChatMessageResponse", () => {
-  const ok = true;
-  const response: YoutubeLiveChatMessageResponse = {
-    items: [
-      {
-        snippet: {
-          publishedAt: "2000-01-01T00:00:00Z",
-        },
+  it("throws against the token expired error", () => {
+    const ok = false;
+    const response = {
+      error: {
+        errors: [
+          {
+            domain: "youtube.token_expired",
+          },
+        ],
       },
-    ],
-    nextPageToken: "",
-    pollingIntervalMillis: 0,
-  };
-  expect(handleYoutubeLiveChatMessageResponse(ok, response)).toEqual(response);
+    };
+    expect(() => handleYoutubeLiveBroadcastResponse(ok, response)).toThrow(
+      YoutubeRequestError
+    );
+  });
 });
 
-test("handleYoutubeLiveChatMessageResponse throws against an invalid data", () => {
-  const ok = true;
-  const response = {
-    items: "invalid",
-  };
-  expect(() => handleYoutubeLiveChatMessageResponse(ok, response)).toThrow(
-    Error
-  );
-});
-
-test("handleYoutubeLiveChatMessageResponse throws against a quota error", () => {
-  const ok = false;
-  const response = {
-    error: {
-      errors: [
+describe.concurrent("handleYoutubeLiveChatMessageResponse", () => {
+  it("processes a valid YoutubeLiveChatMessageResponse", () => {
+    const ok = true;
+    const response: YoutubeLiveChatMessageResponse = {
+      items: [
         {
-          domain: "youtube.quota",
+          snippet: {
+            publishedAt: "2000-01-01T00:00:00Z",
+          },
         },
       ],
-    },
-  };
-  expect(() => handleYoutubeLiveChatMessageResponse(ok, response)).toThrow(
-    Error
-  );
-});
+      nextPageToken: "",
+      pollingIntervalMillis: 0,
+    };
+    expect(handleYoutubeLiveChatMessageResponse(ok, response)).toEqual(
+      response
+    );
+  });
 
-test("handleYoutubeLiveChatMessageResponse throws against the token expired error", () => {
-  const ok = false;
-  const response = {
-    error: {
-      errors: [
-        {
-          domain: "youtube.token_expired",
-        },
-      ],
-    },
-  };
-  expect(() => handleYoutubeLiveChatMessageResponse(ok, response)).toThrow(
-    YoutubeRequestError
-  );
+  it("throws against an invalid data", () => {
+    const ok = true;
+    const response = {
+      items: "invalid",
+    };
+    expect(() => handleYoutubeLiveChatMessageResponse(ok, response)).toThrow(
+      Error
+    );
+  });
+
+  it("throws against a quota error", () => {
+    const ok = false;
+    const response = {
+      error: {
+        errors: [
+          {
+            domain: "youtube.quota",
+          },
+        ],
+      },
+    };
+    expect(() => handleYoutubeLiveChatMessageResponse(ok, response)).toThrow(
+      Error
+    );
+  });
+
+  it("throws against the token expired error", () => {
+    const ok = false;
+    const response = {
+      error: {
+        errors: [
+          {
+            domain: "youtube.token_expired",
+          },
+        ],
+      },
+    };
+    expect(() => handleYoutubeLiveChatMessageResponse(ok, response)).toThrow(
+      YoutubeRequestError
+    );
+  });
 });
