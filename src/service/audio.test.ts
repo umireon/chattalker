@@ -2,7 +2,7 @@ import { describe, expect, it, test } from "vitest";
 import type { FetchAutioResponse } from "./audio";
 import { handleFetchAudioResponse } from "./audio";
 
-describe("handleFetchAudioResponse", () => {
+describe.concurrent("handleFetchAudioResponse", () => {
   it("processes a proper FormData", () => {
     const ok = true;
     const audioContent = new File(["file"], "file.mp3");

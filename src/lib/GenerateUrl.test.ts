@@ -5,7 +5,7 @@ import GenerateUrl from "./GenerateUrl.svelte";
 import { type User } from "firebase/auth";
 import { render } from "@testing-library/svelte";
 
-describe("GenerateUrl", () => {
+describe.concurrent("GenerateUrl", () => {
   it("matches snapshot", () => {
     const props = { db: {} as Firestore, user: {} as User };
     const component = render(GenerateUrl, { props });

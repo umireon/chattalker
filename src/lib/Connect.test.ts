@@ -6,7 +6,7 @@ import { type Firestore } from "firebase/firestore";
 import { type User } from "firebase/auth";
 import { render } from "@testing-library/svelte";
 
-describe("Connect", () => {
+describe.concurrent("Connect", () => {
   it("matches snapshot", () => {
     const props = {
       context: {} as AppContext,

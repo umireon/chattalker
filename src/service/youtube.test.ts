@@ -9,7 +9,7 @@ import {
 } from "./youtube";
 import { describe, expect, it, test } from "vitest";
 
-describe("handleYoutubeLiveBroadcastResponse", () => {
+describe.concurrent("handleYoutubeLiveBroadcastResponse", () => {
   it("processes a valid YoutubeLiveBroadcastResponse", () => {
     const ok = true;
     const liveChatId = "id";
@@ -71,7 +71,7 @@ describe("handleYoutubeLiveBroadcastResponse", () => {
   });
 });
 
-describe("handleYoutubeLiveChatMessageResponse", () => {
+describe.concurrent("handleYoutubeLiveChatMessageResponse", () => {
   it("processes a valid YoutubeLiveChatMessageResponse", () => {
     const ok = true;
     const response: YoutubeLiveChatMessageResponse = {

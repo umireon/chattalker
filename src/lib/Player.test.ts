@@ -3,7 +3,7 @@ import { describe, expect, it, test } from "vitest";
 import Player from "./Player.svelte";
 import { render } from "@testing-library/svelte";
 
-describe("Player", () => {
+describe.concurrent("Player", () => {
   it("matches snapshot", () => {
     const props = {
       playerIsLoading: false,

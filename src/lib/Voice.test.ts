@@ -3,7 +3,7 @@ import { describe, expect, it, test } from "vitest";
 import Voice from "./Voice.svelte";
 import { render } from "@testing-library/svelte";
 
-describe("Voice", () => {
+describe.concurrent("Voice", () => {
   it("matches snapshot", () => {
     const props = {
       playAudio: (_: string) => {},

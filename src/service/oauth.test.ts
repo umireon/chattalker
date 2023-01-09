@@ -3,7 +3,7 @@ import { describe, expect, it, test } from "vitest";
 import type { YoutubeOauthResponse } from "./oauth";
 import { validateYoutubeOauthResponse } from "./oauth";
 
-describe("validateYoutubeOauthResponse", () => {
+describe.concurrent("validateYoutubeOauthResponse", () => {
   it("agrees with valid YoutubeOauthResponse", () => {
     const response: YoutubeOauthResponse = {
       access_token: "",
