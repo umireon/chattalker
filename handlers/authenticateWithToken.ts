@@ -1,19 +1,18 @@
+import { type Auth, getAuth } from "firebase-admin/auth";
+import { type Firestore, getFirestore } from "firebase-admin/firestore";
 import { type Request, type Response } from "@google-cloud/functions-framework";
 
 import { type App } from "firebase-admin/app";
-import { getAuth } from "firebase-admin/auth";
-import { getFirestore } from "firebase-admin/firestore";
 import { handleCors } from "../service/cors.js";
 
 export async function authenticateWithToken(
   app: App,
   req: Request,
-  res: Response
+  res: Response,
+  auth = getAuth(app),
+  db = getFirestore(app)
 ) {
   if (!handleCors(req, res)) return;
-
-  const auth = getAuth(app);
-  const db = getFirestore(app);
 
   // Validate query
   if (typeof req.query.token !== "string") {
