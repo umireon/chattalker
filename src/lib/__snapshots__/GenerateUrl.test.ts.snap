@@ -1,6 +1,6 @@
 // Vitest Snapshot v1
 
-exports[`GenerateUrl snapshot 1`] = `
+exports[`GenerateUrl > matches snapshot 1`] = `
 <body>
   <div>
     <main>
