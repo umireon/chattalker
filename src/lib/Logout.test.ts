@@ -9,5 +9,5 @@ describe("Logout", () => {
     const props = { auth: {} as Auth };
     const component = render(Logout, { props });
     expect(component.container).toMatchSnapshot();
-  })
-})
+  });
+});

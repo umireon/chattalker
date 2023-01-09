@@ -10,5 +10,5 @@ describe("GenerateUrl", () => {
     const props = { db: {} as Firestore, user: {} as User };
     const component = render(GenerateUrl, { props });
     expect(component.container).toMatchSnapshot();
-  })
-})
+  });
+});

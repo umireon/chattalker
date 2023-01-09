@@ -13,5 +13,5 @@ describe("Player", () => {
     };
     const component = render(Player, { props });
     expect(component.container).toMatchSnapshot();
-  })
-})
+  });
+});

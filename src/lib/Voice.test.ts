@@ -13,5 +13,5 @@ describe("Voice", () => {
     };
     const component = render(Voice, { props });
     expect(component.container).toMatchSnapshot();
-  })
-})
+  });
+});

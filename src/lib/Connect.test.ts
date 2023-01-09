@@ -15,5 +15,5 @@ describe("Connect", () => {
     };
     const component = render(Connect, { props });
     expect(component.container).toMatchSnapshot();
-  })
-})
+  });
+});
