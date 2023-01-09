@@ -1,6 +1,6 @@
 import { type Request, type Response } from "@google-cloud/functions-framework";
 import { corsGet, corsSet } from "./testHelper";
-import { describe, expect, it, vitest } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import { type App } from "firebase-admin/app";
 import { type Auth } from "firebase-admin/auth";
@@ -25,19 +25,19 @@ describe("authenticateWithToken", () => {
       },
     } as unknown as Request;
 
-    const send = vitest.fn();
+    const send = vi.fn();
     const res = {
       send,
       set: corsSet,
     } as unknown as Response;
 
-    const createCustomToken = vitest.fn().mockResolvedValue(customToken);
+    const createCustomToken = vi.fn().mockResolvedValue(customToken);
     const auth = { createCustomToken } as unknown as Auth;
 
     const data = () => ({ token });
     const get = () => ({ data });
-    const doc = vitest.fn().mockReturnValue({ get });
-    const collection = vitest.fn().mockReturnValue({ doc });
+    const doc = vi.fn().mockReturnValue({ get });
+    const collection = vi.fn().mockReturnValue({ doc });
     const db = { collection } as unknown as Firestore;
 
     await authenticateWithToken(app, req, res, auth, db);
@@ -61,20 +61,20 @@ describe("authenticateWithToken", () => {
       },
     } as unknown as Request;
 
-    const send = vitest.fn();
-    const status = vitest.fn().mockReturnValue({ send });
+    const send = vi.fn();
+    const status = vi.fn().mockReturnValue({ send });
     const res = {
       set: corsSet,
       status,
     } as unknown as Response;
 
-    const createCustomToken = vitest.fn().mockResolvedValue(customToken);
+    const createCustomToken = vi.fn().mockResolvedValue(customToken);
     const auth = { createCustomToken } as unknown as Auth;
 
     const data = () => ({ token });
     const get = () => ({ data });
-    const doc = vitest.fn().mockReturnValue({ get });
-    const collection = vitest.fn().mockReturnValue({ doc });
+    const doc = vi.fn().mockReturnValue({ get });
+    const collection = vi.fn().mockReturnValue({ doc });
     const db = { collection } as unknown as Firestore;
 
     await authenticateWithToken(app, req, res, auth, db);
