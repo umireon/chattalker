@@ -5,6 +5,7 @@
   "extensions": [
     "dbaeumer.vscode-eslint",
     "ZixuanChen.vitest-explorer",
+    "EditorConfig.EditorConfig",
     "esbenp.prettier-vscode"
   ],
   "forwardPorts": [3000],
