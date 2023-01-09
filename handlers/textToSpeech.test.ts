@@ -1,7 +1,6 @@
 import { type Request, type Response } from "@google-cloud/functions-framework";
 import { describe, expect, it, vi } from "vitest";
 
-import { type App } from "firebase-admin/app";
 import { TextToSpeechClient } from "@google-cloud/text-to-speech";
 import { TranslationServiceClient } from "@google-cloud/translate";
 import { corsGet } from "./testHelper";
