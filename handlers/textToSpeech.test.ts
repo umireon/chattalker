@@ -7,9 +7,7 @@ import { TranslationServiceClient } from "@google-cloud/translate";
 import { corsGet } from "./testHelper";
 import { textToSpeech } from "./textToSpeech";
 
-const app = {} as App;
-
-describe("textToSpeech", () => {
+describe.concurrent("textToSpeech", () => {
   it("returns audioContent", async () => {
     const languageCode = "languageCode";
     const voiceName = "voiceName";

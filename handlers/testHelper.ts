@@ -5,5 +5,3 @@ export const corsGet = (name: string) => {
     return "";
   }
 };
-
-export const corsSet = (_1: string, _2: string) => {};

@@ -1,16 +1,16 @@
 import { type Request, type Response } from "@google-cloud/functions-framework";
-import { corsGet, corsSet } from "./testHelper";
 import { describe, expect, it, vi } from "vitest";
 
 import { type App } from "firebase-admin/app";
 import { type Auth } from "firebase-admin/auth";
 import { type Firestore } from "firebase-admin/firestore";
 import { authenticateWithToken } from "./authenticateWithToken";
+import { corsGet } from "./testHelper";
 import crypto from "crypto";
 
 const app = {} as App;
 
-describe("authenticateWithToken", () => {
+describe.concurrent("authenticateWithToken", () => {
   it("creates a custom token", async () => {
     const customToken = "customToken";
     const token = crypto.randomUUID();
@@ -24,10 +24,11 @@ describe("authenticateWithToken", () => {
       },
     } as unknown as Request;
 
-    const send = vi.fn();
+    const resSend = vi.fn();
+    const resSet = vi.fn();
     const res = {
-      send,
-      set: corsSet,
+      send: resSend,
+      set: resSet,
     } as unknown as Response;
 
     const createCustomToken = vi.fn().mockResolvedValue(customToken);
@@ -43,7 +44,7 @@ describe("authenticateWithToken", () => {
     expect(collection.mock.calls[0][0]).toBe("users");
     expect(doc.mock.calls[0][0]).toBe(uid);
     expect(createCustomToken.mock.calls[0][0]).toBe(uid);
-    expect(send.mock.calls[0][0]).toBe(customToken);
+    expect(resSend.mock.calls[0][0]).toBe(customToken);
   });
 
   it("rejects an invalid token", async () => {
@@ -60,11 +61,12 @@ describe("authenticateWithToken", () => {
       },
     } as unknown as Request;
 
-    const send = vi.fn();
-    const status = vi.fn().mockReturnValue({ send });
+    const resSend = vi.fn();
+    const resStatus = vi.fn().mockReturnValue({ send: resSend });
+    const resSet = vi.fn();
     const res = {
-      set: corsSet,
-      status,
+      set: resSet,
+      status: resStatus,
     } as unknown as Response;
 
     const createCustomToken = vi.fn().mockResolvedValue(customToken);
@@ -80,7 +82,7 @@ describe("authenticateWithToken", () => {
     expect(collection.mock.calls[0][0]).toBe("users");
     expect(doc.mock.calls[0][0]).toBe(uid);
     expect(createCustomToken.mock.calls.length).toBe(0);
-    expect(status.mock.calls[0][0]).toBe(401);
-    expect(send.mock.calls[0][0]).toEqual({});
+    expect(resStatus.mock.calls[0][0]).toBe(401);
+    expect(resSend.mock.calls[0][0]).toEqual({});
   });
 });
