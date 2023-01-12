@@ -1,12 +1,11 @@
 <script lang="ts">
-  import type { Auth, User } from 'firebase/auth'
+  import { type Auth, type User, getAuth } from 'firebase/auth'
   import { DEFAULT_CONTEXT, firebaseConfig } from '../constants'
 
   import AppSignedIn from './AppSignedIn.svelte'
   import Logout from './lib/Logout.svelte'
   import { authenticateWithToken } from './service/auth'
   import { getAnalytics } from 'firebase/analytics'
-  import { getAuth } from 'firebase/auth'
   import { getFirestore } from 'firebase/firestore'
   import { getUserData } from './service/users'
   import { initializeApp } from 'firebase/app'

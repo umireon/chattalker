@@ -1,7 +1,5 @@
-import { describe, expect, it, test } from "vitest";
-
-import type { UserData } from "./users";
-import { extractUserData } from "./users";
+import { type UserData, extractUserData } from "./users";
+import { describe, expect, it } from "vitest";
 
 describe.concurrent("extractUserData", () => {
   it("extracts everything from a valid UserData", () => {

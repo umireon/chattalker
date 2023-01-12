@@ -1,13 +1,11 @@
-import type {
-  YoutubeLiveBroadcastResponse,
-  YoutubeLiveChatMessageResponse,
-} from "./youtube";
 import {
+  type YoutubeLiveBroadcastResponse,
+  type YoutubeLiveChatMessageResponse,
   YoutubeRequestError,
   handleYoutubeLiveBroadcastResponse,
   handleYoutubeLiveChatMessageResponse,
 } from "./youtube";
-import { describe, expect, it, test } from "vitest";
+import { describe, expect, it } from "vitest";
 
 describe.concurrent("handleYoutubeLiveBroadcastResponse", () => {
   it("processes a valid YoutubeLiveBroadcastResponse", () => {

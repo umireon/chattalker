@@ -1,9 +1,8 @@
-import { getUserData, setUserData } from "./users";
+import { type UserData, getUserData, setUserData } from "./users";
 
-import type { AppContext } from "../../constants";
-import type { Firestore } from "firebase/firestore";
-import type { User } from "firebase/auth";
-import type { UserData } from "./users";
+import { type AppContext } from "../../constants";
+import { type Firestore } from "firebase/firestore";
+import { type User } from "firebase/auth";
 
 export const TWITCH_TOKEN_FIELD_NAME = "twitch-access-token";
 export const YOUTUBE_TOKEN_FIELD_NAME = "youtube-access-token";

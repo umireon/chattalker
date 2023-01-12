@@ -1,6 +1,6 @@
-import type { AppContext } from "../../constants";
-import type { Auth } from "firebase/auth";
-import { signInWithCustomToken } from "firebase/auth";
+import { type Auth, signInWithCustomToken } from "firebase/auth";
+
+import { type AppContext } from "../../constants";
 
 interface AuthenticateWithTokenOptions {
   readonly token: string;
