@@ -4,9 +4,12 @@ import { type AppContext } from "../../constants";
 import { type Firestore } from "firebase/firestore";
 import { type User } from "firebase/auth";
 
+export const TWITCH_TOKEN_FIELD_NAME = "twitch-access-token";
+export const YOUTUBE_TOKEN_FIELD_NAME = "youtube-access-token";
+
 export const getTwitchToken = async (db: Firestore, user: User) => {
   const data = await getUserData(db, user);
-  return data["twitch-access-token"];
+  return data[TWITCH_TOKEN_FIELD_NAME];
 };
 
 export const setTwitchToken = async (
@@ -14,7 +17,7 @@ export const setTwitchToken = async (
   user: User,
   token: string
 ) => {
-  await setUserData(db, user, { "twitch-access-token": token });
+  await setUserData(db, user, { [TWITCH_TOKEN_FIELD_NAME]: token });
 };
 
 /* eslint-disable camelcase */
@@ -60,9 +63,9 @@ export const setYoutubeToken = async (
   db: Firestore,
   params: YoutubeOauthResponse
 ) => {
-  let data: UserData = { "youtube-access-token": params.access_token };
+  let data: UserData = { [YOUTUBE_TOKEN_FIELD_NAME]: params.access_token };
   if (typeof params.refresh_token !== "undefined") {
-    data = { ...data, "youtube-refresh-token": params.refresh_token };
+    data = { ...data, [YOUTUBE_TOKEN_FIELD_NAME]: params.refresh_token };
   }
   await setUserData(db, user, data);
 };
@@ -72,7 +75,7 @@ export const getYoutubeToken = async (
   user: User
 ): Promise<string | undefined> => {
   const data = await getUserData(db, user);
-  return data["youtube-access-token"];
+  return data[YOUTUBE_TOKEN_FIELD_NAME];
 };
 
 export const refreshYoutubeToken = async (
@@ -81,7 +84,7 @@ export const refreshYoutubeToken = async (
   user: User
 ): Promise<YoutubeOauthResponse> => {
   const data = await getUserData(db, user);
-  const refreshToken = data["youtube-refresh-token"];
+  const refreshToken = data[YOUTUBE_TOKEN_FIELD_NAME];
   if (typeof refreshToken === "undefined")
     throw new Error("Refresh token not stored");
   const query = new URLSearchParams({ refreshToken });
