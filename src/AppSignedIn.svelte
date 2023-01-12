@@ -1,9 +1,9 @@
 <script lang="ts">
   import type { Auth, User } from 'firebase/auth'
+  import { TWITCH_TOKEN_FIELD_NAME, getYoutubeToken } from './service/oauth'
   import Voice, { defaultVoiceEn, defaultVoiceJa, defaultVoiceUnd } from './lib/Voice.svelte'
   import { connectTwitch, getTwitchLogin } from './service/twitch'
   import { fetchAudio, sendKeepAliveToTextToSpeech } from './service/audio'
-  import { getTwitchToken, getYoutubeToken } from './service/oauth'
 
   import type { Analytics } from 'firebase/analytics'
   import Connect from './lib/Connect.svelte'
@@ -67,7 +67,7 @@
   }
 
   async function initializeTwitch () {
-    const token = initialUserData["twitch-access-token"];
+    const token = initialUserData[TWITCH_TOKEN_FIELD_NAME];
     if (typeof token === "undefined") {
       error = new Error("Token was undefined!");
       return;
