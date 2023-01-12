@@ -1,7 +1,8 @@
-import { describe, expect, it, test } from "vitest";
-
-import type { YoutubeOauthResponse } from "./oauth";
-import { validateYoutubeOauthResponse } from "./oauth";
+import {
+  type YoutubeOauthResponse,
+  validateYoutubeOauthResponse,
+} from "./oauth";
+import { describe, expect, it } from "vitest";
 
 describe.concurrent("validateYoutubeOauthResponse", () => {
   it("agrees with valid YoutubeOauthResponse", () => {

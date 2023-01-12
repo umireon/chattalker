@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { Auth } from 'firebase/auth'
+  import { type Auth } from 'firebase/auth'
 
   export let auth: Auth
 

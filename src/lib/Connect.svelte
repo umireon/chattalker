@@ -1,7 +1,7 @@
 <script lang="ts">
-  import type { AppContext } from '../../constants'
-  import type { Firestore } from 'firebase/firestore'
-  import type { User } from 'firebase/auth'
+  import { type AppContext } from '../../constants'
+  import { type Firestore } from 'firebase/firestore'
+  import { type User } from 'firebase/auth'
   import { generateNonce } from '../service/oauth'
   import { setUserData } from '../service/users'
 

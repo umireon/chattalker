@@ -1,10 +1,8 @@
-import type { Auth, User } from "firebase/auth";
-import { VOICE_KEYS, fetchAudio } from "./audio";
-import { collection, doc, setDoc } from "firebase/firestore";
+import { type Auth, type User } from "firebase/auth";
+import { type Firestore, collection, doc, setDoc } from "firebase/firestore";
+import { VOICE_KEYS, type Voice, fetchAudio } from "./audio";
 
-import type { AppContext } from "../../constants";
-import type { Firestore } from "firebase/firestore";
-import type { Voice } from "./audio";
+import { type AppContext } from "../../constants";
 
 export interface PlayerElements {
   readonly audioElement: HTMLAudioElement;

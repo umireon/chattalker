@@ -1,6 +1,5 @@
-import { describe, expect, it, test } from "vitest";
-import type { FetchAutioResponse } from "./audio";
-import { handleFetchAudioResponse } from "./audio";
+import { type FetchAutioResponse, handleFetchAudioResponse } from "./audio";
+import { describe, expect, it } from "vitest";
 
 describe.concurrent("handleFetchAudioResponse", () => {
   it("processes a proper FormData", () => {

@@ -1,11 +1,14 @@
-import type {
-  CollectionReference,
-  Firestore,
-  FirestoreDataConverter,
+import {
+  type CollectionReference,
+  type Firestore,
+  type FirestoreDataConverter,
+  collection,
+  doc,
+  getDoc,
+  setDoc,
 } from "firebase/firestore";
-import { collection, doc, getDoc, setDoc } from "firebase/firestore";
 
-import type { User } from "firebase/auth";
+import { type User } from "firebase/auth";
 
 export const VOICE_KEYS = ["voice-en", "voice-ja", "voice-und"] as const;
 export type VoiceKeys = typeof VOICE_KEYS[number];
