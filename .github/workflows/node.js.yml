@@ -55,7 +55,7 @@ jobs:
           node-version: "18"
           cache: "npm"
       - run: "npm ci"
-      - run: "npm test"
+      - run: "npm test -- --run"
 
   tsc:
     runs-on: "ubuntu-latest"
