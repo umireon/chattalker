@@ -1,9 +1,8 @@
-import { getUserData, setUserData } from "./users";
+import { type UserData, getUserData, setUserData } from "./users";
 
-import type { AppContext } from "../../constants";
-import type { Firestore } from "firebase/firestore";
-import type { User } from "firebase/auth";
-import type { UserData } from "./users";
+import { type AppContext } from "../../constants";
+import { type Firestore } from "firebase/firestore";
+import { type User } from "firebase/auth";
 
 export const getTwitchToken = async (db: Firestore, user: User) => {
   const data = await getUserData(db, user);

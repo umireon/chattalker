@@ -1,8 +1,8 @@
 import { refreshYoutubeToken, setYoutubeToken } from "./oauth";
 
-import type { AppContext } from "../../constants";
-import type { Firestore } from "firebase/firestore";
-import type { User } from "firebase/auth";
+import { type AppContext } from "../../constants";
+import { type Firestore } from "firebase/firestore";
+import { type User } from "firebase/auth";
 
 export class YoutubeRequestError extends Error {}
 

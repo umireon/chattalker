@@ -1,4 +1,4 @@
-import type { AppContext } from "../../constants";
+import { type AppContext } from "../../constants";
 
 export interface TwitchUsersData {
   readonly login: string;

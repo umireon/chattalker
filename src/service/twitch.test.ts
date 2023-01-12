@@ -1,7 +1,9 @@
-import { describe, expect, it, test } from "vitest";
+import {
+  type TwitchUsersResponse,
+  validateTwitchUsersResponse,
+} from "./twitch";
 
-import type { TwitchUsersResponse } from "./twitch";
-import { validateTwitchUsersResponse } from "./twitch";
+import { describe, expect, it } from "vitest";
 
 describe.concurrent("validateTwitchUsersResponse", () => {
   it("agrees with valid TwitchUsersResponse", () => {
