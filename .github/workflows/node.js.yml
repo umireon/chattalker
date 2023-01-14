@@ -56,6 +56,7 @@ jobs:
           cache: "npm"
       - run: "npm ci"
       - run: "npm test -- --run"
+      - uses: codecov/codecov-action@v3
 
   tsc:
     runs-on: "ubuntu-latest"
