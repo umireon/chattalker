@@ -8,31 +8,31 @@ import { corsGet } from "./testHelper";
 
 describe.concurrent("validateVoice", () => {
   it("return true if arg is a map", () => {
-    expect(validateVoice({ key: "value" })).toBeTruthy()
-  })
+    expect(validateVoice({ key: "value" })).toBeTruthy();
+  });
 
   it("return false if arg is not a map", () => {
-    expect(validateVoice(undefined)).toBeFalsy()
-    expect(validateVoice("string")).toBeFalsy()
-    expect(validateVoice(["string1", "string2"])).toBeFalsy()
-    expect(validateVoice({ key1: { key2: "value"} })).toBeFalsy()
-  })
-})
+    expect(validateVoice(undefined)).toBeFalsy();
+    expect(validateVoice("string")).toBeFalsy();
+    expect(validateVoice(["string1", "string2"])).toBeFalsy();
+    expect(validateVoice({ key1: { key2: "value" } })).toBeFalsy();
+  });
+});
 
 describe.concurrent("getVoice", () => {
   it("returns languageCode and name if the voice is found in the map", () => {
-    const languageCode = "languageCode"
+    const languageCode = "languageCode";
     const name = "voiceName";
     const actual = getVoice({ [languageCode]: name }, languageCode);
-    expect(actual).toEqual({ languageCode, name })
-  })
+    expect(actual).toEqual({ languageCode, name });
+  });
 
   it("returns languageCode if the voice is not found in the map", () => {
-    const languageCode = "languageCode"
+    const languageCode = "languageCode";
     const actual = getVoice({}, languageCode);
-    expect(actual).toEqual({ languageCode })
-  })
-})
+    expect(actual).toEqual({ languageCode });
+  });
+});
 
 describe.concurrent("textToSpeech", () => {
   it("returns audioContent", async () => {
@@ -143,7 +143,9 @@ describe.concurrent("textToSpeech", () => {
       synthesizeSpeech: textToSpeechClientSynthesizeSpeech,
     } as unknown as InstanceType<typeof TextToSpeechClient>;
 
-    expect(textToSpeech(req, res, env, translationClient, textToSpeechClient)).rejects.toThrowError();
+    expect(
+      textToSpeech(req, res, env, translationClient, textToSpeechClient)
+    ).rejects.toThrowError();
   });
 
   it("accepts keep alive requests", async () => {
@@ -175,7 +177,7 @@ describe.concurrent("textToSpeech", () => {
   it("throws 400 if text is missing", async () => {
     const req = {
       get: corsGet,
-      query: {}
+      query: {},
     } as unknown as Request;
 
     const resSend = vi.fn();
@@ -189,13 +191,13 @@ describe.concurrent("textToSpeech", () => {
     const PROJECT_ID = "projectId";
     const env = { PROJECT_ID };
     await textToSpeech(req, res, env);
-    expect(resStatus.mock.calls[0][0]).toBe(400)
-    expect(resSend.mock.calls[0][0]).toBe("Invalid text")
-  })
+    expect(resStatus.mock.calls[0][0]).toBe(400);
+    expect(resSend.mock.calls[0][0]).toBe("Invalid text");
+  });
 
   it("throws 400 if voice is invalid", async () => {
-    const text = "text"
-    const voice = "invalid"
+    const text = "text";
+    const voice = "invalid";
     const req = {
       get: corsGet,
       query: {
@@ -215,8 +217,8 @@ describe.concurrent("textToSpeech", () => {
     const PROJECT_ID = "projectId";
     const env = { PROJECT_ID };
     await textToSpeech(req, res, env);
-    expect(resStatus.mock.calls[0][0]).toBe(400)
-    expect(resSend.mock.calls[0][0]).toBe("Invalid voice")
+    expect(resStatus.mock.calls[0][0]).toBe(400);
+    expect(resSend.mock.calls[0][0]).toBe("Invalid voice");
   });
 
   it("throws if PROJECT_ID is invalid", async () => {
@@ -235,7 +237,7 @@ describe.concurrent("textToSpeech", () => {
   it("handles a preflight request", async () => {
     const req = {
       get: corsGet,
-      method: "OPTIONS"
+      method: "OPTIONS",
     } as unknown as Request;
 
     const resSend = vi.fn();
@@ -245,11 +247,11 @@ describe.concurrent("textToSpeech", () => {
       set: resSet,
       status: resStatus,
     } as unknown as Response;
-  
+
     const PROJECT_ID = "projectId";
     const env = { PROJECT_ID };
     await textToSpeech(req, res, env);
 
-    expect(resStatus.mock.calls[0][0]).toBe(204)
+    expect(resStatus.mock.calls[0][0]).toBe(204);
   });
 });
