@@ -55,7 +55,8 @@ jobs:
           node-version: "18"
           cache: "npm"
       - run: "npm ci"
-      - run: "npm test -- --run"
+      - run: "npm exec vitest -- --run --coverage"
+      - uses: codecov/codecov-action@v3
 
   tsc:
     runs-on: "ubuntu-latest"
