@@ -14,4 +14,3 @@ LICENSE
 openapi2-functions.yaml
 README.md
 tsconfig.json
-*.ts
