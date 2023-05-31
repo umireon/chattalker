@@ -1,7 +1,7 @@
 import { SecretManagerServiceClient } from "@google-cloud/secret-manager";
 import { coarseIntoString } from "./coarse.js";
 
-export const YOUTUBE_CLIENT_SECRET_FIELD_NAME = "twitch-oauth-token";
+export const YOUTUBE_CLIENT_SECRET_FIELD_NAME = "youtube-client-secret";
 export const DEFAULT_YOUTUBE_CLIENT_SECRET_VERSION = "1";
 
 export interface GetYoutubeClientSecretOption {
