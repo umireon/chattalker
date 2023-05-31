@@ -64,9 +64,14 @@ export const setYoutubeToken = async (
   db: Firestore,
   params: YoutubeOauthResponse
 ) => {
-  let data: UserData = { [YOUTUBE_ACCESS_TOKEN_FIELD_NAME]: params.access_token };
+  let data: UserData = {
+    [YOUTUBE_ACCESS_TOKEN_FIELD_NAME]: params.access_token,
+  };
   if (typeof params.refresh_token !== "undefined") {
-    data = { ...data, [YOUTUBE_REFRESH_TOKEN_FIELD_NAME]: params.refresh_token };
+    data = {
+      ...data,
+      [YOUTUBE_REFRESH_TOKEN_FIELD_NAME]: params.refresh_token,
+    };
   }
   await setUserData(db, user, data);
 };
