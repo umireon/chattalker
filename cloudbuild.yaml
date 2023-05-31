@@ -1,10 +1,4 @@
 steps:
-  - name: "node:18-bullseye-slim"
-    args:
-      - "npm"
-      - "ci"
-    id: "npm ci"
-
   - name: "gcr.io/google.com/cloudsdktool/cloud-sdk:slim"
     args:
       - "gcloud"
@@ -17,7 +11,7 @@ steps:
       - "--service-account=cloudfunctions@chattalker.iam.gserviceaccount.com"
       - "--set-env-vars=PROJECT_ID=$PROJECT_ID"
       - "--trigger-http"
-    waitFor: ["npm ci"]
+    waitFor: ["-"]
   - name: "gcr.io/google.com/cloudsdktool/cloud-sdk:slim"
     args:
       - "gcloud"
@@ -30,7 +24,7 @@ steps:
       - "--service-account=cloudfunctions@chattalker.iam.gserviceaccount.com"
       - "--set-env-vars=PROJECT_ID=$PROJECT_ID"
       - "--trigger-http"
-    waitFor: ["npm ci"]
+    waitFor: ["-"]
   - name: "gcr.io/google.com/cloudsdktool/cloud-sdk:slim"
     args:
       - "gcloud"
@@ -43,7 +37,7 @@ steps:
       - "--service-account=cloudfunctions@chattalker.iam.gserviceaccount.com"
       - "--set-env-vars=PROJECT_ID=$PROJECT_ID"
       - "--trigger-http"
-    waitFor: ["npm ci"]
+    waitFor: ["-"]
   - name: "gcr.io/google.com/cloudsdktool/cloud-sdk:slim"
     args:
       - "gcloud"
@@ -56,17 +50,20 @@ steps:
       - "--service-account=cloudfunctions@chattalker.iam.gserviceaccount.com"
       - "--set-env-vars=PROJECT_ID=$PROJECT_ID"
       - "--trigger-http"
-    waitFor: ["npm ci"]
+    waitFor: ["-"]
 
+  - name: "node:18-bullseye-slim"
+    args:
+      - "npm"
+      - "ci"
+    waitFor: ["-"]
+    id: "npm ci"
   - name: "node:18-bullseye-slim"
     args:
       - "npm"
       - "run"
       - "build"
-    waitFor: ["npm ci"]
-    id: "npm run build"
   - name: "gcr.io/$PROJECT_ID/firebase"
     args:
       - "deploy"
       - "--only=hosting"
-    waitFor: ["npm run build"]
