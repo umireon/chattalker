@@ -7,7 +7,7 @@
     "build": "vite build",
     "check": "svelte-check --tsconfig ./tsconfig.json",
     "preview": "vite preview",
-    "build-functions": "swc --out-dir=. *.ts && swc --out-dir=service service/*.ts && swc --out-dir=handlers handlers/*.ts",
+    "gcp-build": "swc --out-dir=. *.ts && swc --out-dir=service service/*.ts && swc --out-dir=handlers handlers/*.ts",
     "lint": "prettier --check . && eslint --ext .ts,.svelte src *.ts",
     "functions-framework": "functions-framework",
     "test": "vitest",

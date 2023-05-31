@@ -5,13 +5,6 @@ steps:
       - "ci"
     id: "npm ci"
 
-  - name: "node:16-bullseye-slim"
-    args:
-      - "npm"
-      - "run"
-      - "build-functions"
-    id: "npm run build-functions"
-    waitFor: ["npm ci"]
   - name: "gcr.io/google.com/cloudsdktool/cloud-sdk:slim"
     args:
       - "gcloud"
@@ -24,7 +17,7 @@ steps:
       - "--service-account=cloudfunctions@chattalker.iam.gserviceaccount.com"
       - "--set-env-vars=PROJECT_ID=$PROJECT_ID"
       - "--trigger-http"
-    waitFor: ["npm run build-functions"]
+    waitFor: ["npm ci"]
   - name: "gcr.io/google.com/cloudsdktool/cloud-sdk:slim"
     args:
       - "gcloud"
@@ -37,7 +30,7 @@ steps:
       - "--service-account=cloudfunctions@chattalker.iam.gserviceaccount.com"
       - "--set-env-vars=PROJECT_ID=$PROJECT_ID"
       - "--trigger-http"
-    waitFor: ["npm run build-functions"]
+    waitFor: ["npm ci"]
   - name: "gcr.io/google.com/cloudsdktool/cloud-sdk:slim"
     args:
       - "gcloud"
@@ -50,7 +43,7 @@ steps:
       - "--service-account=cloudfunctions@chattalker.iam.gserviceaccount.com"
       - "--set-env-vars=PROJECT_ID=$PROJECT_ID"
       - "--trigger-http"
-    waitFor: ["npm run build-functions"]
+    waitFor: ["npm ci"]
   - name: "gcr.io/google.com/cloudsdktool/cloud-sdk:slim"
     args:
       - "gcloud"
@@ -63,7 +56,7 @@ steps:
       - "--service-account=cloudfunctions@chattalker.iam.gserviceaccount.com"
       - "--set-env-vars=PROJECT_ID=$PROJECT_ID"
       - "--trigger-http"
-    waitFor: ["npm run build-functions"]
+    waitFor: ["npm ci"]
 
   - name: "node:18-bullseye-slim"
     args:
