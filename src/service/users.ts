@@ -4,7 +4,7 @@ import {
   type FirestoreDataConverter,
   collection,
   doc,
-  getDoc,
+  onSnapshot,
   setDoc,
 } from "firebase/firestore";
 
@@ -67,10 +67,12 @@ export const getUsersCollection = (
 export const getUserData = async (
   db: Firestore,
   user: User
-): Promise<UserData> => {
-  const docRef = await getDoc(doc(getUsersCollection(db), user.uid));
-  return docRef.data() || {};
-};
+): Promise<UserData> =>
+  new Promise((resolve) =>
+    onSnapshot(doc(getUsersCollection(db), user.uid), (docRef) => {
+      resolve(docRef.data() ?? {});
+    })
+  );
 
 export const setUserData = async (
   db: Firestore,
