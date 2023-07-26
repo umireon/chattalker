@@ -2,7 +2,7 @@ import { type AppContext } from "../../constants";
 import { type User } from "firebase/auth";
 
 export const VOICE_KEYS = ["voice[en]", "voice[ja]", "voice[und]"] as const;
-export type VoiceKeys = typeof VOICE_KEYS[number];
+export type VoiceKeys = (typeof VOICE_KEYS)[number];
 export interface Voice {
   readonly "voice[en]"?: string;
   readonly "voice[ja]"?: string;
