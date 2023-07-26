@@ -27,8 +27,7 @@ export interface UserData {
 
 export const extractUserData = (data: any): UserData => {
   let result: UserData = {};
-  if (data.nonce)
-    result = { ...result, nonce: data.nonce };
+  if (data.nonce) result = { ...result, nonce: data.nonce };
   if (data["twitch-access-token"])
     result = { ...result, "twitch-access-token": data["twitch-access-token"] };
   if (data["youtube-access-token"])
@@ -41,12 +40,10 @@ export const extractUserData = (data: any): UserData => {
       ...result,
       "youtube-refresh-token": data["youtube-refresh-token"],
     };
-  if (data.token)
-    result = { ...result, token: data.token };
+  if (data.token) result = { ...result, token: data.token };
 
   for (const key of VOICE_KEYS) {
-    if (data[key])
-      result = { ...result, [key]: data[key] };
+    if (data[key]) result = { ...result, [key]: data[key] };
   }
   return result;
 };
