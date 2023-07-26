@@ -27,26 +27,23 @@ export interface UserData {
 
 export const extractUserData = (data: any): UserData => {
   let result: UserData = {};
-  if (typeof data.nonce !== "undefined")
-    result = { ...result, nonce: data.nonce };
-  if (typeof data["twitch-access-token"] !== "undefined")
+  if (data.nonce) result = { ...result, nonce: data.nonce };
+  if (data["twitch-access-token"])
     result = { ...result, "twitch-access-token": data["twitch-access-token"] };
-  if (typeof data["youtube-access-token"] !== "undefined")
+  if (data["youtube-access-token"])
     result = {
       ...result,
       "youtube-access-token": data["youtube-access-token"],
     };
-  if (typeof data["youtube-refresh-token"] !== "undefined")
+  if (data["youtube-refresh-token"])
     result = {
       ...result,
       "youtube-refresh-token": data["youtube-refresh-token"],
     };
-  if (typeof data.token !== "undefined")
-    result = { ...result, token: data.token };
+  if (data.token) result = { ...result, token: data.token };
 
   for (const key of VOICE_KEYS) {
-    if (typeof data[key] !== "undefined")
-      result = { ...result, [key]: data[key] };
+    if (data[key]) result = { ...result, [key]: data[key] };
   }
   return result;
 };
