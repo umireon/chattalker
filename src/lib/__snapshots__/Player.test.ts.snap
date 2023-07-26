@@ -8,7 +8,6 @@ exports[`Player > matches snapshot 1`] = `
         <audio
           autoplay=""
           src=""
-          type="audio/mpeg"
         />
       </p>
        
