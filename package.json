@@ -42,6 +42,7 @@
     "eslint-plugin-svelte3": "^4.0.0",
     "firebase": "^9.23.0",
     "firebaseui": "^6.0.2",
+    "jsdom": "^22.1.0",
     "prettier": "^2.8.1",
     "svelte": "^3.59.2",
     "svelte-check": "^3.4.6",
