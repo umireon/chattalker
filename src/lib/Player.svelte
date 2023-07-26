@@ -8,7 +8,7 @@
 </script>
 
 <main>
-  <p><audio type="audio/mpeg" src={playerSrc} autoplay></audio></p>
+  <p><audio src={playerSrc} autoplay></audio></p>
   <div style="display: flex; align-items: flex-start;">
     <p style="margin: 0px;">
       <span id="language">{playerLanguage}</span>
