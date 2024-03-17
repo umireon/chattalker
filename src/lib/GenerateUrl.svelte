@@ -19,7 +19,7 @@
       const query = new URLSearchParams({ token: token, uid: user.uid })
       value = `${location.origin}${location.pathname}#${query}`
     } else {
-      const buffer = new Uint8Array(256)
+      const buffer = new Uint8Array(32)
       const newTokenArray = crypto.getRandomValues(buffer)
       const newToken = uint8ArrayToHexString(newTokenArray)
       await setUserData(db, user, { token: newToken })
