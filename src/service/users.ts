@@ -5,7 +5,7 @@ import {
   collection,
   doc,
   onSnapshot,
-  updateDoc,
+  setDoc,
 } from "firebase/firestore";
 
 import { type User } from "firebase/auth";
@@ -76,5 +76,7 @@ export const setUserData = async (
   user: User,
   data: UserData
 ) => {
-  await updateDoc(doc(getUsersCollection(db), user.uid), data);
+  await setDoc(doc(getUsersCollection(db), user.uid), data, {
+    merge: true
+  });
 };
