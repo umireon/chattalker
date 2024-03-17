@@ -77,6 +77,6 @@ export const setUserData = async (
   data: UserData
 ) => {
   await setDoc(doc(getUsersCollection(db), user.uid), data, {
-    merge: true
+    merge: true,
   });
 };
